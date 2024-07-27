@@ -171,9 +171,24 @@ const verifyOtp = async (req, res) => {
             });
         }
 
-        await User.findByIdAndUpdate({ _id: user_id }, {
-            $set: { is_verified: 1 }
-        });
+        const dbUpdateResult = await User.findByIdAndUpdate(
+            user_id,
+            { $set: { is_verified: 1 } },
+            { new: true } // This option returns the updated document
+        );
+
+        console.log('Update Result:', dbUpdateResult); // Debug log
+
+        //if the database is not updated
+        if(!dbUpdateResult){
+            console.log("db not updated with verification");
+            return res.status(500).json({
+                success:false,
+                msg:"failed to update user verification"
+            });
+        }
+
+        console.log('User verification status updated successfully for user_id:', user_id); // Debug log
 
         return res.status(200).json({
             success: true,
