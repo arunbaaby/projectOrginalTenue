@@ -6,11 +6,11 @@ const otpgenerator = require('otp-generator');
 const { validationResult } = require('express-validator');
 
 const mailer = require('../helpers/mailer');
-const {oneMinuteExpiry, threeMinuteExpiry} = require('../helpers/otpValidate');
+const { oneMinuteExpiry, threeMinuteExpiry } = require('../helpers/otpValidate');
 
 const jwt = require('jsonwebtoken');
 
-//first we have to show the register page..async method
+// First we have to show the register page..async method
 const loadAuth = async (req, res) => {
     try {
         res.render('auth');
@@ -20,7 +20,6 @@ const loadAuth = async (req, res) => {
 }
 
 const generateAndSendOTP = async (userData) => {
-    // Generate OTP
     const g_otp = otpgenerator.generate(6, {
         upperCaseAlphabets: false,
         specialChars: false,
@@ -28,19 +27,22 @@ const generateAndSendOTP = async (userData) => {
         digits: true
     });
 
-    // Update or insert OTP in database
     await Otp.findOneAndUpdate(
-        { user_id: userData._id },
+        { user_id: userData.email },
         { otp: g_otp, timestamp: new Date() },
         { upsert: true, new: true, setDefaultsOnInsert: true }
     );
 
-    // Send OTP to user's email
     const msg = `<p>Hi ${userData.name}, please use the following OTP to verify your account: <b>${g_otp}</b></p>`;
     await mailer.sendMail(userData.email, 'OTP Verification', msg);
 
     return g_otp;
 }
+
+
+
+// Use an in-memory store or cache for temporary storage
+const pendingUsers = {};
 
 const userRegister = async (req, res) => {
     try {
@@ -66,23 +68,18 @@ const userRegister = async (req, res) => {
             });
         }
 
-        const hashPassword = await bcrypt.hash(password, 10);
+        // Save user data temporarily
+        pendingUsers[email] = { name, email, mobile, password }
 
-        const user = new User({
-            name,
-            email,
-            mobile,
-            password: hashPassword,
-            is_verified: 0 // Set verified status to false initially
-        });
-        const userData = await user.save();
+        const userData = { name, email };
 
         // Generate and send OTP
         await generateAndSendOTP(userData);
 
-        // Redirect to OTP verification page
-        return res.redirect(`/verify-otp?user_id=${userData._id}`);
+        // Redirect to OTP verification page with user email
+        return res.redirect(`/verify-otp?email=${encodeURIComponent(email)}`);
     } catch (error) {
+        console.log(`Registration error: ${error.message}`);
         return res.status(400).render('auth', {
             errors: [{ msg: error.message }],
             success: false,
@@ -94,7 +91,7 @@ const userRegister = async (req, res) => {
 const sendOtp = async (req, res) => {
     try {
         const errors = validationResult(req);
-        
+
         if (!errors.isEmpty()) {
             return res.status(400).json({
                 success: false,
@@ -131,6 +128,7 @@ const sendOtp = async (req, res) => {
             msg: 'OTP has been sent to your email',
         });
     } catch (error) {
+        console.log(`Send OTP error: ${error.message}`);
         return res.status(400).json({
             success: false,
             msg: error.message
@@ -171,29 +169,26 @@ const verifyOtp = async (req, res) => {
             });
         }
 
-        const dbUpdateResult = await User.findByIdAndUpdate(
-            user_id,
-            { $set: { is_verified: 1 } },
-            { new: true } // This option returns the updated document
-        );
+        const { name, mobile, password } = pendingUsers[user_id];
 
-        console.log('Update Result:', dbUpdateResult); // Debug log
+        const hashPassword = await bcrypt.hash(password, 10);
 
-        //if the database is not updated
-        if(!dbUpdateResult){
-            console.log("db not updated with verification");
-            return res.status(500).json({
-                success:false,
-                msg:"failed to update user verification"
-            });
-        }
+        const user = new User({
+            name,
+            email: user_id,
+            mobile,
+            password: hashPassword,
+            is_verified: 1
+        });
 
-        console.log('User verification status updated successfully for user_id:', user_id); // Debug log
+        const userData = await user.save();
+        delete pendingUsers[user_id];
 
         return res.status(200).json({
             success: true,
-            msg: 'Your account is verified'
+            msg: 'User verification successful'
         });
+
     } catch (error) {
         return res.status(400).render('verify-otp', {
             user_id: req.body.user_id,
@@ -201,6 +196,9 @@ const verifyOtp = async (req, res) => {
         });
     }
 }
+
+
+
 
 const loginUser = async (req, res) => {
     try {
@@ -269,4 +267,3 @@ module.exports = {
     sendOtp,
     verifyOtp
 }
-

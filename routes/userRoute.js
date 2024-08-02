@@ -21,11 +21,19 @@ const { registerValidator, loginValidator, otpMailValidator, verifyOtpValidator 
 // Route for rendering combined login/register page
 user_route.get('/auth', userController.loadAuth);
 
-// Route for rendering OTP verification page
+// Load the OTP verification page
 user_route.get('/verify-otp', (req, res) => {
-    const { user_id } = req.query;
-    res.render('verify-otp', { user_id, errors: [] });
+    const { email } = req.query;
+    res.render('verify-otp', { user_id: email, errors: [] });
 });
+
+
+
+// // Route for rendering OTP verification page
+// user_route.get('/verify-otp', (req, res) => {
+//     const { user_id } = req.query;
+//     res.render('verify-otp', { user_id, errors: [] });
+// });
 
 // Routes for form submissions
 user_route.post('/register', registerValidator, userController.userRegister);
