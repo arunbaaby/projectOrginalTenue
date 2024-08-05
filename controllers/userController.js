@@ -13,6 +13,7 @@ const jwt = require('jsonwebtoken');
 // First we have to show the register page..async method
 const loadAuth = async (req, res) => {
     try {
+        
         res.render('auth');
     } catch (error) {
         console.log(error.message);
@@ -20,6 +21,7 @@ const loadAuth = async (req, res) => {
 }
 
 const generateAndSendOTP = async (userData) => {
+    
     const g_otp = otpgenerator.generate(6, {
         upperCaseAlphabets: false,
         specialChars: false,
@@ -33,9 +35,12 @@ const generateAndSendOTP = async (userData) => {
         { upsert: true, new: true, setDefaultsOnInsert: true }
     );
 
+    console.log('generateAndSendOTP 3');
+    
     const msg = `<p>Hi ${userData.name}, please use the following OTP to verify your account: <b>${g_otp}</b></p>`;
     await mailer.sendMail(userData.email, 'OTP Verification', msg);
 
+    
     return g_otp;
 }
 
