@@ -27,6 +27,10 @@ const userSchema = new mongoose.Schema({
     is_verified:{
         type:Number,
         default:0//1 verfied
+    },
+    is_blocked: {
+        type: Number,
+        default: 0 // 1 if blocked
     }
 });
 

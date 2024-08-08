@@ -100,8 +100,47 @@ const loadHome = async (req, res) => {
     }
 }
 
+const userList = async(req,res)=>{
+    try {
+        const userData = await User.find({is_admin:0});
+        res.render('userList',{users:userData});
+    } catch (error) {
+        console.log(error);
+        
+    }
+}
+
+// Function to block a user
+const blockUser = async (req, res) => {
+    try {
+        const user_id = req.params.user_id; // Ensure correct parameter name
+        await User.findByIdAndUpdate(user_id, { is_blocked: 1 }); // Update is_blocked to 1
+        console.log(`User with ID ${user_id} blocked successfully.`);
+        res.redirect('/admin/customers');
+    } catch (error) {
+        console.log('Error blocking user:', error.message);
+        res.status(500).send('Error blocking user');
+    }
+};
+
+// Function to unblock a user
+const unblockUser = async (req, res) => {
+    try {
+        const user_id = req.params.user_id; // Ensure correct parameter name
+        await User.findByIdAndUpdate(user_id, { is_blocked: 0 }); // Update is_blocked to 0
+        console.log(`User with ID ${user_id} unblocked successfully.`);
+        res.redirect('/admin/customers');
+    } catch (error) {
+        console.log('Error unblocking user:', error.message);
+        res.status(500).send('Error unblocking user');
+    }
+};
+
 module.exports = {
     loadLogin,
     adminLogin,
-    loadHome
+    loadHome,
+    userList,
+    blockUser,
+    unblockUser
 }

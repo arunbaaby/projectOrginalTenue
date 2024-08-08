@@ -1,0 +1,78 @@
+
+<%- include ('../layouts/admin/adminHeader') %>
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Cuto</h2>
+                    <!-- <p>Add, edit or delete a category</p> -->
+                </div>
+                <div>
+                    <!-- <input type="text" placeholder="Search Categories" class="form-control bg-white"> -->
+                </div>
+            </div>
+
+<div class="container mt-5">
+    <table class="table table-striped table-hover">
+        <!-- Table Header -->
+        <thead class="table-dark"> 
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% users.forEach(user => { %>
+                <tr>
+                    <td><%= user.name %></td>
+                    <td><%= user.email %></td>
+                    <td><%= user.mobile %></td>
+                    <td><%= user.is_blocked ? 'Blocked' : 'Active' %></td>
+                    <td>
+                        <% if (user.is_blocked) { %>
+                            <form action="/admin/unblock-user/<%= user._id %>" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-success">Unblock</button>
+                            </form>
+                        <% } else { %>
+                            <form action="/admin/block-user/<%= user._id %>" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-danger">Block</button>
+                            </form>
+                        <% } %>
+                    </td>
+                </tr>
+            <% }) %>
+            <!-- <% if (users.length > 0) { %>
+                <% users.forEach(user => { %>
+                    <tr>
+                        <td><%= user.name %></td>
+                        <td><%= user.email %></td>
+                        <td><%= user.mobile %></td>
+                        <td><%= user.status === '1' ? 'Logged in' : 'Logged out' %></td>
+                        <td>
+                            <% if (user.block === '0') { %>
+                                <form action="/admin/block-user/<%= user._id %>" method="POST">
+                                    <button type="submit" class="btn btn-success">Unblocked</button>
+                                </form>
+                            <% } else { %>
+                                <form action="/admin/unblock-user/<%= user._id %>" method="POST">
+                                    <button type="submit" class="btn btn-danger">Blocked</button>
+                                </form>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% }); %>
+            <% } else { %>
+                <tr>
+                    <td colspan="4">Users not Found</td>
+                </tr>
+            <% } %> -->
+        </tbody>
+    </table>
+</div>
+</div>
+</div> 
+</section> 
+
+<%- include ('../layouts/admin/adminFooter') %>

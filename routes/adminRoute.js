@@ -29,4 +29,10 @@ admin_route.post('/login', adminController.adminLogin);
 
 admin_route.get('/home',authenticateToken,adminController.loadHome);
 
+
+// customer management
+admin_route.get('/customers',adminController.userList);
+admin_route.post('/block-user/:user_id', adminController.blockUser);
+admin_route.post('/unblock-user/:user_id', adminController.unblockUser);
+
 module.exports = admin_route;   
