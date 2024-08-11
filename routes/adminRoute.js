@@ -21,6 +21,8 @@ admin_route.use(express.static(path.join(__dirname, '../public/admin')));
 const adminController = require('../controllers/adminController');
 const authenticateToken = require('../middlewares/adminAuth');
 
+const categoryController = require('../controllers/categoryController');
+
 // Route to get admin login
 admin_route.get('/login', adminController.loadLogin);
 
@@ -34,5 +36,14 @@ admin_route.get('/home',authenticateToken,adminController.loadHome);
 admin_route.get('/customers',adminController.userList);
 admin_route.post('/block-user/:user_id', adminController.blockUser);
 admin_route.post('/unblock-user/:user_id', adminController.unblockUser);
+
+
+// category management
+admin_route.get('/category',adminController.loadCategory);
+admin_route.post('/category',categoryController.createCategory);
+admin_route.get('/edit-category',categoryController.editCategoryLoad);
+admin_route.post('/edit-category',categoryController.updateCategory);
+admin_route.get('/delete-category',categoryController.deleteCategory);
+admin_route.get('/restore-category',categoryController.restoreCategory);
 
 module.exports = admin_route;   

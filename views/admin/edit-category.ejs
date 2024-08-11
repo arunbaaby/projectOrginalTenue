@@ -1,0 +1,51 @@
+<%- include ('../layouts/admin/adminHeader') %>
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Edit Categories </h2>
+        </div>
+        
+        <div>
+            <!-- <input type="text" placeholder="Search Categories" class="form-control bg-white"> -->
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <form id="categoryForm" method="post"> 
+                <div class="mb-4">
+                    <label for="product_name" class="form-label">Name</label>
+                    <!-- <input type="text" placeholder="Type here" class="form-control" name="name" id="product_name" value="<%= category.name %>" /> -->
+                    <input type="text" placeholder="Type here" class="form-control" name="name" id="product_name" value="<%= category.name %>" />
+                    <p id="nameError" class="text-danger"></p>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Description</label>
+                    <textarea placeholder="Type here" name="description" id="description" class="form-control"><%= category.description %></textarea>
+                    <p id="descriptionError" class="text-danger"></p>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Update category</button>
+                </div>
+            </form>
+            
+            <div class="mt-3">
+                <a href="/admin/category" class="btn btn-secondary">Go Back</a>
+            </div>
+        </div>
+    </div>
+    
+</section> <!-- content-main end// -->
+<footer class="main-footer font-xs">
+    <div class="row pb-30 pt-15">
+        <div class="col-sm-6">
+            <script>
+            document.write(new Date().getFullYear())
+            </script> ©, Evara - HTML Ecommerce Template .
+        </div>
+        <div class="col-sm-6">
+            <div class="text-sm-end">
+                All rights reserved
+            </div>
+        </div>
+    </div>
+    <%- include ('../layouts/admin/adminFooter') %>

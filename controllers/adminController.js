@@ -1,4 +1,5 @@
 const User = require('../models/userModel');
+const Category = require('../models/categoryModel');
 
 //to decrypt the password
 const bcrypt = require('bcrypt');
@@ -136,11 +137,29 @@ const unblockUser = async (req, res) => {
     }
 };
 
+const loadCategory = async(req,res)=>{
+    try {
+        const category = await Category.find({});
+        return res.status(200).render('category', {
+            category,
+            success: true,
+            msg: ''
+        });
+    } catch (error) {
+        console.log('Category loading error:', error.message);
+        return res.status(400).json({
+            success: false,
+            msg: error.message
+        });
+    }
+}
+
 module.exports = {
     loadLogin,
     adminLogin,
     loadHome,
     userList,
     blockUser,
-    unblockUser
+    unblockUser,
+    loadCategory
 }
