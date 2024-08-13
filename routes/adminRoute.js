@@ -22,6 +22,7 @@ const adminController = require('../controllers/adminController');
 const authenticateToken = require('../middlewares/adminAuth');
 
 const categoryController = require('../controllers/categoryController');
+const productController = require('../controllers/productController');
 
 // Route to get admin login
 admin_route.get('/login', adminController.loadLogin);
@@ -45,5 +46,9 @@ admin_route.get('/edit-category',categoryController.editCategoryLoad);
 admin_route.post('/edit-category',categoryController.updateCategory);
 admin_route.get('/delete-category',categoryController.deleteCategory);
 admin_route.get('/restore-category',categoryController.restoreCategory);
+
+//product management
+admin_route.get('/product',productController.productLoad);
+admin_route.get('/add-product',productController.addProductsLoad);
 
 module.exports = admin_route;   

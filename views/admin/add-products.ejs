@@ -1,0 +1,97 @@
+<%- include ('../layouts/admin/adminHeader') %>
+<section class="content-main">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Add Product</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="" enctype="multipart/form-data" onsubmit="return validateForm()">
+                        <!-- General Information Section -->
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Name</label>
+                            <input type="text" placeholder="Type product name here" class="form-control" name="name" id="product_name">
+                            <p id="nameError" class="text-danger"></p> <!-- Placeholder for name error -->
+                        </div>
+                        <div class="mb-4">
+                            <label for="product_description" class="form-label">Description</label>
+                            <textarea placeholder="Type product description here" class="form-control" name="description" id="product_description" rows="4"></textarea>
+                            <p id="descriptionError" class="text-danger"></p> <!-- Placeholder for description error -->
+                        </div>
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Brand</label>
+                            <input type="text" placeholder="Type Brand name here" class="form-control" name="brand" id="brand_name">
+                            <p id="brandError" class="text-danger"></p> <!-- Placeholder for name error -->
+                        </div>
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Gender</label>
+                            <input type="text" placeholder="Type product name here" class="form-control" name="gender" id="gender_name">
+                            <p id="genderError" class="text-danger"></p> <!-- Placeholder for name error -->
+                        </div>                            
+                        <!-- Pricing Section -->
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label for="regular_price" class="form-label">Price</label>
+                                    <input placeholder="₹" type="text" class="form-control" name="price" id="regular_price">
+                                    <p id="priceError" class="text-danger"></p> <!-- Placeholder for price error -->
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label for="discount_price" class="form-label">Price After discount</label>
+                                    <input placeholder="₹" type="text" class="form-control" name="discountPrice" id="discount_price">
+                                    <p id="discountPriceError" class="text-danger"></p> <!-- Placeholder for discount price error -->
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label for="stock_count" class="form-label">Count of Stock</label>
+                                    <input type="number" placeholder="Qty" class="form-control" name="stock" id="stock_count">
+                                    <p id="stockError" class="text-danger"></p> <!-- Placeholder for stock error -->
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <!-- Category Section -->
+                        <div class="mb-4">
+                                <% if(category.length > 0) {
+                                    for(let i=0; i<category.length; i++) { %>
+                                <label class="mb-2 form-check form-check-inline" style="width: 45%;">
+                                    <input class="form-check-input" value="<%=category[i]._id%>" name="category" id="category_<%= i %>" type="radio">
+                                    <span class="form-check-label"> <%=category[i].name%> </span>
+                                </label>
+                                <%}}%>
+                                <div id="categoryError" class="text-danger"></div> <!-- Placeholder for category error -->
+                        </div>
+                    
+                        <!-- Media Section for Images -->
+                        <div class="mb-4">
+                            <label for="product_images" class="form-label">Images</label>
+                            <input type="file" class="form-control" name="images" id="product_images" multiple>
+                            <small class="form-text text-muted">You can select multiple images(3 only).</small>
+                            <p id="imagesError" class="text-danger"></p> <!-- Placeholder for images error -->
+                        </div>
+                    
+                        <div class="mb-4">
+                            <div id="mainError" class="text-danger"></div> <!-- Main error message placeholder -->
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                        <% 
+                        if(typeof message !=='undefined'){
+                        %>
+                        <h6><%= message %></h6>
+                        <% 
+                        }
+                        %>
+                    </form>
+
+                </div>
+            </div> <!-- card end// -->
+        </div>         
+        </div>
+    </div>
+</section> <!-- content-main end// -->
+
+<%- include ('../layouts/admin/adminFooter') %>
