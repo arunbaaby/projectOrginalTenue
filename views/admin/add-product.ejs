@@ -7,7 +7,7 @@
                     <h4>Add Product</h4>
                 </div>
                 <div class="card-body">
-                    <form method="post" action="" enctype="multipart/form-data" onsubmit="return validateForm()">
+                    <form method="post" action="/admin/add-product" enctype="multipart/form-data" onsubmit="return validateForm()">
                         <!-- General Information Section -->
                         <div class="mb-4">
                             <label for="product_name" class="form-label">Name</label>
@@ -25,10 +25,15 @@
                             <p id="brandError" class="text-danger"></p> <!-- Placeholder for name error -->
                         </div>
                         <div class="mb-4">
-                            <label for="product_name" class="form-label">Gender</label>
-                            <input type="text" placeholder="Type product name here" class="form-control" name="gender" id="gender_name">
-                            <p id="genderError" class="text-danger"></p> <!-- Placeholder for name error -->
-                        </div>                            
+                            <label for="gender_name" class="form-label">Gender</label>
+                            <select class="form-control" name="gender" id="gender_name">
+                                <option value="men">Men</option> <!-- Use 'Men' with capital M -->
+                                <option value="women">Women</option> <!-- Use 'Women' with capital W -->
+                                <option value="unisex">Unisex</option>
+                            </select>
+                            <p id="genderError" class="text-danger"></p>
+                        </div>
+                                                   
                         <!-- Pricing Section -->
                         <div class="row">
                             <div class="col-lg-4">

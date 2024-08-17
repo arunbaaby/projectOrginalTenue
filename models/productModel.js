@@ -17,8 +17,9 @@ const productSchema = new mongoose.Schema({
     },
     gender: {
         type: String,
-        required: true
-    },
+        required: true,
+        enum: ['men', 'women', 'unisex'] // Use lowercase values
+    },    
     images: [{
         type: String
     }],
@@ -26,11 +27,6 @@ const productSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category',
         required: true
-    },
-    gender: {
-        type: String,
-        required: true,
-        enum: ['Male', 'Female', 'Unisex'] // Ensures gender is one of these values
     },
     price: {
         type: Number,
@@ -49,7 +45,7 @@ const productSchema = new mongoose.Schema({
             message: 'Discount price ({VALUE}) should be less than or equal to the price'
         }
     },
-    countInStock: {
+    stock: {
         type: Number,
         required: true,
         min: 0,
