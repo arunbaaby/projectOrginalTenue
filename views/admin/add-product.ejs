@@ -1,102 +1,307 @@
 <%- include ('../layouts/admin/adminHeader') %>
-<section class="content-main">
-    <div class="row">
-        <div class="col-lg-6">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h4>Add Product</h4>
-                </div>
-                <div class="card-body">
-                    <form method="post" action="/admin/add-product" enctype="multipart/form-data" onsubmit="return validateForm()">
-                        <!-- General Information Section -->
-                        <div class="mb-4">
-                            <label for="product_name" class="form-label">Name</label>
-                            <input type="text" placeholder="Type product name here" class="form-control" name="name" id="product_name">
-                            <p id="nameError" class="text-danger"></p> <!-- Placeholder for name error -->
-                        </div>
-                        <div class="mb-4">
-                            <label for="product_description" class="form-label">Description</label>
-                            <textarea placeholder="Type product description here" class="form-control" name="description" id="product_description" rows="4"></textarea>
-                            <p id="descriptionError" class="text-danger"></p> <!-- Placeholder for description error -->
-                        </div>
-                        <div class="mb-4">
-                            <label for="product_name" class="form-label">Brand</label>
-                            <input type="text" placeholder="Type Brand name here" class="form-control" name="brand" id="brand_name">
-                            <p id="brandError" class="text-danger"></p> <!-- Placeholder for name error -->
-                        </div>
-                        <div class="mb-4">
-                            <label for="gender_name" class="form-label">Gender</label>
-                            <select class="form-control" name="gender" id="gender_name">
-                                <option value="men">Men</option> <!-- Use 'Men' with capital M -->
-                                <option value="women">Women</option> <!-- Use 'Women' with capital W -->
-                                <option value="unisex">Unisex</option>
-                            </select>
-                            <p id="genderError" class="text-danger"></p>
-                        </div>
-                                                   
-                        <!-- Pricing Section -->
-                        <div class="row">
-                            <div class="col-lg-4">
-                                <div class="mb-4">
-                                    <label for="regular_price" class="form-label">Price</label>
-                                    <input placeholder="₹" type="text" class="form-control" name="price" id="regular_price">
-                                    <p id="priceError" class="text-danger"></p> <!-- Placeholder for price error -->
+    <section class="content-main">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Add Product</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="/admin/add-product" enctype="multipart/form-data"
+                            onsubmit="return validateForm()">
+                            <!-- General Information Section -->
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label">Name</label>
+                                <input type="text" placeholder="Type product name here" class="form-control" name="name"
+                                    id="product_name">
+                                <p id="nameError" class="text-danger"></p> <!-- Placeholder for name error -->
+                            </div>
+                            <div class="mb-4">
+                                <label for="product_description" class="form-label">Description</label>
+                                <textarea placeholder="Type product description here" class="form-control"
+                                    name="description" id="product_description" rows="4"></textarea>
+                                <p id="descriptionError" class="text-danger"></p>
+                                <!-- Placeholder for description error -->
+                            </div>
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label">Brand</label>
+                                <input type="text" placeholder="Type Brand name here" class="form-control" name="brand"
+                                    id="brand_name">
+                                <p id="brandError" class="text-danger"></p> <!-- Placeholder for name error -->
+                            </div>
+                            <div class="mb-4">
+                                <label for="gender_name" class="form-label">Gender</label>
+                                <select class="form-control" name="gender" id="gender_name">
+                                    <option value="men">Men</option> <!-- Use 'Men' with capital M -->
+                                    <option value="women">Women</option> <!-- Use 'Women' with capital W -->
+                                    <option value="unisex">Unisex</option>
+                                </select>
+                                <p id="genderError" class="text-danger"></p>
+                            </div>
+
+                            <!-- Pricing Section -->
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="mb-4">
+                                        <label for="regular_price" class="form-label">Price</label>
+                                        <input placeholder="₹" type="text" class="form-control" name="price"
+                                            id="regular_price">
+                                        <p id="priceError" class="text-danger"></p> <!-- Placeholder for price error -->
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-4">
+                                        <label for="discount_price" class="form-label">Price After discount</label>
+                                        <input placeholder="₹" type="text" class="form-control" name="discountPrice"
+                                            id="discount_price">
+                                        <p id="discountPriceError" class="text-danger"></p>
+                                        <!-- Placeholder for discount price error -->
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-4">
+                                        <label for="stock_count" class="form-label">Count of Stock</label>
+                                        <input type="number" placeholder="Qty" class="form-control" name="stock"
+                                            id="stock_count">
+                                        <p id="stockError" class="text-danger"></p> <!-- Placeholder for stock error -->
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-lg-4">
-                                <div class="mb-4">
-                                    <label for="discount_price" class="form-label">Price After discount</label>
-                                    <input placeholder="₹" type="text" class="form-control" name="discountPrice" id="discount_price">
-                                    <p id="discountPriceError" class="text-danger"></p> <!-- Placeholder for discount price error -->
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="mb-4">
-                                    <label for="stock_count" class="form-label">Count of Stock</label>
-                                    <input type="number" placeholder="Qty" class="form-control" name="stock" id="stock_count">
-                                    <p id="stockError" class="text-danger"></p> <!-- Placeholder for stock error -->
-                                </div>
-                            </div>
-                        </div>
-                    
-                        <!-- Category Section -->
-                        <div class="mb-4">
-                                <% if(category.length > 0) {
+
+                            <!-- Category Section -->
+                            <div class="mb-4">
+                                <% if(category.length> 0) {
                                     for(let i=0; i<category.length; i++) { %>
-                                <label class="mb-2 form-check form-check-inline" style="width: 45%;">
-                                    <input class="form-check-input" value="<%=category[i]._id%>" name="category" id="category_<%= i %>" type="radio">
-                                    <span class="form-check-label"> <%=category[i].name%> </span>
-                                </label>
-                                <%}}%>
-                                <div id="categoryError" class="text-danger"></div> <!-- Placeholder for category error -->
-                        </div>
-                    
-                        <!-- Media Section for Images -->
-                        <div class="mb-4">
+                                        <label class="mb-2 form-check form-check-inline" style="width: 45%;">
+                                            <input class="form-check-input" value="<%=category[i]._id%>" name="category"
+                                                id="category_<%= i %>" type="radio">
+                                            <span class="form-check-label">
+                                                <%=category[i].name%>
+                                            </span>
+                                        </label>
+                                        <%}}%>
+                                            <div id="categoryError" class="text-danger"></div>
+                                            <!-- Placeholder for category error -->
+                            </div>
+
+                            <!-- Media Section for Images -->
+                            <!-- <div class="mb-4">
                             <label for="product_images" class="form-label">Images</label>
                             <input type="file" class="form-control" name="images" id="product_images" multiple>
                             <small class="form-text text-muted">You can select multiple images(3 only).</small>
-                            <p id="imagesError" class="text-danger"></p> <!-- Placeholder for images error -->
-                        </div>
-                    
-                        <div class="mb-4">
-                            <div id="mainError" class="text-danger"></div> <!-- Main error message placeholder -->
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </div>
-                        <% 
-                        if(typeof message !=='undefined'){
-                        %>
-                        <h6><%= message %></h6>
-                        <% 
-                        }
-                        %>
-                    </form>
+                            <p id="imagesError" class="text-danger"></p> 
+                        </div> -->
+                            <div class="mb-4">
+                                <label for="inputImage" class="form-label">Images</label>
+                                <input class="form-control" id="inputImage" type="file" multiple accept="image/*">
+                                <div id="croppedImagesContainer" style="margin-top:10px;">
+                                    <!-- Cropped images will be appended here -->
+                                    <!-- <img id="croppedImage" src="" alt="Cropped Image" style="display:none; max-width:100%; margin-top:10px;"> -->
+                                </div>
+                                <input type="hidden" id="croppedImageURLs" name="files">
+                            </div>
 
+                            <div class="mb-4">
+                                <div id="mainError" class="text-danger"></div> <!-- Main error message placeholder -->
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <!-- <button type="submit" name="action" value="add_product" class="btn btn-md rounded font-sm hover-up">Add</button> -->
+                            </div>
+                            <% if(typeof message !=='undefined' ){ %>
+                                <h6>
+                                    <%= message %>
+                                </h6>
+                                <% } %>
+                        </form>
+
+                    </div>
+                </div> <!-- card end// -->
+            </div>
+        </div>
+        </div>
+    </section> <!-- content-main end// -->
+
+    <footer class="main-footer font-xs">
+        <div class="row pb-30 pt-15">
+            <div class="col-sm-6">
+                <script>
+                    document.write(new Date().getFullYear())
+                </script> ©, tenue - .
+            </div>
+            <div class="col-sm-6">
+                <div class="text-sm-end">
+                    All rights reserved
                 </div>
-            </div> <!-- card end// -->
-        </div>         
+            </div>
+        </div>
+    </footer>
+    </main>
+    <!-- Modal for cropping -->
+    <div class="modal fade" id="cropModal" tabindex="-1" role="dialog" aria-labelledby="cropModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cropModalLabel">Crop Image</h5>
+                    <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> -->
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="img-container">
+                        <img id="imageToCrop" src="" alt="Picture">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelCrop">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="cropImage">Crop</button>
+                </div>
+            </div>
         </div>
     </div>
-</section> <!-- content-main end// -->
+    <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/vendors/select2.min.js"></script>
+    <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Cropper.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <!-- Main Script -->
+    <script src="assets/js/main.js" type="text/javascript"></script>
+    <!-- Script for handling image cropping -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var cropper;
+            var imageToCrop = document.getElementById('imageToCrop');
+            var inputImage = document.getElementById('inputImage');
+            var croppedImagesContainer = document.getElementById('croppedImagesContainer');
+            var croppedImageURLsInput = document.getElementById('croppedImageURLs');
+            var filesArray = [];
+            var croppedImages = [];
+            var croppedBlobs = [];  // Store blobs to send to the server
 
-<%- include ('../layouts/admin/adminFooter') %>
+
+            var cropModalElement = document.getElementById('cropModal');
+            var cropModal = new bootstrap.Modal(cropModalElement);
+
+            inputImage.addEventListener('change', function (event) {
+                filesArray = Array.from(event.target.files);
+                if (filesArray.length > 0) {
+                    processNextImage();
+                }
+            });
+
+            function processNextImage() {
+                if (filesArray.length === 0) {
+                    return;
+                }
+                var file = filesArray.shift();
+                var reader = new FileReader();
+                reader.onload = function (event) {
+                    imageToCrop.src = reader.result;
+                    cropModal.show();
+                };
+                reader.readAsDataURL(file);
+            }
+
+            cropModalElement.addEventListener('shown.bs.modal', function () {
+                cropper = new Cropper(imageToCrop, {
+                    viewMode: 3,
+                    autoCropArea: 0.65,
+                    responsive: true,
+                    cropBoxResizable: true,
+                });
+            });
+
+            cropModalElement.addEventListener('hidden.bs.modal', function () {
+                if (cropper) {
+                    cropper.destroy();
+                    cropper = null;
+                }
+                if (filesArray.length > 0) {
+                    processNextImage();
+                }
+            });
+
+            document.getElementById('cropImage').addEventListener('click', function () {
+                if (cropper) {
+                    var canvas = cropper.getCroppedCanvas({
+                        width: 800,
+                        height: 800,
+                        imageSmoothingQuality: 'high'
+                    });
+                    canvas.toBlob(function (blob) {
+                        var url = URL.createObjectURL(blob);
+                        croppedImages.push(url); // Add the new cropped image URL to the array
+                        croppedBlobs.push(blob); // Store the blob to send to the server
+
+                        // Display the cropped image
+                        var imgElement = document.createElement('img');
+                        imgElement.src = url;
+                        // imgElement.style.maxWidth = '100%';
+                        imgElement.style.maxWidth = '150px'; // Set desired maximum width
+                        imgElement.style.height = '200px';    // Maintain aspect ratio
+                        imgElement.style.margin = '10px';
+                        croppedImagesContainer.appendChild(imgElement);
+
+                        // Update the hidden input with cropped image URLs
+                        croppedImageURLsInput.value = JSON.stringify(croppedImages);
+
+                        cropModal.hide();
+                    });
+                }
+            });
+
+            document.getElementById('cancelCrop').addEventListener('click', function () {
+                cropModal.hide();
+            });
+
+            document.getElementById('productForm').addEventListener('submit', function (event) {
+                // Prevent default form submission
+                event.preventDefault();
+
+                // Create a new FormData object
+                var formData = new FormData(this);
+
+                // Append each cropped image blob to the FormData
+                croppedBlobs.forEach(function (blob, index) {
+                    formData.append('files', blob, 'croppedImage' + index + '.png');
+                });
+
+                // Submit the form data via an AJAX request or other method
+                // Example using Fetch API:
+                fetch('/admin/addproduct', {
+                    method: 'POST',
+                    body: formData
+                }).then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        if (data.success) {
+                            // Redirect on success
+                            window.location.href = '/admin/productslist';
+                        } else {
+                            // Handle error
+                            console.error('Product creation failed:', data.error);
+                            alert('Failed to create product. Please try again.');
+                        }
+                        //           if (data.success) {
+                        //       window.location.href = '/admin/productslist'; // Redirect on success
+                        //   } else {
+                        //       console.error('Product creation failed:', data.error);
+                        //   }
+                        // Handle success - maybe redirect or show a message
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        // Handle error
+                    });
+            });
+        });
+
+    </script>
+    </body>
+
+    </html>
+
+
+    <!-- <%- include ('../layouts/admin/adminFooter') %> -->
