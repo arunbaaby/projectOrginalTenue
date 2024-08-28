@@ -93,7 +93,8 @@
                         </div> -->
                             <div class="mb-4">
                                 <label for="inputImage" class="form-label">Images</label>
-                                <input class="form-control" id="inputImage" type="file" name="images" multiple accept="image/*">
+                                <input class="form-control" id="inputImage" type="file" name="images" multiple
+                                    accept="image/*">
                                 <small class="form-text text-muted">You can select multiple images(3 only).</small>
                                 <div id="croppedImagesContainer" style="margin-top:10px;">
                                     <!-- Cropped images will be appended here -->
@@ -180,6 +181,7 @@
             var filesArray = [];
             var croppedImages = [];
             var croppedBlobs = [];  // Store blobs to send to the server
+            var maxImages = 3;
 
 
             var cropModalElement = document.getElementById('cropModal');
@@ -187,6 +189,14 @@
 
             inputImage.addEventListener('change', function (event) {
                 filesArray = Array.from(event.target.files);
+                // Check if the user tries to select more than the allowed number of images
+                if (filesArray.length > maxImages) {
+                    alert('You can only upload a maximum of 3 images.');
+                    inputImage.value = ""; // Reset the file input
+                    filesArray = [];
+                    return;
+                }
+
                 if (filesArray.length > 0) {
                     processNextImage();
                 }
