@@ -47,4 +47,6 @@ user_route.post('/send-otp', otpMailValidator, userController.sendOtp);
 // Route to verify OTP
 user_route.post('/verify-otp', verifyOtpValidator, userController.verifyOtp);
 
+user_route.get('/home',userController.loadUserHome);
+
 module.exports = user_route;

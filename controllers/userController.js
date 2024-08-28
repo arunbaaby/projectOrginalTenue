@@ -9,6 +9,7 @@ const mailer = require('../helpers/mailer');
 const { oneMinuteExpiry, threeMinuteExpiry } = require('../helpers/otpValidate');
 
 const jwt = require('jsonwebtoken');
+const { token } = require('morgan');
 
 // First we have to show the register page..async method
 const loadAuth = async (req, res) => {
@@ -210,10 +211,10 @@ const loginUser = async (req, res) => {
         // Validate the request
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            console.log('Validation Errors:', errors.array()); // Log validation errors
-            return res.status(400).json({
+            console.log('Validation errors:', errors.array());
+            return res.status(400).render('auth', {
                 success: false,
-                msg: 'Errors',
+                msg: 'Validation errors',
                 errors: errors.array()
             });
         }
@@ -226,15 +227,17 @@ const loginUser = async (req, res) => {
         // Find user by email
         const userData = await User.findOne({ email });
         if (!userData) {
-            return res.status(401).json({
+            console.log('User not found');
+            return res.status(401).render('auth', {
                 success: false,
-                msg: 'Email and Password are incorrect'
+                msg: 'Invalid email or password',
+                errors: []
             });
         }
 
         if (userData.is_blocked === 1) {
             console.log('User is blocked');
-            return res.status(401).json({
+            return res.status(401).render('auth',{
                 success: false,
                 msg: 'User is blocked'
             });
@@ -243,21 +246,34 @@ const loginUser = async (req, res) => {
         // Compare provided password with stored hashed password
         const passwordMatch = await bcrypt.compare(password, userData.password);
         if (!passwordMatch) {
-            return res.status(401).json({
+            console.log('Password mismatch');
+            return res.status(401).render('auth',{
                 success: false,
                 msg: 'Email and Password are incorrect'
             });
         }
 
         // Generate JWT token
-        const accessToken = await generateAccessToken({ user: userData });
-        return res.status(200).json({
-            success: true,
-            msg: 'Login successful',
-            user: userData,
-            accessToken: accessToken,
-            tokenType: 'Bearer'
+        const accessToken = await generateAccessToken({ id: userData._id });
+        console.log(accessToken);
+        // Set the JWT token in a cookie
+        res.cookie('jwt', accessToken, {
+            httpOnly: true, // Helps prevent cross-site scripting
+            secure: process.env.NODE_ENV === 'production', // Only in production
+            maxAge: 2 * 60 * 60 * 1000, // 2 hours
         });
+
+        console.log('Login successful:', email);
+        return res.redirect('/home');
+        
+        // // res.send('home page')
+        // return res.status(200).render('userHome',{
+        //     success: true,
+        //     msg: 'Login successful',
+        //     user: userData,
+        //     accessToken: accessToken,
+        //     tokenType: 'Bearer'
+        // });
 
     } catch (error) {
         console.error('Login Error:', error.message); // Log any errors
@@ -273,10 +289,20 @@ const generateAccessToken = async (user) => {
     return token;
 }
 
+const loadUserHome = async (req, res) => {
+    try {
+        res.render('userHome');
+    } catch (error) {
+        console.log(error);
+
+    }
+}
+
 module.exports = {
     loadAuth,
     userRegister,
     loginUser,
     sendOtp,
-    verifyOtp
+    verifyOtp,
+    loadUserHome
 }

@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken');
 
-const authenticateTokenAdmin = (req, res, next) => {
+const authenticateToken = (req, res, next) => {
     const token = req.cookies.jwt; // Retrieve the token from the cookie
 
     if (!token) {
-        return res.status(401).render('adminLogin', {
+        return res.status(401).render('auth', {
             success: false,
             msg: 'Access denied. Please login first.',
         });
@@ -12,7 +12,7 @@ const authenticateTokenAdmin = (req, res, next) => {
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
         if (err) {
-            return res.status(403).render('adminLogin', {
+            return res.status(403).render('auth', {
                 success: false,
                 msg: 'Invalid token. Please login again.',
             });
@@ -23,4 +23,4 @@ const authenticateTokenAdmin = (req, res, next) => {
     });
 };
 
-module.exports = authenticateTokenAdmin;
+module.exports = authenticateToken;
