@@ -12,7 +12,7 @@ const productLoad = async (req, res) => {
         // //count total items for pagination
         // const totolItems = await Product.countDocuments({name:{$regex:query,$options:'i'},is_deleted:false});
         const filter = {
-            name: { $regex: query, $options: 'i' }, is_deleted: false
+            name: { $regex: query, $options: 'i' }
         }
 
         const totalItems = await Product.countDocuments(filter);
@@ -94,11 +94,36 @@ const addProduct = async (req, res) => {
     }
 };
 
+const deleteProduct = async (req, res) => {
+    try {
+        const id = req.query.id;
+        //soft deletion only
+        await Product.findByIdAndUpdate(id, { is_active: false });
+        res.redirect('/admin/product');
+    } catch (error) {
+        console.error(`Error deleting product: ${error.message}`);
+        res.status(500).send('Internal Server Error');
+    }
+}
 
- 
+const restoreCategory = async (req, res) => {
+    try {
+        const id = req.query.id;
+        //soft deletion only
+        await Product.findByIdAndUpdate(id, { is_active: true });
+        res.redirect('/admin/product');
+    } catch (error) {
+        console.error(`Error restoring product: ${error.message}`);
+        res.status(500).send('Internal Server Error');
+    }
+}
+
+
 
 module.exports = {
     productLoad,
     addProductsLoad,
-    addProduct
+    addProduct,
+    deleteProduct,
+    restoreCategory
 }

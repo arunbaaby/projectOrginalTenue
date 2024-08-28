@@ -62,9 +62,9 @@ const productSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    is_deleted: {
+    is_active: {
         type: Boolean,
-        default: false
+        default: true,
     },
 }, { timestamps: true });
 

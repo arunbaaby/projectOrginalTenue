@@ -61,18 +61,22 @@
                             <td><%= product[i].countInStock %></td>
                             <td>
                                 <!-- Display status with color -->
-                                <% if(product[i].is_deleted) { %>
-                                    <span style="color: red;">Inactive</span>
-                                <% } else { %>
+                                <% if(product[i].is_active) { %>
                                     <span style="color: green;">Active</span>
+                                <% } else { %>
+                                    <span style="color: red;">Inactive</span>
                                 <% } %>
                             </td> 
                             <td>
                     
+                                <a href="/admin/<%= product[i].is_active ? 'delete-product' : 'restore-product' %>?id=<%= product[i]._id %>"
+                                    class="btn btn-primary">
+                                    <%= product[i].is_active ? 'Disable' : 'Enable' %>
+                                </a>
                                     <!-- Toggle button to change status -->
-                                    <a href="#" class="btn btn-primary delete-restore" data-id="<%= product[i]._id %>" data-action="<%= product[i].is_deleted ? 'Restore' : 'Delete' %>">
+                                    <!-- <a href="#" class="btn btn-primary delete-restore" data-id="<%= product[i]._id %>" data-action="<%= product[i].is_deleted ? 'Restore' : 'Delete' %>">
                                         <%= product[i].is_deleted ? 'Restore' : 'Delete' %>
-                                    </a>
+                                    </a> -->
                                     <br><br>
                                     <a href="/admin/editproduct?id=<%= product[i]._id %>" class="btn btn-primary">Edit</a>
                             </td>
