@@ -46,7 +46,7 @@
                             <td><%= product[i].description %></td>
                             <td><br>
                                 <% if(product[i].images.length > 0) { %>
-                                    <img src="/productImages/<%= product[i].images[0] %>" alt="<%= product[i].images[0]%>" height="100px" width="100px">
+                                    <img src="productImages/<%= product[i].images[0] %>" alt="<%= product[i].images[0]%>" height="100px" width="100px">
                                 <% } %>
                             </td>
                             <td>
@@ -58,7 +58,7 @@
                             </td>
                             <td><%= product[i].price %></td>
                             <td><%= product[i].discountPrice %></td>
-                            <td><%= product[i].countInStock %></td>
+                            <td><%= product[i].stock %></td>
                             <td>
                                 <!-- Display status with color -->
                                 <% if(product[i].is_active) { %>
