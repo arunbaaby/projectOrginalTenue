@@ -128,11 +128,11 @@ const editProductLoad = async (req, res) => {
             return res.redirect('/admin/product');
         }
 
-        const proData = await Product.findById({ _id: id }).populate('category');
-        const catData = await Category.find({ is_active: true });
+        const productData = await Product.findById(id).populate('category');
+        const categoryData = await Category.find({ is_active: true });
 
-        if (proData&&catData) {
-            return res.render('edit-product', { catData,proData });
+        if (productData&&categoryData) {
+            return res.render('edit-product', { categoryData,productData });
         } else {
             return res.redirect('/admin/product');
         }

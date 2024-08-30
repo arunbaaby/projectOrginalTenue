@@ -17,25 +17,25 @@
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Name</label>
                                     <input type="text" class="form-control" name="name" id="product_name"
-                                        value="<%= proData.name %>"readonly>
+                                        value="<%= productData.name %>"readonly>
                                     <p id="nameError" class="text-danger"></p>
                                 </div>
                                 <div class="mb-4">
                                     <label for="product_description" class="form-label">Description</label>
                                     <textarea class="form-control" name="description" id="product_description"
-                                        rows="4"><%= proData.description %></textarea>
+                                        rows="4"><%= productData.description %></textarea>
                                     <p id="descriptionError" class="text-danger"></p>
                                 </div>
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Brand</label>
                                     <input type="text" class="form-control" name="brand" id="brand_name"
-                                        value="<%= proData.brand %>">
+                                        value="<%= productData.brand %>">
                                     <p id="brandError" class="text-danger"></p>
                                 </div>
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Gender</label>
                                     <input type="text" class="form-control" name="gender" id="gender_name"
-                                        value="<%= proData.gender %>">
+                                        value="<%= productData.gender %>">
                                     <p id="genderError" class="text-danger"></p>
                                 </div>
                                 <div class="row">
@@ -43,7 +43,7 @@
                                         <div class="mb-4">
                                             <label for="regular_price" class="form-label">Price</label>
                                             <input type="text" class="form-control" name="price" id="regular_price"
-                                                value="<%= proData.price %>">
+                                                value="<%= productData.price %>">
                                             <p id="priceError" class="text-danger"></p>
                                         </div>
                                     </div>
@@ -51,7 +51,7 @@
                                         <div class="mb-4">
                                             <label for="discount_price" class="form-label">Discount Price</label>
                                             <input type="text" class="form-control" name="discountPrice"
-                                                id="discount_price" value="<%= proData.discountPrice %>">
+                                                id="discount_price" value="<%= productData.discountPrice %>">
                                             <p id="discountPriceError" class="text-danger"></p>
                                         </div>
                                     </div>
@@ -59,23 +59,23 @@
                                         <div class="mb-4">
                                             <label for="stock_count" class="form-label">Count of Stock</label>
                                             <input type="number" class="form-control" name="stock" id="stock_count"
-                                                value="<%= proData.countInStock %>" required>
+                                                value="<%= productData.countInStock %>" required>
                                             <p id="stockError" class="text-danger"></p>
                                         </div>
                                     </div>
                                 </div>
                                 <!-- Category Section -->
                                 <div class="mb-4">
-                                    <% if(catData.length > 0) {
-                                        for(let i = 0; i < catData.length; i++) { %>
+                                    <% if(categoryData.length > 0) {
+                                        for(let i = 0; i < categoryData.length; i++) { %>
                                             <label class="mb-2 form-check form-check-inline" style="width: 45%;">
-                                                <% if (proData.category && proData.category.name === catData[i].name) { %>
-                                                    <input class="form-check-input" checked value="<%= catData[i]._id %>" name="category" type="radio">
-                                                    <span class="form-check-label"> <%= catData[i].name %> </span>
+                                                <% if (productData.category && productData.category.name === categoryData[i].name) { %>
+                                                    <input class="form-check-input" checked value="<%= categoryData[i]._id %>" name="category" type="radio">
+                                                    <span class="form-check-label"> <%= categoryData[i].name %> </span>
                                                 <% } else { %>
-                                                    <input class="form-check-input" value="<%= catData[i]._id %>" name="category" id="category_<%= i %>" type="radio">
+                                                    <input class="form-check-input" value="<%= categoryData[i]._id %>" name="category" id="category_<%= i %>" type="radio">
                                                     <span class="form-check-label">
-                                                        <%= catData[i].name %>
+                                                        <%= categoryData[i].name %>
                                                     </span>
                                                 <% } %>
                                             </label>
@@ -86,10 +86,10 @@
                                 <!-- Media Section for Images -->
                                 <div class="mb-4">
                                     <label for="product_images" class="form-label">Images</label>
-                                    <%proData.images.forEach(image => { %>
+                                    <%productData.images.forEach(image => { %>
                                         <div class="image-container">
                                         <img src="productImages/<%= image %>" alt="" height="70px" width="70px">
-                                        <a href="/admin/editproduct?id=<%=proData._id%>&delete=<%= image %>" class="close-icon" ><span aria-hidden="true">&times;</span></a>
+                                        <a href="/admin/edit-product?id=<%=productData._id%>&delete=<%= image %>" class="close-icon" ><span aria-hidden="true">&times;</span></a>
                                     </div>
                               <% }) %>
                                     <input type="file" class="form-control" name="images" id="product_images" multiple>
