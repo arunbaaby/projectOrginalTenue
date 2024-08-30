@@ -106,7 +106,7 @@ const deleteProduct = async (req, res) => {
     }
 }
 
-const restoreCategory = async (req, res) => {
+const restoreProduct = async (req, res) => {
     try {
         const id = req.query.id;
         //soft deletion only
@@ -118,12 +118,35 @@ const restoreCategory = async (req, res) => {
     }
 }
 
+const editProductLoad = async (req, res) => {
+    try {
+        const id = req.query.id;
+        console.log('Product ID:', id); // Debugging line
 
+        if (!id) {
+            console.log('id not able to get to editLoadProduct');
+            return res.redirect('/admin/product');
+        }
+
+        const proData = await Product.findById({ _id: id }).populate('category');
+        const catData = await Category.find({ is_active: true });
+
+        if (proData&&catData) {
+            return res.render('edit-product', { catData,proData });
+        } else {
+            return res.redirect('/admin/product');
+        }
+    } catch (error) {
+        console.error(`Error loading product for editing: ${error.message}`);
+        res.status(500).send('Internal Server Error');
+    }
+};
 
 module.exports = {
     productLoad,
     addProductsLoad,
     addProduct,
     deleteProduct,
-    restoreCategory
+    restoreProduct,
+    editProductLoad
 }

@@ -54,6 +54,7 @@ admin_route.get('/add-product',productController.addProductsLoad);
 const upload = require('../config/multerConfig'); // Ensure you have this line
 admin_route.post('/add-product', upload.array('images', 3), productController.addProduct);
 admin_route.get('/delete-product',productController.deleteProduct);
-admin_route.get('/restore-product',productController.restoreCategory);
+admin_route.get('/restore-product',productController.restoreProduct);
+admin_route.get('/edit-product',productController.editProductLoad);
 
 module.exports = admin_route;   
