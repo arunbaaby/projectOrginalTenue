@@ -91,8 +91,8 @@ const updateCategory = async (req, res) => {
         // Update the category with the new name and description
         await Category.findByIdAndUpdate(id, { $set: { name: name, description: description } });
         
-        // Redirect to the category list page after successful update
-        res.redirect('/admin/category');
+            // Redirect to the category list page after successful update
+            res.redirect('/admin/category');
     } catch (error) {
         console.error(`Error updating category: ${error.message}`);
         res.status(500).send('Internal Server Error');

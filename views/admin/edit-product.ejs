@@ -1,3 +1,4 @@
+
 <%- include ('../layouts/admin/adminHeader') %>
         <section class="content-main">
             <div class="row">
@@ -17,7 +18,7 @@
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Name</label>
                                     <input type="text" class="form-control" name="name" id="product_name"
-                                        value="<%= productData.name %>"readonly>
+                                        value="<%= productData.name %>">
                                     <p id="nameError" class="text-danger"></p>
                                 </div>
                                 <div class="mb-4">
@@ -27,17 +28,27 @@
                                     <p id="descriptionError" class="text-danger"></p>
                                 </div>
                                 <div class="mb-4">
-                                    <label for="product_name" class="form-label">Brand</label>
+                                    <label for="brand_name" class="form-label">Brand</label>
                                     <input type="text" class="form-control" name="brand" id="brand_name"
                                         value="<%= productData.brand %>">
                                     <p id="brandError" class="text-danger"></p>
                                 </div>
                                 <div class="mb-4">
-                                    <label for="product_name" class="form-label">Gender</label>
+                                    <label for="gender_name" class="form-label">Gender</label>
+                                    <select class="form-control" name="gender" id="gender_name">
+                                        <option value="men" <% if (productData.gender === 'men') { %>selected<% } %>>Men</option>
+                                        <option value="women" <% if (productData.gender === 'women') { %>selected<% } %>>Women</option>
+                                        <option value="unisex" <% if (productData.gender === 'unisex') { %>selected<% } %>>Unisex</option>
+                                    </select>
+                                    <p id="genderError" class="text-danger"></p>
+                                </div>
+                                
+                                <!-- <div class="mb-4">
+                                    <label for="gender_name" class="form-label">Gender</label>
                                     <input type="text" class="form-control" name="gender" id="gender_name"
                                         value="<%= productData.gender %>">
                                     <p id="genderError" class="text-danger"></p>
-                                </div>
+                                </div> -->
                                 <div class="row">
                                     <div class="col-lg-4">
                                         <div class="mb-4">
@@ -59,7 +70,7 @@
                                         <div class="mb-4">
                                             <label for="stock_count" class="form-label">Count of Stock</label>
                                             <input type="number" class="form-control" name="stock" id="stock_count"
-                                                value="<%= productData.countInStock %>" required>
+                                                value="<%= productData.stock %>" required>
                                             <p id="stockError" class="text-danger"></p>
                                         </div>
                                     </div>
@@ -173,7 +184,7 @@
 function validateForm() {
     
     const isValidName = validateInput('product_name', /^([A-Za-z0-9.,]+\s?)+$/, 'nameError', 'Product Name');
-    const isValidbrandName = validateInput('brand_name', /^([A-Za-z0-9.,]+\s?)+$/, 'brandError', 'Brand Name Name');
+    const isValidbrandName = validateInput('brand_name', /^([A-Za-z0-9.,]+\s?)+$/, 'brandError', 'Brand Name');
     const isValidgenderName = validateInput('gender_name', /^([A-Za-z0-9.,]+\s?)+$/, 'genderError', 'Gender Name');
     const isValidDescription = validateInput('product_description', /^\s*[A-Z][\s\S]{13,}$/, 'descriptionError', 'Description');
     const isValidPrice = validateInput('regular_price', /^\d+(\.\d{1,2})?$/, 'priceError', 'Price');
@@ -252,7 +263,7 @@ function validateCategory() {
                 })
                 .then(response => {
                     if(response.ok) {
-                        const parentDiv = element.closest('.image-preview');
+                        const parentDiv = element.closest('.image-container');
                         parentDiv.remove();
                     } else {
                         alert('Failed to delete the image');
