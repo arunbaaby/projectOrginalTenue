@@ -179,120 +179,15 @@ const updateProduct = async(req,res)=>{
     }
 }
 
-// const updateProduct = async (req, res) => {
-//     try {
-//         console.log('Update product initiated');
-        
-//         const productId = req.query.id; // Make sure the ID is passed correctly
-//         console.log('Product ID:', productId);
-
-//         if (!mongoose.Types.ObjectId.isValid(productId)) {
-//             console.log('Invalid product ID');
-//             return res.status(400).send('Invalid product ID');
-//         }
-
-//         let existingProduct = await Product.findById(productId);
-//         console.log('Fetched existing product:', existingProduct);
-
-//         if (!existingProduct) {
-//             console.log('Product not found');
-//             return res.status(404).send('Product not found');
-//         }
-
-//         const categorydetails = await Category.find();
-//         console.log('Fetched category details');
-
-//         let existingImages = existingProduct.images || [];
-//         console.log('Existing images:', existingImages);
-
-//         let newImages = [];
-//         if (req.files && req.files.length) {
-//             newImages = req.files.map(file => file.filename);
-//         }
-//         console.log('New images:', newImages);
-
-//         const allImages = existingImages.concat(newImages);
-//         console.log('All images:', allImages);
-
-//         if (allImages.length > 3) {
-//             console.log('More than 3 images');
-//             return res.render('edit-product', { categoryData: categorydetails, productData: existingProduct, message: 'Maximum 3 images per product' });
-//         } else {
-//             const updatedProduct = await Product.findByIdAndUpdate(productId, {
-//                 $set: {
-//                     name: req.body.name,
-//                     description: req.body.description,
-//                     images: allImages,
-//                     brand: req.body.brand,
-//                     gender: req.body.gender,
-//                     category: req.body.category,
-//                     price: req.body.price,
-//                     discountPrice: req.body.discountPrice,
-//                     countInStock: req.body.stock,
-//                 }
-//             }, { new: true });
-
-//             console.log('Product updated:', updatedProduct);
-
-//             if (updatedProduct) {
-//                 return res.redirect('/admin/product');
-//             } else {
-//                 console.log('Failed to update product');
-//                 return res.status(500).send('Failed to update product');
-//             }
-//         }
-//     } catch (error) {
-//         console.log('Error in update product:', error.message);
-//         res.status(500).send('An error occurred');
-//     }
-// };
-
-
-
-
-
-// const updateProduct = async (req, res) => {
-//     try {
-//         const id = req.query.id;
-
-//         const { name, description, brand, gender, price, discountPrice, stock, category } = req.body;
-//         console.log(id);
-//         console.log(name);
-        
-//         let imagePaths = [];
-//         if (req.files && req.files.length > 0) {
-//             imagePaths = req.files.map(file => file.filename);
-//         }
-
-//         // Check if the product exists by ID
-//         const existingProduct = await Product.findById(id);
-//         if (!existingProduct) {
-//             return res.status(404).send('Product not found');
-
-//         }
-
-//         // Check if another Product with the same name already exists
-//         const duplicateProduct = await Product.findOne({ name: name, _id: { $ne: id } });
-//         if (duplicateProduct) {
-//             return res.status(400).send('Product name already exists');
-//         }
-
-//         // Update the category with the new name and description
-//         const updateProduct = await Product.findByIdAndUpdate(id, { $set: { name: name, description: description, brand: brand, gender: gender, price: price, discountPrice: discountPrice, stock: stock, category: category, images: imagePaths } });
-
-//         if (updateProduct) {
-//             // Redirect to the category list page after successful update
-//             console.log("product updated");
-            
-//             res.redirect('/admin/product');
-//         }
-//         // // Redirect to the category list page after successful update
-//         // res.redirect('/admin/product');
-//     } catch (error) {
-//         console.error(`Error updating product: ${error.message}`);
-//         res.status(500).send('Internal Server Error');
-//     }
-// };
+const allProductsLoad = async(req,res)=>{
+    try {
+        const products = await Product.find({is_active:true});
+        res.render('allProducts',{products});
+    } catch (error) {
+        console.error(`Error loading allProducts: ${error.message}`);
+        res.status(500).send('Internal Server Error');
+    }
+}
 
 module.exports = {
     productLoad,
@@ -301,5 +196,6 @@ module.exports = {
     deleteProduct,
     restoreProduct,
     editProductLoad,
-    updateProduct
+    updateProduct,
+    allProductsLoad
 }
