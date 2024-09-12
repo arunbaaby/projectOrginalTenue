@@ -52,5 +52,6 @@ user_route.get('/home',userController.loadUserHome);
 
 //shop-fullwide all products
 user_route.get('/allProducts',productController.allProductsLoad);
+user_route.get('/product-details',productController.productDetailsLoad);
 
 module.exports = user_route;

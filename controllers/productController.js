@@ -189,6 +189,17 @@ const allProductsLoad = async(req,res)=>{
     }
 }
 
+const productDetailsLoad = async(req,res)=>{
+    try {
+        const id = req.query.id;
+        const product = await Product.findById(id);
+        res.render('product-details',{product});
+    } catch (error) {
+        console.error(`Error loading productDetails: ${error.message}`);
+        res.status(500).send('Internal Server Error');
+    }
+}
+
 module.exports = {
     productLoad,
     addProductsLoad,
@@ -197,5 +208,6 @@ module.exports = {
     restoreProduct,
     editProductLoad,
     updateProduct,
-    allProductsLoad
+    allProductsLoad,
+    productDetailsLoad
 }

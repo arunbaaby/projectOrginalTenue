@@ -59,4 +59,5 @@ admin_route.get('/edit-product',productController.editProductLoad);
 admin_route.post('/edit-product', upload.array('images', 3), productController.updateProduct);
 
 
+
 module.exports = admin_route;   
