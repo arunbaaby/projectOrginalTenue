@@ -305,20 +305,22 @@
                     <div class="product-details-tab">
                         <!-- Product Images Slider -->
                         <div class="product-dec-right pro-dec-big-img-slider">
-                            <% if (product && product.images.length > 0) { %>
+                            <% if (product && product.images && product.images.length > 0) { %>
                                 <% product.images.forEach((image, index) => { %>
                                     <div class="easyzoom-style">
                                         <div class="easyzoom easyzoom--overlay">
-                                            <a href="admin/productImages/<%= image %>">
-                                                <img src="admin/productImages/<%= image %>" alt="Product Image <%= index + 1 %>">
+                                            <!-- Updated image paths to use correct server path -->
+                                            <a href="/admin/productImages/<%= image %>">
+                                                <img src="/admin/productImages/<%= image %>" alt="Product Image <%= index + 1 %>" class="zoom-image">
                                             </a>
                                         </div>
-                                        <a class="easyzoom-pop-up img-popup" href="admin/productImages/<%= image %>">
+                                        <a class="easyzoom-pop-up img-popup" href="/admin/productImages/<%= image %>">
                                             <i class="dlicon ui-1_zoom-in"></i>
                                         </a>
                                     </div>
                                 <% }); %>
                             <% } else { %>
+                                <!-- Placeholder when no images are available -->
                                 <div class="easyzoom-style">
                                     <div class="easyzoom easyzoom--overlay">
                                         <img src="assets/images/no-image-available.png" alt="No Image Available">
@@ -329,13 +331,14 @@
                         
                         <!-- Thumbnail Slider -->
                         <div class="product-dec-slider product-dec-left">
-                            <% if (product && product.images.length > 0) { %>
+                            <% if (product && product.images && product.images.length > 0) { %>
                                 <% product.images.forEach((image, index) => { %>
                                     <div class="product-dec-small <%= index === 0 ? 'active' : '' %>">
-                                        <img src="admin/productImages/<%= image %>" alt="Thumbnail <%= index + 1 %>">
+                                        <img src="/admin/productImages/<%= image %>" alt="Thumbnail <%= index + 1 %>">
                                     </div>
                                 <% }); %>
                             <% } else { %>
+                                <!-- Placeholder for thumbnails when no images are available -->
                                 <div class="product-dec-small">
                                     <img src="assets/images/no-image-thumbnail.png" alt="No Image Thumbnail">
                                 </div>
@@ -343,6 +346,8 @@
                         </div>
                     </div>
                 </div>
+                
+                
                 
                 <!-- <div class="col-lg-6">
                     <div class="product-details-tab">
