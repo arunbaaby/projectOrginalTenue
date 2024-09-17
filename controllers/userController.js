@@ -1,3 +1,4 @@
+//userController.js
 const User = require('../models/userModel');
 const Otp = require('../models/otpModel');
 const bcrypt = require('bcrypt');
@@ -208,7 +209,6 @@ const verifyOtp = async (req, res) => {
 
 const loginUser = async (req, res) => {
     try {
-        // Validate the request
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             console.log('Validation errors:', errors.array());
@@ -219,12 +219,9 @@ const loginUser = async (req, res) => {
             });
         }
 
-        // Extract email and password from request body
         const { email, password } = req.body;
-        console.log('Email:', email); // Log the email input
-        console.log('Password:', password); // Log the password input (careful with logging sensitive data)
+        console.log('Email:', email);
 
-        // Find user by email
         const userData = await User.findOne({ email });
         if (!userData) {
             console.log('User not found');
@@ -237,52 +234,43 @@ const loginUser = async (req, res) => {
 
         if (userData.is_blocked === 1) {
             console.log('User is blocked');
-            return res.status(401).render('auth',{
+            return res.status(401).render('auth', {
                 success: false,
                 msg: 'User is blocked'
             });
         }
 
-        // Compare provided password with stored hashed password
         const passwordMatch = await bcrypt.compare(password, userData.password);
         if (!passwordMatch) {
             console.log('Password mismatch');
-            return res.status(401).render('auth',{
+            return res.status(401).render('auth', {
                 success: false,
                 msg: 'Email and Password are incorrect'
             });
         }
 
-        // Generate JWT token
         const accessToken = await generateAccessToken({ id: userData._id });
-        console.log(accessToken);
-        // Set the JWT token in a cookie
+        console.log('Generated token:', accessToken);
+
         res.cookie('jwt', accessToken, {
-            httpOnly: true, // Helps prevent cross-site scripting
-            secure: process.env.NODE_ENV === 'production', // Only in production
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
             maxAge: 2 * 60 * 60 * 1000, // 2 hours
         });
 
         console.log('Login successful:', email);
         return res.redirect('/home');
-        
-        // // res.send('home page')
-        // return res.status(200).render('userHome',{
-        //     success: true,
-        //     msg: 'Login successful',
-        //     user: userData,
-        //     accessToken: accessToken,
-        //     tokenType: 'Bearer'
-        // });
 
     } catch (error) {
-        console.error('Login Error:', error.message); // Log any errors
+        console.error('Login Error:', error.message);
         return res.status(400).json({
             success: false,
             msg: error.message
         });
     }
-}
+};
+
+
 
 const generateAccessToken = async (user) => {
     const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '2h' });
