@@ -4,6 +4,7 @@ const user_route = express();
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const nocache = require('nocache');
+const passport = require('../config/passport');
 
 const {isLoggedIn,isLoggedOut} = require('../middlewares/userAuth');
 
@@ -21,8 +22,12 @@ user_route.use(cookieParser());
 
 user_route.use(nocache());
 
+
 // Serve static files from the 'public' directory
 user_route.use(express.static(path.join(__dirname, '../public/user')));
+
+// Initialize Passport.js
+user_route.use(passport.initialize());
 
 // Use controller
 const userController = require('../controllers/userController');
@@ -48,5 +53,18 @@ user_route.get('/home',isLoggedIn,userController.loadUserHome);
 //shop-fullwide all products
 user_route.get('/allProducts',isLoggedIn,productController.allProductsLoad);
 user_route.get('/product-details',isLoggedIn,productController.productDetailsLoad);
+
+user_route.get('/auth/google',passport.authenticate('google',{scope:['profile','email']}));
+
+user_route.get('/auth/google/callback',passport.authenticate('google',{failureRedirect:'/auth',session: false}),(req,res)=>{
+    const accessToken = req.user.token;
+     // Set JWT token in cookies
+     res.cookie('jwt', accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 2 * 60 * 60 * 1000, // 2 hours
+    });
+    res.redirect('/home');
+})
 
 module.exports = user_route;

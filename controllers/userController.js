@@ -9,6 +9,8 @@ const { validationResult } = require('express-validator');
 const mailer = require('../helpers/mailer');
 const { oneMinuteExpiry, threeMinuteExpiry } = require('../helpers/otpValidate');
 
+const {generateAccessToken} = require('../utils/generateAccessToken');
+
 const jwt = require('jsonwebtoken');
 const { token } = require('morgan');
 
@@ -272,10 +274,10 @@ const loginUser = async (req, res) => {
 
 
 
-const generateAccessToken = async (user) => {
-    const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '2h' });
-    return token;
-}
+// const generateAccessToken = async (user) => {
+//     const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '2h' });
+//     return token;
+// }
 
 const loadUserHome = async (req, res) => {
     try {
