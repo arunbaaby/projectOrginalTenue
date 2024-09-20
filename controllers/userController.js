@@ -193,10 +193,11 @@ const verifyOtp = async (req, res) => {
         const userData = await user.save();
         delete pendingUsers[user_id];
 
-        return res.status(200).json({
-            success: true,
-            msg: 'User verification successful'
-        });
+        res.redirect('/auth');
+        // return res.status(200).json({
+        //     success: true,
+        //     msg: 'User verification successful'
+        // });
 
     } catch (error) {
         return res.status(400).render('verify-otp', {
