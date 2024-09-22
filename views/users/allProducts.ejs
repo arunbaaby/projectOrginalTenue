@@ -405,20 +405,22 @@
                                     <div class="product-wrap mb-50">
                                         <div class="product-img default-overlay mb-25">
                                             <a href="/product-details?id=<%= product._id %>">
-                                                <% if (product.images.length> 0) { %>
-                                                    <img class="default-img"
-                                                        src="admin/productImages/<%= product.images[0] %>"
-                                                        alt="<%= product.name %>">
-                                                    <% if (product.images.length> 1) { %>
-                                                        <img class="hover-img"
-                                                            src="admin/productImages/<%= product.images[1] %>"
-                                                            alt="<%= product.name %>">
-                                                        <% } %>
-                                                            <% } else { %>
-                                                                <img class="default-img"
-                                                                    src="assets/images/no-image.jpg" alt="No image">
-                                                                <% } %>
+                                                <% if (product.images.length > 0) { %>
+                                                    <img class="default-img" src="admin/productImages/<%= product.images[0] %>" alt="<%= product.name %>">
+                                            
+                                                    <% if (product.stock < 1) { %>
+                                                        <span class="badge-black badge-right-0 badge-top-0 badge-width-height-1">sold out</span>
+                                                    <% } %>
+                                            
+                                                    <% if (product.images.length > 1) { %>
+                                                        <img class="hover-img" src="admin/productImages/<%= product.images[1] %>" alt="<%= product.name %>">
+                                                    <% } %>
+                                            
+                                                <% } else { %>
+                                                    <img class="default-img" src="assets/images/no-image.jpg" alt="No image">
+                                                <% } %>
                                             </a>
+                                            
                                             <div class="product-action product-action-position-1">
                                                 <a data-bs-toggle="modal" data-bs-target="#exampleModal" href="#"><i
                                                         class="fa fa-eye"></i><span>Quick Shop</span></a>

@@ -305,123 +305,50 @@
                     <div class="product-details-tab">
                         <!-- Product Images Slider -->
                         <div class="product-dec-right pro-dec-big-img-slider">
-                            <% if (product && product.images && product.images.length > 0) { %>
-                                <% product.images.forEach((image, index) => { %>
+                            <% if (product && product.images && product.images.length> 0) { %>
+                                <% product.images.forEach((image, index)=> { %>
                                     <div class="easyzoom-style">
                                         <div class="easyzoom easyzoom--overlay">
                                             <!-- Updated image paths to use correct server path -->
                                             <a href="/admin/productImages/<%= image %>">
-                                                <img src="/admin/productImages/<%= image %>" alt="Product Image <%= index + 1 %>" class="zoom-image">
+                                                <img src="/admin/productImages/<%= image %>"
+                                                    alt="Product Image <%= index + 1 %>" class="zoom-image">
                                             </a>
                                         </div>
                                         <a class="easyzoom-pop-up img-popup" href="/admin/productImages/<%= image %>">
                                             <i class="dlicon ui-1_zoom-in"></i>
                                         </a>
                                     </div>
-                                <% }); %>
-                            <% } else { %>
-                                <!-- Placeholder when no images are available -->
-                                <div class="easyzoom-style">
-                                    <div class="easyzoom easyzoom--overlay">
-                                        <img src="assets/images/no-image-available.png" alt="No Image Available">
-                                    </div>
-                                </div>
-                            <% } %>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <!-- Placeholder when no images are available -->
+                                            <div class="easyzoom-style">
+                                                <div class="easyzoom easyzoom--overlay">
+                                                    <img src="assets/images/no-image-available.png"
+                                                        alt="No Image Available">
+                                                </div>
+                                            </div>
+                                            <% } %>
                         </div>
-                        
+
                         <!-- Thumbnail Slider -->
                         <div class="product-dec-slider product-dec-left">
-                            <% if (product && product.images && product.images.length > 0) { %>
-                                <% product.images.forEach((image, index) => { %>
+                            <% if (product && product.images && product.images.length> 0) { %>
+                                <% product.images.forEach((image, index)=> { %>
                                     <div class="product-dec-small <%= index === 0 ? 'active' : '' %>">
                                         <img src="/admin/productImages/<%= image %>" alt="Thumbnail <%= index + 1 %>">
                                     </div>
-                                <% }); %>
-                            <% } else { %>
-                                <!-- Placeholder for thumbnails when no images are available -->
-                                <div class="product-dec-small">
-                                    <img src="assets/images/no-image-thumbnail.png" alt="No Image Thumbnail">
-                                </div>
-                            <% } %>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <!-- Placeholder for thumbnails when no images are available -->
+                                            <div class="product-dec-small">
+                                                <img src="assets/images/no-image-thumbnail.png"
+                                                    alt="No Image Thumbnail">
+                                            </div>
+                                            <% } %>
                         </div>
                     </div>
                 </div>
-                
-                
-                
-                <!-- <div class="col-lg-6">
-                    <div class="product-details-tab">
-                        <div class="product-dec-right pro-dec-big-img-slider">
-                            <div class="easyzoom-style">
-                                <div class="easyzoom easyzoom--overlay">
-                                    <a href="assets/images/product-details/b-large-1.jpg">
-                                        <img src="assets/images/product-details/large-1.jpg" alt="">
-                                    </a>
-                                </div>
-                                <a class="easyzoom-pop-up img-popup"
-                                    href="assets/images/product-details/b-large-1.jpg"><i
-                                        class="dlicon ui-1_zoom-in "></i></a>
-                            </div>
-                            <div class="easyzoom-style">
-                                <div class="easyzoom easyzoom--overlay">
-                                    <a href="assets/images/product-details/b-large-2.jpg">
-                                        <img src="assets/images/product-details/large-2.jpg" alt="">
-                                    </a>
-                                </div>
-                                <a class="easyzoom-pop-up img-popup"
-                                    href="assets/images/product-details/b-large-2.jpg"><i
-                                        class="dlicon ui-1_zoom-in "></i></a>
-                            </div>
-                            <div class="easyzoom-style">
-                                <div class="easyzoom easyzoom--overlay">
-                                    <a href="assets/images/product-details/b-large-3.jpg">
-                                        <img src="assets/images/product-details/large-3.jpg" alt="">
-                                    </a>
-                                </div>
-                                <a class="easyzoom-pop-up img-popup"
-                                    href="assets/images/product-details/b-large-3.jpg"><i
-                                        class="dlicon ui-1_zoom-in "></i></a>
-                            </div>
-                            <div class="easyzoom-style">
-                                <div class="easyzoom easyzoom--overlay">
-                                    <a href="assets/images/product-details/b-large-4.jpg">
-                                        <img src="assets/images/product-details/large-4.jpg" alt="">
-                                    </a>
-                                </div>
-                                <a class="easyzoom-pop-up img-popup"
-                                    href="assets/images/product-details/b-large-4.jpg"><i
-                                        class="dlicon ui-1_zoom-in "></i></a>
-                            </div>
-                            <div class="easyzoom-style">
-                                <div class="easyzoom easyzoom--overlay">
-                                    <a href="assets/images/product-details/b-large-2.jpg">
-                                        <img src="assets/images/product-details/large-2.jpg" alt="">
-                                    </a>
-                                </div>
-                                <a class="easyzoom-pop-up img-popup"
-                                    href="assets/images/product-details/b-large-2.jpg"><i
-                                        class="dlicon ui-1_zoom-in "></i></a>
-                            </div>
-                        </div>
-                        <div class="product-dec-slider product-dec-left">
-                            <div class="product-dec-small active">
-                                <img src="assets/images/product-details/small-1.jpg" alt="">
-                            </div>
-                            <div class="product-dec-small">
-                                <img src="assets/images/product-details/small-2.jpg" alt="">
-                            </div>
-                            <div class="product-dec-small">
-                                <img src="assets/images/product-details/small-3.jpg" alt="">
-                            </div>
-                            <div class="product-dec-small">
-                                <img src="assets/images/product-details/small-4.jpg" alt="">
-                            </div>
-                            <div class="product-dec-small">
-                                <img src="assets/images/product-details/small-2.jpg" alt="">
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
                 <div class="col-lg-6">
                     <div class="row">
                         <div class="product-details-col-72">
@@ -430,7 +357,9 @@
                                     <a class="prev" href="#"><i class="dlicon arrows-1_tail-left"></i></a>
                                     <a class="next" href="#"><i class="dlicon arrows-1_tail-right"></i></a>
                                 </div>
-                                <h2 class="uppercase">Quilted parka with hood</h2>
+                                <h2 class="uppercase">
+                                    <%= product.name %>
+                                </h2>
                                 <div class="product-details-ratting-wrap">
                                     <div class="product-details-ratting">
                                         <i class="yellow fa fa-star"></i>
@@ -441,13 +370,47 @@
                                     </div>
                                     <a href="#"> (1 customer review)</a>
                                 </div>
-                                <h3>$49.00</h3>
+                                <div class="price-container">
+                                    <% if (product.discountPrice) { %>
+                                        <h4 class="discounted-price">
+                                            <span class="discounted-new-price">₹<%= product.discountPrice %></span>
+                                            <span class="discounted-old-price">₹<%= product.price %></span>
+                                        </h4>
+                                        <% } else { %>
+                                            <h4 class="regular-price">
+                                                <span class="regular-new-price">₹<%= product.price %></span>
+                                            </h4>
+                                            <% } %>
+                                </div>
+
+                                <style>
+                                    .price-container h4 {
+                                        display: inline-block;
+                                        margin: 0;
+                                    }
+
+                                    .discounted-new-price,
+                                    .regular-new-price {
+                                        font-size: 1.5rem;
+                                        color: #140f0f;
+                                    }
+
+                                    .discounted-old-price {
+                                        font-size: 1.2rem;
+                                        text-decoration: line-through;
+                                        color: #211818;
+                                        margin-left: 10px;
+                                        vertical-align: middle;
+                                    }
+                                </style>
+
                                 <div class="product-details-peragraph">
-                                    <ul>
+                                    <p><%= product.description %></p>
+                                    <!-- <ul>
                                         <li>Composition: 50% cotton,45% polyester, 5% polyamide.</li>
                                         <li>Filling: 100% polyester.</li>
                                         <li>Hood fur: 64% acrylic,23% modacrylic,13% polyester</li>
-                                    </ul>
+                                    </ul> -->
                                 </div>
                                 <div class="product-details-action-wrap">
                                     <div class="product-details-quality">
@@ -620,7 +583,8 @@
                                 <div class="ratting-form-wrapper">
                                     <span>Add a Review</span>
                                     <p>Your email address will not be published. Required fields are marked
-                                        <span>*</span></p>
+                                        <span>*</span>
+                                    </p>
                                     <div class="ratting-form">
                                         <form action="#">
                                             <div class="row">

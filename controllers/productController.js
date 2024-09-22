@@ -167,7 +167,7 @@ const updateProduct = async(req,res)=>{
         }
         
         // Update the category with the new name and description
-        await Product.findByIdAndUpdate(id, { $set: { name: name, description: description ,brand:brand, gender:gender, price:price, discountPrice:discountPrice, category:category} });
+        await Product.findByIdAndUpdate(id, { $set: { name: name, description: description ,brand:brand, gender:gender, price:price, discountPrice:discountPrice, category:category, stock:stock } });
 
         // Redirect to product page after the update
         res.redirect('/admin/product');
