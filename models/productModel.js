@@ -20,6 +20,10 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true,
         enum: ['men', 'women', 'unisex'] // Use lowercase values
+    },
+    sizes:{
+        type:[String],
+        enum:['S','M','L','XL','XXL']
     },    
     images: [{
         type: String

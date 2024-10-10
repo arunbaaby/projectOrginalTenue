@@ -357,9 +357,12 @@
                                     <a class="prev" href="#"><i class="dlicon arrows-1_tail-left"></i></a>
                                     <a class="next" href="#"><i class="dlicon arrows-1_tail-right"></i></a>
                                 </div>
-                                <h2 class="uppercase">
+                                <h1 class="uppercase">
+                                    <%= product.brand %>
+                                </h1>
+                                <h4 class="uppercase">
                                     <%= product.name %>
-                                </h2>
+                                </h4>
                                 <div class="product-details-ratting-wrap">
                                     <div class="product-details-ratting">
                                         <i class="yellow fa fa-star"></i>
@@ -375,6 +378,9 @@
                                         <h4 class="discounted-price">
                                             <span class="discounted-new-price">₹<%= product.discountPrice %></span>
                                             <span class="discounted-old-price">₹<%= product.price %></span>
+                                            <% const discountPercentage=Math.round((product.price -
+                                                product.discountPrice) / product.price * 100); %>
+                                                <span class="offer-percentage">(<%= discountPercentage %>% OFF)</span>
                                         </h4>
                                         <% } else { %>
                                             <h4 class="regular-price">
@@ -384,6 +390,14 @@
                                 </div>
 
                                 <style>
+                                    .offer-percentage {
+                                        color: rgba(255, 0, 0, 0.84);
+                                    }
+
+                                    .new-price {
+                                        font-weight: 600;
+                                    }
+
                                     .price-container h4 {
                                         display: inline-block;
                                         margin: 0;
@@ -403,19 +417,116 @@
                                         vertical-align: middle;
                                     }
                                 </style>
-
-                                <div class="product-details-peragraph">
-                                    <p><%= product.description %></p>
-                                    <!-- <ul>
-                                        <li>Composition: 50% cotton,45% polyester, 5% polyamide.</li>
-                                        <li>Filling: 100% polyester.</li>
-                                        <li>Hood fur: 64% acrylic,23% modacrylic,13% polyester</li>
-                                    </ul> -->
-                                </div>
                                 <div class="product-details-action-wrap">
+                                    <div class="product-filter">
+                                        <h5>Size</h5>
+                                        <div class="product-size">
+                                            <ul class="size-options">
+                                              <% if (product.sizes && product.sizes.length > 0) { %>
+                                                <% product.sizes.forEach(size => { %>
+                                                  <li><a href="#" class="size-option" data-size="<%= size %>"><%= size %></a></li>
+                                                <% }) %>
+                                              <% } else { %>
+                                                <li>No sizes available</li>
+                                              <% } %>
+                                            </ul>
+                                          </div>
+                                          
+                                    </div>
+                                    <div class="product-buttons-wrap">
+                                        <div class="product-details-cart">
+                                            <a title="Add to cart" href="#" onclick="">Add to cart</a>
+                                        </div>
+                                        <div class="product-details-wishlist">
+                                            <a title="Add to wishlist" href="#"><i class="fa fa-heart"></i></a>
+                                        </div>
+                                        <div class="product-details-compare">
+                                            <a title="Add to compare" href="#"><i
+                                                    class="dlicon arrows-4_compare"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+                                <style>
+                                    .product-details-action-wrap {
+                                        display: flex;
+                                        flex-direction: column;
+                                        align-items: flex-start;
+                                        gap: 20px;
+                                    }
+
+                                    .product-size ul.size-options {
+                                        display: flex;
+                                        justify-content: flex-start;
+                                        gap: 10px;
+                                        padding: 0;
+                                        list-style: none;
+                                    }
+
+                                    .product-size ul.size-options li a {
+                                        padding: 5px 15px;
+                                        border: 1px solid #ccc;
+                                        border-radius: 4px;
+                                        text-align: center;
+                                        text-decoration: none;
+                                        transition: background-color 0.3s ease;
+                                    }
+
+                                    .product-size ul.size-options li a:hover {
+                                        background-color: #f0f0f0;
+                                        border-color: #000;
+                                    }
+
+                                    /* Style for the buttons in a row */
+                                    .product-buttons-wrap {
+                                        display: flex;
+                                        gap: 10px;
+                                        /* Adjust the space between buttons */
+                                    }
+
+                                    .product-details-cart a,
+                                    .product-details-wishlist a,
+                                    .product-details-compare a {
+                                        padding: 10px 20px;
+                                        border: 1px solid #ccc;
+                                        border-radius: 4px;
+                                        text-decoration: none;
+                                        color: #000;
+                                        transition: background-color 0.3s ease;
+                                    }
+
+                                    .product-details-cart a:hover,
+                                    .product-details-wishlist a:hover,
+                                    .product-details-compare a:hover {
+                                        background-color: #f0f0f0;
+                                        border-color: #000;
+                                    }
+
+                                    .product-details-wishlist a i,
+                                    .product-details-compare a i {
+                                        margin-right: 5px;
+                                    }
+                                </style>
+                                <!-- <div class="product-details-action-wrap">
                                     <div class="product-details-quality">
                                         <div class="cart-plus-minus">
                                             <input class="cart-plus-minus-box" type="text" name="qtybutton" value="2">
+                                        </div>
+                                    </div>
+                                    <div class="product-filter">
+                                        <h5>Size</h5>
+                                        <div class="product-size">
+                                            <ul>
+                                                <li><a href="#">S</a></li>
+                                                <li><a href="#">M</a></li>
+                                                <li><a href="#">L</a></li>
+                                                <li><a href="#">XL</a></li>
+                                                <li><a href="#">XXL</a></li>
+                                            </ul>
                                         </div>
                                     </div>
                                     <div class="product-details-cart">
@@ -427,7 +538,7 @@
                                     <div class="product-details-compare">
                                         <a title="Add to compare" href="#"><i class="dlicon arrows-4_compare"></i></a>
                                     </div>
-                                </div>
+                                </div> -->
                                 <div class="product-details-info">
                                     <a href="#"><i class="dlicon location_pin"></i>Store availability</a>
                                     <a href="#"><i class="dlicon envir_car"></i>Delivery and return</a>

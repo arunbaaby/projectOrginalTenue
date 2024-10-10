@@ -5,8 +5,8 @@ const Product = require('../models/productModel');
 const productLoad = async (req, res) => {
     try {
 
-        const query = String(req.body.q || '');//"/admin/product?q=<%= query %>&page=<%= currentPage - 1 %>
-        const currentPage = parseInt(req.body.page) || 1;
+        const query = String(req.query.q || '');
+        const currentPage = parseInt(req.query.page) || 1;
         const itemsPerPage = 10;
 
         // //count total items for pagination
@@ -56,7 +56,7 @@ const addProductsLoad = async (req, res) => {
 
 const addProduct = async (req, res) => {
     try {
-        const { name, description, brand, gender, price, discountPrice, stock, category } = req.body;
+        const { name, description, brand, gender, price, discountPrice, stock, category, sizes } = req.body;
 
         if (!name || !description || !brand || !gender || !category || !price || !discountPrice || !stock) {
             const categoryDetails = await Category.find({ is_active: true });
@@ -68,6 +68,9 @@ const addProduct = async (req, res) => {
             imagePaths = req.files.map(file => file.filename);
         }
 
+        // If sizes are not provided, set default sizes
+        const defaultSizes = sizes && sizes.length > 0 ? sizes : ['S', 'M', 'L', 'XL', 'XXL'];
+
         const newProduct = new Product({
             name,
             description,
@@ -77,6 +80,7 @@ const addProduct = async (req, res) => {
             discountPrice,
             stock,
             category,
+            sizes: defaultSizes,  // Include sizes
             images: imagePaths
         });
 
@@ -93,6 +97,7 @@ const addProduct = async (req, res) => {
         res.status(500).render('add-product', { message: 'Internal Server Error', category: categoryDetails });
     }
 };
+
 
 const deleteProduct = async (req, res) => {
     try {
@@ -142,11 +147,11 @@ const editProductLoad = async (req, res) => {
     }
 };
 
-const updateProduct = async(req,res)=>{
+const updateProduct = async (req, res) => {
     try {
-        const {name,description,brand,gender,price,discountPrice,stock,category} = req.body;
-        console.log(name,description,brand,gender,price,discountPrice,stock,category);
-        // Check if the category exists by ID
+        const { name, description, brand, gender, price, discountPrice, stock, category, sizes } = req.body;
+        console.log(name, description, brand, gender, price, discountPrice, stock, category);
+        
         const id = req.query.id;
 
         let imagePaths = [];
@@ -160,40 +165,53 @@ const updateProduct = async(req,res)=>{
             return res.status(404).send('Product not found');
         }
 
-        // Check if another category with the same name already exists
         const duplicateProduct = await Product.findOne({ name: name, _id: { $ne: id } });
         if (duplicateProduct) {
-            return res.status(400).send('Category name already exists');
+            return res.status(400).send('Product name already exists');
         }
-        
-        // Update the category with the new name and description
-        await Product.findByIdAndUpdate(id, { $set: { name: name, description: description ,brand:brand, gender:gender, price:price, discountPrice:discountPrice, category:category, stock:stock } });
 
-        // Redirect to product page after the update
+        // If sizes are not provided, retain existing sizes or set default sizes
+        const updatedSizes = sizes && sizes.length > 0 ? sizes : existingProduct.sizes.length > 0 ? existingProduct.sizes : ['S', 'M', 'L', 'XL', 'XXL'];
+
+        await Product.findByIdAndUpdate(id, { 
+            $set: { 
+                name: name, 
+                description: description, 
+                brand: brand, 
+                gender: gender, 
+                price: price, 
+                discountPrice: discountPrice, 
+                category: category, 
+                stock: stock, 
+                sizes: updatedSizes, // Include sizes in update
+                images: imagePaths 
+            } 
+        });
+
         res.redirect('/admin/product');
-        
-        
+
     } catch (error) {
         console.error(`Error while editing product: ${error.message}`);
         res.status(500).send('Internal Server Error');
     }
-}
+};
 
-const allProductsLoad = async(req,res)=>{
+
+const allProductsLoad = async (req, res) => {
     try {
-        const products = await Product.find({is_active:true});
-        res.render('allProducts',{products});
+        const products = await Product.find({ is_active: true });
+        res.render('allProducts', { products });
     } catch (error) {
         console.error(`Error loading allProducts: ${error.message}`);
         res.status(500).send('Internal Server Error');
     }
 }
 
-const productDetailsLoad = async(req,res)=>{
+const productDetailsLoad = async (req, res) => {
     try {
         const id = req.query.id;
         const product = await Product.findById(id);
-        res.render('product-details',{product});
+        res.render('product-details', { product });
     } catch (error) {
         console.error(`Error loading productDetails: ${error.message}`);
         res.status(500).send('Internal Server Error');

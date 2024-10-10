@@ -33,6 +33,7 @@ user_route.use(passport.initialize());
 const userController = require('../controllers/userController');
 const { registerValidator, loginValidator, otpMailValidator, verifyOtpValidator } = require('../helpers/validation');
 const productController = require('../controllers/productController');
+const categoryController = require('../controllers/cartController');
 // Route for rendering combined login/register page
 user_route.get('/auth',isLoggedOut,userController.loadAuth);
 
@@ -65,6 +66,7 @@ user_route.get('/auth/google/callback',passport.authenticate('google',{failureRe
         maxAge: 2 * 60 * 60 * 1000, // 2 hours
     });
     res.redirect('/home');
-})
+});
+
 
 module.exports = user_route;

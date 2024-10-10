@@ -285,7 +285,7 @@
                 </div>
                 <ul>
                     <li>
-                        <a href="index.html">Home 01 </a>
+                        <a href="/home">Home 01 </a>
                     </li>
                     <li><span> &gt; </span></li>
                     <li class="active"> shop </li>
@@ -411,6 +411,9 @@
                                                     <% if (product.stock < 1) { %>
                                                         <span class="badge-black badge-right-0 badge-top-0 badge-width-height-1">sold out</span>
                                                     <% } %>
+                                                    <!-- <% if (product.discountPrice > 0) { %>
+                                                        <span class="badge-black badge-left-20 badge-top-20 badge-width-height-2 badge-border-radius-100"></span>
+                                                    <% } %> -->
                                             
                                                     <% if (product.images.length > 1) { %>
                                                         <img class="hover-img" src="admin/productImages/<%= product.images[1] %>" alt="<%= product.name %>">
@@ -434,17 +437,30 @@
                                             </div>
                                         </div>
                                         <div class="product-content-2 title-font-width-400 text-center">
+                                            <h4><%= product.brand %></h4>
                                             <h3><a href="/product-details?id=<%= product._id %>">
                                                     <%= product.name %>
                                                 </a></h3>
-                                            <div class="product-price">
-                                                <% if (product.discountPrice) { %>
-                                                    <span class="new-price">₹<%= product.discountPrice %></span>
-                                                    <span class="old-price">₹<%= product.price %></span>
+                                                <div class="product-price">
+                                                    <% if (product.discountPrice) { %>
+                                                        <span class="new-price">₹<%= product.discountPrice %></span>
+                                                        <span class="old-price">₹<%= product.price %></span>
+                                                        <% const discountPercentage = Math.round((product.price - product.discountPrice) / product.price * 100); %>
+                                                        <span class="offer-percentage">(<%= discountPercentage %>% OFF)</span>
                                                     <% } else { %>
                                                         <span class="new-price">₹<%= product.price %></span>
-                                                        <% } %>
-                                            </div>
+                                                    <% } %>
+                                                </div>
+
+                                                <style>
+                                                    .offer-percentage{
+                                                        color: rgba(255, 0, 0, 0.84);
+                                                    }
+                                                    .new-price{
+                                                        font-weight: 600;
+                                                    }
+                                                </style>
+                                                
                                         </div>
                                     </div>
                                 </div>
