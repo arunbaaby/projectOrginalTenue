@@ -502,10 +502,34 @@
                 </style>
                 <div class="pro-pagination-style text-center">
                     <ul>
-                        <li><a class="active" href="#">1</a></li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#"><i class="dlicon arrows-1_tail-right"></i></a></li>
+                        <% if (currentPage > 1) { %>
+                            <!-- Previous Button -->
+                            <li>
+                                <a href="/allProducts?q=<%= query %>&page=<%= currentPage - 1 %>">
+                                    <i class="dlicon arrows-1_tail-left"></i> <!-- Previous icon -->
+                                </a>
+                            </li>
+                        <% } %>
+                    
+                        <!-- Loop through page numbers -->
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <li>
+                                <a class="<%= currentPage === i ? 'active' : '' %>" href="/allProducts?q=<%= query %>&page=<%= i %>">
+                                    <%= i %> <!-- Display the page number -->
+                                </a>
+                            </li>
+                        <% } %>
+                    
+                        <% if (currentPage < totalPages) { %>
+                            <!-- Next Button -->
+                            <li>
+                                <a href="/allProducts?q=<%= query %>&page=<%= currentPage + 1 %>">
+                                    <i class="dlicon arrows-1_tail-right"></i> <!-- Next icon -->
+                                </a>
+                            </li>
+                        <% } %>
                     </ul>
+                    
                 </div>
             </div>
         </div>

@@ -2,6 +2,7 @@
 const Category = require('../models/categoryModel');
 const Product = require('../models/productModel');
 
+//all products for the admin side
 const productLoad = async (req, res) => {
     try {
 
@@ -9,22 +10,20 @@ const productLoad = async (req, res) => {
         const currentPage = parseInt(req.query.page) || 1;
         const itemsPerPage = 10;
 
-        // //count total items for pagination
-        // const totolItems = await Product.countDocuments({name:{$regex:query,$options:'i'},is_deleted:false});
         const filter = {
             name: { $regex: query, $options: 'i' }
         }
 
         const totalItems = await Product.countDocuments(filter);
 
-        //find total pages
+        //total pages
         const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-        //category field in each product with the full category document from the Category collection.
+        //category field in each product should have all the category documents and info
         const products = await Product.find(filter).populate('category').
             skip((currentPage - 1) * itemsPerPage).
             limit(itemsPerPage);
-
+        //provide all the data to the viewProducts page
         if (products) {
             res.render('viewProducts', {
                 product: products,
@@ -196,17 +195,41 @@ const updateProduct = async (req, res) => {
     }
 };
 
-
+//allProducts for the user side
 const allProductsLoad = async (req, res) => {
     try {
-        const products = await Product.find({ is_active: true });
-        res.render('allProducts', { products });
+        const query = String(req.query.q || '');
+        const currentPage = parseInt(req.query.page) || 1;
+        const itemsPerPage = 16;
+
+        const filter = {
+            is_active: true,
+            name: { $regex: query, $options: 'i' }
+        }
+
+        const totalItems = await Product.countDocuments(filter);
+
+        //total pages
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+        //category field in each product should have all the category documents and info
+        const products = await Product.find(filter).populate('category').
+            skip((currentPage - 1) * itemsPerPage).
+            limit(itemsPerPage);
+
+        // const products = await Product.find({ is_active: true });
+        res.render('allProducts', { 
+            products,
+            currentPage,
+            totalPages,    // Pass totalPages to the view
+            query
+        });
     } catch (error) {
         console.error(`Error loading allProducts: ${error.message}`);
         res.status(500).send('Internal Server Error');
     }
 }
-
+//user side 
 const productDetailsLoad = async (req, res) => {
     try {
         const id = req.query.id;
