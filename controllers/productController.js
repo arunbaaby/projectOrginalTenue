@@ -150,7 +150,7 @@ const updateProduct = async (req, res) => {
     try {
         const { name, description, brand, gender, price, discountPrice, stock, category, sizes } = req.body;
         console.log(name, description, brand, gender, price, discountPrice, stock, category);
-        
+
         const id = req.query.id;
 
         let imagePaths = [];
@@ -172,19 +172,19 @@ const updateProduct = async (req, res) => {
         // If sizes are not provided, retain existing sizes or set default sizes
         const updatedSizes = sizes && sizes.length > 0 ? sizes : existingProduct.sizes.length > 0 ? existingProduct.sizes : ['S', 'M', 'L', 'XL', 'XXL'];
 
-        await Product.findByIdAndUpdate(id, { 
-            $set: { 
-                name: name, 
-                description: description, 
-                brand: brand, 
-                gender: gender, 
-                price: price, 
-                discountPrice: discountPrice, 
-                category: category, 
-                stock: stock, 
+        await Product.findByIdAndUpdate(id, {
+            $set: {
+                name: name,
+                description: description,
+                brand: brand,
+                gender: gender,
+                price: price,
+                discountPrice: discountPrice,
+                category: category,
+                stock: stock,
                 sizes: updatedSizes, // Include sizes in update
-                images: imagePaths 
-            } 
+                images: imagePaths
+            }
         });
 
         res.redirect('/admin/product');
@@ -217,9 +217,22 @@ const allProductsLoad = async (req, res) => {
             skip((currentPage - 1) * itemsPerPage).
             limit(itemsPerPage);
 
+        //related products logic
+        let relatedProducts = [];
+        if(products.length>0){
+            const mainProductCategory = products[0].category;
+            relatedProducts = await Product.find({
+                is_active:true,
+                category:mainProductCategory,
+                _id:{$ne:products[0]._id}//avoid the same product(main product);
+            }).limit(5);
+        }
+
+
         // const products = await Product.find({ is_active: true });
-        res.render('allProducts', { 
+        res.render('allProducts', {
             products,
+            relatedProducts,
             currentPage,
             totalPages,    // Pass totalPages to the view
             query
@@ -234,7 +247,23 @@ const productDetailsLoad = async (req, res) => {
     try {
         const id = req.query.id;
         const product = await Product.findById(id);
-        res.render('product-details', { product });
+
+
+        //category field in each product should have all the category documents and info
+        const products = await Product.find({is_active:true}).populate('category')
+
+        //related products logic
+        let relatedProducts = [];
+
+        if(products.length>0){
+            const mainProductCategory = product.category;
+            relatedProducts = await Product.find({
+                is_active:true,
+                category:mainProductCategory,
+                _id:{$ne:product._id}//avoid the same product(main product);
+            }).limit(5);
+        }
+        res.render('product-details', { product,relatedProducts,products});
     } catch (error) {
         console.error(`Error loading productDetails: ${error.message}`);
         res.status(500).send('Internal Server Error');

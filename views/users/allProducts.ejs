@@ -405,25 +405,33 @@
                                     <div class="product-wrap mb-50">
                                         <div class="product-img default-overlay mb-25">
                                             <a href="/product-details?id=<%= product._id %>">
-                                                <% if (product.images.length > 0) { %>
-                                                    <img class="default-img" src="admin/productImages/<%= product.images[0] %>" alt="<%= product.name %>">
-                                            
+                                                <% if (product.images.length> 0) { %>
+                                                    <img class="default-img"
+                                                        src="admin/productImages/<%= product.images[0] %>"
+                                                        alt="<%= product.name %>">
+
                                                     <% if (product.stock < 1) { %>
-                                                        <span class="badge-black badge-right-0 badge-top-0 badge-width-height-1">sold out</span>
-                                                    <% } %>
-                                                    <!-- <% if (product.discountPrice > 0) { %>
+                                                        <span
+                                                            class="badge-black badge-right-0 badge-top-0 badge-width-height-1">sold
+                                                            out</span>
+                                                        <% } %>
+                                                            <!-- <% if (product.discountPrice > 0) { %>
                                                         <span class="badge-black badge-left-20 badge-top-20 badge-width-height-2 badge-border-radius-100"></span>
                                                     <% } %> -->
-                                            
-                                                    <% if (product.images.length > 1) { %>
-                                                        <img class="hover-img" src="admin/productImages/<%= product.images[1] %>" alt="<%= product.name %>">
-                                                    <% } %>
-                                            
-                                                <% } else { %>
-                                                    <img class="default-img" src="assets/images/no-image.jpg" alt="No image">
-                                                <% } %>
+
+                                                            <% if (product.images.length> 1) { %>
+                                                                <img class="hover-img"
+                                                                    src="admin/productImages/<%= product.images[1] %>"
+                                                                    alt="<%= product.name %>">
+                                                                <% } %>
+
+                                                                    <% } else { %>
+                                                                        <img class="default-img"
+                                                                            src="assets/images/no-image.jpg"
+                                                                            alt="No image">
+                                                                        <% } %>
                                             </a>
-                                            
+
                                             <div class="product-action product-action-position-1">
                                                 <a data-bs-toggle="modal" data-bs-target="#exampleModal" href="#"><i
                                                         class="fa fa-eye"></i><span>Quick Shop</span></a>
@@ -437,30 +445,35 @@
                                             </div>
                                         </div>
                                         <div class="product-content-2 title-font-width-400 text-center">
-                                            <h4><%= product.brand %></h4>
+                                            <h4>
+                                                <%= product.brand %>
+                                            </h4>
                                             <h3><a href="/product-details?id=<%= product._id %>">
                                                     <%= product.name %>
                                                 </a></h3>
-                                                <div class="product-price">
-                                                    <% if (product.discountPrice) { %>
-                                                        <span class="new-price">₹<%= product.discountPrice %></span>
-                                                        <span class="old-price">₹<%= product.price %></span>
-                                                        <% const discountPercentage = Math.round((product.price - product.discountPrice) / product.price * 100); %>
-                                                        <span class="offer-percentage">(<%= discountPercentage %>% OFF)</span>
-                                                    <% } else { %>
-                                                        <span class="new-price">₹<%= product.price %></span>
-                                                    <% } %>
-                                                </div>
+                                            <div class="product-price">
+                                                <% if (product.discountPrice) { %>
+                                                    <span class="new-price">₹<%= product.discountPrice %></span>
+                                                    <span class="old-price">₹<%= product.price %></span>
+                                                    <% const discountPercentage=Math.round((product.price -
+                                                        product.discountPrice) / product.price * 100); %>
+                                                        <span class="offer-percentage">(<%= discountPercentage %>%
+                                                                OFF)</span>
+                                                        <% } else { %>
+                                                            <span class="new-price">₹<%= product.price %></span>
+                                                            <% } %>
+                                            </div>
 
-                                                <style>
-                                                    .offer-percentage{
-                                                        color: rgba(255, 0, 0, 0.84);
-                                                    }
-                                                    .new-price{
-                                                        font-weight: 600;
-                                                    }
-                                                </style>
-                                                
+                                            <style>
+                                                .offer-percentage {
+                                                    color: rgba(255, 0, 0, 0.84);
+                                                }
+
+                                                .new-price {
+                                                    font-weight: 600;
+                                                }
+                                            </style>
+
                                         </div>
                                     </div>
                                 </div>
@@ -478,22 +491,25 @@
                         padding: 15px;
                         box-sizing: border-box;
                     }
-                
+
                     .product-img img {
                         width: 100%;
-                        height: 400px; /* Fixed height for all images */
-                        object-fit: cover; /* Ensures the image covers the container without distortion */
-                        object-position: top; /* Keeps the top part (headspace) of the image in view */
+                        height: 400px;
+                        /* Fixed height for all images */
+                        object-fit: cover;
+                        /* Ensures the image covers the container without distortion */
+                        object-position: top;
+                        /* Keeps the top part (headspace) of the image in view */
                     }
-                
+
                     .product-wrap {
                         text-align: center;
                     }
-                
+
                     .product-action-position-1 a {
                         margin: 5px;
                     }
-                
+
                     .row:after {
                         content: "";
                         display: table;
@@ -502,34 +518,35 @@
                 </style>
                 <div class="pro-pagination-style text-center">
                     <ul>
-                        <% if (currentPage > 1) { %>
+                        <% if (currentPage> 1) { %>
                             <!-- Previous Button -->
                             <li>
                                 <a href="/allProducts?q=<%= query %>&page=<%= currentPage - 1 %>">
                                     <i class="dlicon arrows-1_tail-left"></i> <!-- Previous icon -->
                                 </a>
                             </li>
-                        <% } %>
-                    
-                        <!-- Loop through page numbers -->
-                        <% for (let i = 1; i <= totalPages; i++) { %>
-                            <li>
-                                <a class="<%= currentPage === i ? 'active' : '' %>" href="/allProducts?q=<%= query %>&page=<%= i %>">
-                                    <%= i %> <!-- Display the page number -->
-                                </a>
-                            </li>
-                        <% } %>
-                    
-                        <% if (currentPage < totalPages) { %>
-                            <!-- Next Button -->
-                            <li>
-                                <a href="/allProducts?q=<%= query %>&page=<%= currentPage + 1 %>">
-                                    <i class="dlicon arrows-1_tail-right"></i> <!-- Next icon -->
-                                </a>
-                            </li>
-                        <% } %>
+                            <% } %>
+
+                                <!-- Loop through page numbers -->
+                                <% for (let i=1; i <=totalPages; i++) { %>
+                                    <li>
+                                        <a class="<%= currentPage === i ? 'active' : '' %>"
+                                            href="/allProducts?q=<%= query %>&page=<%= i %>">
+                                            <%= i %> <!-- Display the page number -->
+                                        </a>
+                                    </li>
+                                    <% } %>
+
+                                        <% if (currentPage < totalPages) { %>
+                                            <!-- Next Button -->
+                                            <li>
+                                                <a href="/allProducts?q=<%= query %>&page=<%= currentPage + 1 %>">
+                                                    <i class="dlicon arrows-1_tail-right"></i> <!-- Next icon -->
+                                                </a>
+                                            </li>
+                                            <% } %>
                     </ul>
-                    
+
                 </div>
             </div>
         </div>
