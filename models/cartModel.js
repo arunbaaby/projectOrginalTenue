@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId;
-//define fields in your schema as references to other documents using MongoDB's ObjectId
+
 const cartSchema = new mongoose.Schema({
     user: {
         type: ObjectId,

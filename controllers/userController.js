@@ -17,8 +17,9 @@ const { token } = require('morgan');
 // First we have to show the register page..async method
 const loadAuth = async (req, res) => {
     try {
+        const message = req.query.message || null;
 
-        res.render('auth');
+        res.render('auth',{message});
     } catch (error) {
         console.log(error.message);
     }
@@ -189,7 +190,7 @@ const verifyOtp = async (req, res) => {
         const userData = await user.save();
         delete pendingUsers[user_id];
 
-        res.redirect('/auth');
+        res.redirect('/auth?message=User registration successful');
         // return res.status(200).json({
         //     success: true,
         //     msg: 'User verification successful'

@@ -346,6 +346,12 @@
                                             <% }); %>
                                         </ul>
                                     <% } %>
+
+                                    <% if (typeof message !== 'undefined' && message) { %>
+                                        <div class="success-msg">
+                                            <%= message %>
+                                        </div>
+                                    <% } %>
                                 </div>
                             </form>
                         </div>

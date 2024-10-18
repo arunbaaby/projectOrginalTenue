@@ -20,12 +20,13 @@ const loadLogin = async (req, res) => {
 const adminLogin = async (req, res) => {
     try {
         const errors = validationResult(req);
+
         if (!errors.isEmpty()) {
             console.log('Validation errors:', errors.array());
             return res.status(400).render('adminLogin', {
                 success: false,
                 msg: 'Validation errors',
-                errors: errors.array()
+                errors: errors.array() 
             });
         }
 
@@ -38,8 +39,8 @@ const adminLogin = async (req, res) => {
             console.log('User not found');
             return res.status(401).render('adminLogin', {
                 success: false,
-                msg: 'Invalid email or password',
-                errors: []
+                msg: 'Invalid email or password', 
+                errors: [] // No validation errors here
             });
         }
 
@@ -47,8 +48,8 @@ const adminLogin = async (req, res) => {
             console.log('User is not admin');
             return res.status(401).render('adminLogin', {
                 success: false,
-                msg: 'Access denied',
-                errors: []
+                msg: 'Access denied', 
+                errors: [] // No validation errors here
             });
         }
 
@@ -57,27 +58,31 @@ const adminLogin = async (req, res) => {
             console.log('Password mismatch');
             return res.status(400).render('adminLogin', {
                 success: false,
-                msg: 'Invalid email or password',
-                errors: []
+                msg: 'Invalid email or password', 
+                errors: [] // No validation errors here
             });
         }
 
+        // Generate JWT token
         const accessToken = await generateAccessToken({ id: userData._id });
 
-        // Set the JWT token in a cookie
+        // Set JWT token in cookie
         res.cookie('jwt', accessToken, {
-            httpOnly: true, // Helps prevent cross-site scripting
-            secure: process.env.NODE_ENV === 'production', // Only in production
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', 
             maxAge: 2 * 60 * 60 * 1000, // 2 hours
         });
 
         console.log('Login successful:', email);
+
         return res.redirect('/admin/home');
     } catch (error) {
         console.log('Login error:', error.message);
-        return res.status(400).json({
+
+        return res.status(400).render('adminLogin', {
             success: false,
-            msg: error.message
+            msg: error.message, 
+            errors: [] // No validation errors in this case
         });
     }
 };
