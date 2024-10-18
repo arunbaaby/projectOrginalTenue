@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verify OTP</title>
-</head>
-<body>
+<%- include ('../layouts/header') %>
     <h1>Verify OTP</h1>
     <form action="/verify-otp" method="post">
         <input type="hidden" name="user_id" value="<%= user_id %>">
@@ -22,5 +15,4 @@
             <% }); %>
         </ul>
     <% } %>
-</body>
-</html>
+    <%- include ('../layouts/footer') %>

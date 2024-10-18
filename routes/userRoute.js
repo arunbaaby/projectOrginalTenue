@@ -34,6 +34,7 @@ const userController = require('../controllers/userController');
 const { registerValidator, loginValidator, otpMailValidator, verifyOtpValidator } = require('../helpers/validation');
 const productController = require('../controllers/productController');
 const categoryController = require('../controllers/cartController');
+const { log } = require('console');
 // Route for rendering combined login/register page
 user_route.get('/auth',isLoggedOut,userController.loadAuth);
 
@@ -49,24 +50,25 @@ user_route.post('/send-otp',isLoggedOut, otpMailValidator, userController.sendOt
 user_route.post('/verify-otp',isLoggedOut, verifyOtpValidator, userController.verifyOtp);
 user_route.post('/login',isLoggedOut, loginValidator, userController.loginUser);
 
+user_route.get('/logout',isLoggedIn,userController.logoutUser);
+
 user_route.get('/home',isLoggedIn,userController.loadUserHome);
 
 //shop-fullwide all products
 user_route.get('/allProducts',isLoggedIn,productController.allProductsLoad);
 user_route.get('/product-details',isLoggedIn,productController.productDetailsLoad);
 
-user_route.get('/auth/google',passport.authenticate('google',{scope:['profile','email']}));
+user_route.get('/auth/google', passport.authenticate('google', {
+    scope: ['profile', 'email'],
+    prompt: 'select_account'  // Forces account selection prompt
+}));
 
-user_route.get('/auth/google/callback',passport.authenticate('google',{failureRedirect:'/auth',session: false}),(req,res)=>{
-    const accessToken = req.user.token;
-     // Set JWT token in cookies
-     res.cookie('jwt', accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 2 * 60 * 60 * 1000, // 2 hours
-    });
-    res.redirect('/home');
+user_route.get('/auth/google/callback', (req, res, next) => {
+    passport.authenticate('google', { session: false }, (err, user, info) => {
+        userController.googleAuthCallback(err, user, info, req, res, next);
+    })(req, res, next);
 });
+
 
 
 module.exports = user_route;

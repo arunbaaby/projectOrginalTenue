@@ -22,6 +22,17 @@
 <!-- Main Script -->
 <script src="assets/js/main.js" type="text/javascript"></script>
 <script src="assets/js/custom-chart.js" type="text/javascript"></script>
+
+<!-- Active Menu Script -->
+<script>
+    document.querySelectorAll('.menu-link').forEach(link => {
+        if (link.href === window.location.href) {
+            link.parentElement.classList.add('active');
+        } else {
+            link.parentElement.classList.remove('active');
+        }
+    });
+</script>
 </body>
 
 </html>

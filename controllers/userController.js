@@ -9,7 +9,7 @@ const { validationResult } = require('express-validator');
 const mailer = require('../helpers/mailer');
 const { oneMinuteExpiry, threeMinuteExpiry } = require('../helpers/otpValidate');
 
-const {generateAccessToken} = require('../utils/generateAccessToken');
+const { generateAccessToken } = require('../utils/generateAccessToken');
 
 const jwt = require('jsonwebtoken');
 const { token } = require('morgan');
@@ -48,9 +48,6 @@ const generateAndSendOTP = async (userData) => {
     return g_otp;
 }
 
-
-
-// Use an in-memory store or cache for temporary storage
 const pendingUsers = {};
 
 const userRegister = async (req, res) => {
@@ -59,7 +56,8 @@ const userRegister = async (req, res) => {
 
         if (!errors.isEmpty()) {
             return res.status(400).render('auth', {
-                errors: errors.array(), // Pass validation errors to the view
+                registerErrors: errors.array(), // Registration errors
+                loginErrors: [],                // No login errors
                 success: false,
                 msg: ''
             });
@@ -67,25 +65,23 @@ const userRegister = async (req, res) => {
 
         const { name, email, mobile, password } = req.body;
 
-        // Does the user email already exist
         const isExist = await User.findOne({ email });
         if (isExist) {
             return res.status(400).render('auth', {
-                errors: [{ msg: 'Email already exists' }],
+                registerErrors: [{ msg: 'Email already exists' }],  // Custom error for login
+                loginErrors: [],                                           // No registration errors
                 success: false,
                 msg: ''
             });
         }
 
-        // Save user data temporarily
+        // user data temporarily
         pendingUsers[email] = { name, email, mobile, password }
 
         const userData = { name, email };
 
-        // Generate and send OTP
         await generateAndSendOTP(userData);
 
-        // Redirect to OTP verification page with user email
         return res.redirect(`/verify-otp?email=${encodeURIComponent(email)}`);
     } catch (error) {
         console.log(`Registration error: ${error.message}`);
@@ -214,11 +210,11 @@ const loginUser = async (req, res) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            console.log('Validation errors:', errors.array());
             return res.status(400).render('auth', {
+                loginErrors: errors.array(),    // Login errors
+                registerErrors: [],             // No registration errors
                 success: false,
-                msg: 'Validation errors',
-                errors: errors.array()
+                msg: ''
             });
         }
 
@@ -229,17 +225,20 @@ const loginUser = async (req, res) => {
         if (!userData) {
             console.log('User not found');
             return res.status(401).render('auth', {
+                loginErrors: [{ msg: 'User not found' }],  // Custom error for login
+                registerErrors: [],                                           // No registration errors
                 success: false,
-                msg: 'Invalid email or password',
-                errors: []
+                msg: ''
             });
         }
 
         if (userData.is_blocked === 1) {
             console.log('User is blocked');
             return res.status(401).render('auth', {
+                loginErrors: [{ msg: 'User is blocked' }],  // Custom error for login
+                registerErrors: [],                                           // No registration errors
                 success: false,
-                msg: 'User is blocked'
+                msg: ''
             });
         }
 
@@ -247,8 +246,10 @@ const loginUser = async (req, res) => {
         if (!passwordMatch) {
             console.log('Password mismatch');
             return res.status(401).render('auth', {
+                loginErrors: [{ msg: 'Email and Password are incorrect' }],  // Custom error for login
+                registerErrors: [],                                           // No registration errors
                 success: false,
-                msg: 'Email and Password are incorrect'
+                msg: ''
             });
         }
 
@@ -275,6 +276,8 @@ const loginUser = async (req, res) => {
 
 
 
+
+
 // const generateAccessToken = async (user) => {
 //     const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '2h' });
 //     return token;
@@ -289,11 +292,75 @@ const loadUserHome = async (req, res) => {
     }
 }
 
+
+const googleAuthCallback = (err, user, info, req, res, next) => {
+    try {
+        if (err) {
+            return res.status(500).render('auth', {
+                loginErrors: [{ msg: 'Internal server error. Please try again later.' }],
+                registerErrors: [],
+                success: false,
+                msg: ''
+            });
+        }
+
+        if (!user) {
+            return res.status(401).render('auth', {
+                loginErrors: [{ msg: info ? info.message : 'Login failed' }],
+                registerErrors: [],
+                success: false,
+                msg: ''
+            });
+        }
+
+        // If user is successfully authenticated, set the JWT token in the cookies
+        const accessToken = user.token;
+        res.cookie('jwt', accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 2 * 60 * 60 * 1000 // 2 hours
+        });
+
+        // Redirect to the home page after successful authentication
+        res.redirect('/home');
+    } catch (error) {
+        console.error('Google Auth Callback Error:', error);
+        return res.status(500).render('auth', {
+            loginErrors: [{ msg: 'Authentication error. Please try again later.' }],
+            registerErrors: [],
+            success: false,
+            msg: ''
+        });
+    }
+};
+
+
+const logoutUser = async (req,res)=>{
+    try {
+        // Clear the JWT cookie
+        res.clearCookie('jwt', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Strict'
+        });
+
+        res.redirect('/auth');
+    } catch (error) {
+        console.error('Logout Error:', error.message);
+        return res.status(400).json({
+            success: false,
+            msg: error.message
+        });
+    }
+}
+
 module.exports = {
     loadAuth,
     userRegister,
     loginUser,
     sendOtp,
     verifyOtp,
-    loadUserHome
+    loadUserHome,
+    logoutUser,
+    googleAuthCallback
 }

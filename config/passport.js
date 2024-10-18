@@ -7,7 +7,9 @@ const { generateAccessToken } = require('../utils/generateAccessToken');
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: '/auth/google/callback'
+    callbackURL: '/auth/google/callback',
+    scope: ['profile', 'email'],
+    prompt: 'select_account'  // to ask for account selection
 },
     async (accessToken, refreshToken, profile, done) => {
         try {
@@ -19,8 +21,15 @@ passport.use(new GoogleStrategy({
 
             // First, check if the user exists by googleId
             let user = await User.findOne({ googleId: profile.id });
+            
 
             if (user) {
+
+                if (user.is_blocked === 1) {
+                    console.log('User is blocked');
+                    return done(null, false, { message: 'Your account has been blocked.' });
+                }
+                
                 // If the user exists with googleId, generate the access token
                 const token = generateAccessToken(user._id);
                 return done(null, { user, token });
@@ -34,6 +43,12 @@ passport.use(new GoogleStrategy({
                 if (!user.googleId) {
                     user.googleId = profile.id;
                     await user.save();
+                }
+
+                // Check if the user is blocked..if the admin blocks user after the userLogin
+                if (user.is_blocked === 1) {
+                    console.log('User is blocked');
+                    return done(null, false, { message: 'Your account has been blocked.' });
                 }
 
                 // Generate token and return the existing user

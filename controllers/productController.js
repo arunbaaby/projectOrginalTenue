@@ -195,43 +195,95 @@ const updateProduct = async (req, res) => {
     }
 };
 
-//allProducts for the user side
 const allProductsLoad = async (req, res) => {
     try {
         const query = String(req.query.q || '');
         const currentPage = parseInt(req.query.page) || 1;
         const itemsPerPage = 16;
 
-        const filter = {
-            is_active: true,
-            name: { $regex: query, $options: 'i' }
-        }
+        // MongoDB aggregate pipeline to join category and filter by active categories
+        const productsResult = await Product.aggregate([
+            {
+                $match: {
+                    is_active: true,
+                    name: { $regex: query, $options: 'i' }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'categories', // Assuming your collection is named 'categories'
+                    localField: 'category',
+                    foreignField: '_id',
+                    as: 'category'
+                }
+            },
+            {
+                $unwind: '$category'
+            },
+            {
+                $match: {
+                    'category.is_active': true // Filter only products with active categories
+                }
+            },
+            {
+                $skip: (currentPage - 1) * itemsPerPage
+            },
+            {
+                $limit: itemsPerPage
+            }
+        ]);
 
-        const totalItems = await Product.countDocuments(filter);
+        // Count total items with active categories
+        const totalItemsResult = await Product.aggregate([
+            {
+                $match: {
+                    is_active: true,
+                    name: { $regex: query, $options: 'i' }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'categories',
+                    localField: 'category',
+                    foreignField: '_id',
+                    as: 'category'
+                }
+            },
+            {
+                $unwind: '$category'
+            },
+            {
+                $match: {
+                    'category.is_active': true
+                }
+            },
+            {
+                $count: 'totalItems'
+            }
+        ]);
 
-        //total pages
+        const totalItems = totalItemsResult.length > 0 ? totalItemsResult[0].totalItems : 0;
         const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-        //category field in each product should have all the category documents and info
-        const products = await Product.find(filter).populate('category').
-            skip((currentPage - 1) * itemsPerPage).
-            limit(itemsPerPage);
-
-        //related products logic
+        // first product's category
         let relatedProducts = [];
-        if(products.length>0){
-            const mainProductCategory = products[0].category;
+        if (productsResult.length > 0) {
+            const mainProductCategory = productsResult[0].category._id;
             relatedProducts = await Product.find({
-                is_active:true,
-                category:mainProductCategory,
-                _id:{$ne:products[0]._id}//avoid the same product(main product);
-            }).limit(5);
+                is_active: true,
+                category: mainProductCategory,
+                _id: { $ne: productsResult[0]._id }
+            })
+            .populate({
+                path: 'category',
+                match: { is_active: true }
+            })
+            .limit(5);
         }
 
-
-        // const products = await Product.find({ is_active: true });
+        // Render the products and related products to the view
         res.render('allProducts', {
-            products,
+            products: productsResult,
             relatedProducts,
             currentPage,
             totalPages,    // Pass totalPages to the view
@@ -241,7 +293,8 @@ const allProductsLoad = async (req, res) => {
         console.error(`Error loading allProducts: ${error.message}`);
         res.status(500).send('Internal Server Error');
     }
-}
+};
+
 //user side 
 const productDetailsLoad = async (req, res) => {
     try {

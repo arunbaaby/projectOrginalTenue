@@ -285,10 +285,20 @@
                                     <div class="login-register-btn">
                                         <button type="submit">Log in</button>
                                     </div>
+                                    
                                     <!-- <div class="login-register-remember">
                                             <input type="checkbox">
                                             <label>Remember me</label>
                                         </div> -->
+                                </div>
+                                <div class="error-msg">
+                                    <% if (typeof loginErrors !== 'undefined' && loginErrors.length > 0) { %>
+                                        <ul>
+                                            <% loginErrors.forEach(function(error) { %>
+                                                <li><%= error.msg %></li>
+                                            <% }); %>
+                                        </ul>
+                                    <% } %>
                                 </div>
                                 <!-- <a href="#">Lost your password?</a> -->
                             </form>
@@ -326,6 +336,16 @@
                                     <button type="submit" value="Register">Send OTP</button>
                                     <span class="or-text">or sign up with</span>
                                     <a class="google" href="/auth/google"><i class="fa fa-google"></i></a>
+                                </div>
+
+                                <div class="error-msg">
+                                    <% if (typeof registerErrors !== 'undefined' && registerErrors.length > 0) { %>
+                                        <ul>
+                                            <% registerErrors.forEach(function(error) { %>
+                                                <li><%= error.msg %></li>
+                                            <% }); %>
+                                        </ul>
+                                    <% } %>
                                 </div>
                             </form>
                         </div>
