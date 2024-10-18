@@ -48,6 +48,7 @@ user_route.get('/verify-otp',isLoggedOut, (req, res) => {
 user_route.post('/register',isLoggedOut, registerValidator, userController.userRegister);
 user_route.post('/send-otp',isLoggedOut, otpMailValidator, userController.sendOtp);
 user_route.post('/verify-otp',isLoggedOut, verifyOtpValidator, userController.verifyOtp);
+user_route.post('/resend-otp', userController.resendOtp);
 user_route.post('/login',isLoggedOut, loginValidator, userController.loginUser);
 
 user_route.get('/logout',isLoggedIn,userController.logoutUser);

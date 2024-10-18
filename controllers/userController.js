@@ -204,6 +204,47 @@ const verifyOtp = async (req, res) => {
 }
 
 
+const resendOtp = async (req, res) => {
+    try {
+        const { user_id } = req.body;
+
+        const pendingUser = pendingUsers[user_id];
+        if (!pendingUser) {
+            return res.status(400).render('verify-otp', {
+                user_id,
+                errors: [{ msg: "User not found or OTP already verified." }]
+            });
+        }
+
+        //timelimit for resend otp
+        const oldOtpData = await Otp.findOne({ user_id });
+        if (oldOtpData) {
+            const canSendOtp = await oneMinuteExpiry(oldOtpData.timestamp);
+            if (!canSendOtp) {
+                return res.status(400).render('verify-otp', {
+                    user_id,
+                    errors: [{ msg: 'Please try resending the OTP after some time.' }]
+                });
+            }
+        }
+
+        const userData = { email: user_id, name: pendingUser.name };
+        await generateAndSendOTP(userData);
+
+        return res.status(200).render('verify-otp', {
+            user_id,
+            errors: [{ msg: 'A new OTP has been sent to your email.' }]
+        });
+    } catch (error) {
+        console.log(`Resend OTP error: ${error.message}`);
+        return res.status(400).render('verify-otp', {
+            user_id: req.body.user_id,
+            errors: [{ msg: error.message }]
+        });
+    }
+};
+
+
 
 
 const loginUser = async (req, res) => {
@@ -360,6 +401,7 @@ module.exports = {
     loginUser,
     sendOtp,
     verifyOtp,
+    resendOtp,
     loadUserHome,
     logoutUser,
     googleAuthCallback

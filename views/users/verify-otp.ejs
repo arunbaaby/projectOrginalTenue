@@ -8,6 +8,10 @@
         </div>
         <button type="submit">Verify</button>
     </form>
+    <form action="/resend-otp" method="post" style="margin-top: 10px;">
+        <input type="hidden" name="user_id" value="<%= user_id %>">
+        <button type="submit">Resend OTP</button>
+    </form>
     <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
         <ul>
             <% errors.forEach(function(error) { %>
