@@ -6,17 +6,69 @@
             <label for="otp">Enter OTP:</label>
             <input type="text" id="otp" name="otp" required>
         </div>
+    
         <button type="submit">Verify</button>
+        
+        <!-- Resend OTP Section -->
+        <button type="button" id="resend-otp" disabled>Resend OTP</button>
+        <p>Wait <span id="timer">60</span> seconds before resending OTP.</p>
+    
+        <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+            <ul>
+                <% errors.forEach(function(error) { %>
+                    <li><%= error.msg %></li>
+                <% }); %>
+            </ul>
+        <% } %>
     </form>
-    <form action="/resend-otp" method="post" style="margin-top: 10px;">
-        <input type="hidden" name="user_id" value="<%= user_id %>">
-        <button type="submit">Resend OTP</button>
-    </form>
-    <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
-        <ul>
-            <% errors.forEach(function(error) { %>
-                <li><%= error.msg %></li>
-            <% }); %>
-        </ul>
-    <% } %>
+    
+    <script>
+        // Timer countdown in seconds
+        let timer = 60;
+        const timerElement = document.getElementById('timer');
+        const resendOtpButton = document.getElementById('resend-otp');
+    
+        const countdown = setInterval(() => {
+            timer--;
+            timerElement.textContent = timer;
+            if (timer <= 0) {
+                clearInterval(countdown);
+                resendOtpButton.disabled = false;
+                document.querySelector('p').textContent = 'You can resend OTP now.';
+            }
+        }, 1000);
+    
+        // Handle resend OTP button click
+        resendOtpButton.addEventListener('click', () => {
+            // Make an AJAX request to resend the OTP or submit the form
+            // Example: Use fetch API to call the server to resend the OTP
+            fetch('/resend-otp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ user_id: "<%= user_id %>" })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Restart timer after resending OTP
+                    timer = 60;
+                    resendOtpButton.disabled = true;
+                    document.querySelector('p').textContent = `Wait ${timer} seconds before resending OTP.`;
+                    countdown = setInterval(() => {
+                        timer--;
+                        timerElement.textContent = timer;
+                        if (timer <= 0) {
+                            clearInterval(countdown);
+                            resendOtpButton.disabled = false;
+                            document.querySelector('p').textContent = 'You can resend OTP now.';
+                        }
+                    }, 1000);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+    
     <%- include ('../layouts/footer') %>
