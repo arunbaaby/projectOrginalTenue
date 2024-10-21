@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const otpSchema = new Schema({
     user_id: {
         type: String, // Change this from ObjectId to String
-        required: true,
+        required: true,//email id should be here
     },
     otp: {
         type: String,

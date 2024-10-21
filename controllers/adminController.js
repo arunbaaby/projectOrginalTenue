@@ -10,10 +10,10 @@ const jwt = require('jsonwebtoken');
 
 const loadLogin = async (req, res) => {
     try {
-        res.render('adminLogin');
+        res.render('adminLogin',{errors:[],msg:''});
     } catch (error) {
         console.log(error);
-
+        res.status(500).send('Server error');
     }
 }
 

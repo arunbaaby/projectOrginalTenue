@@ -295,7 +295,9 @@ const loginUser = async (req, res) => {
             });
         }
 
-        const accessToken = await generateAccessToken({ id: userData._id });
+        const accessToken = generateAccessToken(userData._id); // Pass `userData._id`
+
+
         console.log('Generated token:', accessToken);
 
         res.cookie('jwt', accessToken, {

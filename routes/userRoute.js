@@ -10,11 +10,11 @@ const {isLoggedIn,isLoggedOut} = require('../middlewares/userAuth');
 
 // View engine
 user_route.set('view engine', 'ejs');
-user_route.set('views', path.join(__dirname, '../views/users'));
+user_route.set('views', path.join(__dirname, '../views/users'));//include in index.js
 
 
 // To parse the data in the POST request body
-const bodyParser = require('body-parser');
+const bodyParser = require('body-parser');//make it express.json
 user_route.use(bodyParser.json());
 user_route.use(bodyParser.urlencoded({ extended: true }));
 
@@ -48,7 +48,7 @@ user_route.get('/verify-otp',isLoggedOut, (req, res) => {
 user_route.post('/register',isLoggedOut, registerValidator, userController.userRegister);
 user_route.post('/send-otp',isLoggedOut, otpMailValidator, userController.sendOtp);
 user_route.post('/verify-otp',isLoggedOut, verifyOtpValidator, userController.verifyOtp);
-user_route.post('/resend-otp', userController.resendOtp);
+user_route.post('/resend-otp',isLoggedOut, userController.resendOtp);
 user_route.post('/login',isLoggedOut, loginValidator, userController.loginUser);
 
 user_route.get('/logout',isLoggedIn,userController.logoutUser);

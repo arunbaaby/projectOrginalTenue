@@ -41,5 +41,6 @@ const userSchema = new mongoose.Schema({
         default: 0 // 1 if blocked
     }
 });
+//is verified  = 0 cronjob to clean db
 
 module.exports = mongoose.model('User', userSchema);
