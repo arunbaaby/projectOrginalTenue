@@ -438,16 +438,29 @@
                                     </div>
                                     
                                     <div class="product-buttons-wrap">
-                                        <div class="product-details-cart">
-                                            <a title="Add to cart" href="#" onclick="">Add to cart</a>
-                                        </div>
+                                        <form action="/add-to-cart" method="POST" style="display:flex; align-items: center; gap: 5px;">
+                                            <input type="hidden" id="productId" name="productId" value="<%= product._id %>"> <!-- Product ID -->
+                                            <input type="hidden" id="selectedSize" name="size" value=""> <!-- Selected size -->
+                                    
+                                            <!-- Quantity Selection Component -->
+                                            <div class="product-details-quality">
+                                                <div class="cart-plus-minus">
+                                                    <input class="cart-plus-minus-box" type="text" name="quantity" value="1">
+                                                </div>
+                                            </div>
+                                    
+                                            <div class="product-details-cart">
+                                                <a title="Add to cart" href="#" onclick="event.preventDefault(); this.closest('form').submit();">Add to cart</a>
+                                            </div>
+                                        </form>
+                                    
                                         <div class="product-details-wishlist">
                                             <a title="Add to wishlist" href="#"><i class="fa fa-heart"></i></a>
                                         </div>
                                         <div class="product-details-compare">
-                                            <a title="Add to compare" href="#"><i
-                                                    class="dlicon arrows-4_compare"></i></a>
+                                            <a title="Add to compare" href="#"><i class="dlicon arrows-4_compare"></i></a>
                                         </div>
+                                    
                                     </div>
                                 </div>
 
@@ -508,7 +521,8 @@
                                     /* Style for the buttons in a row */
                                     .product-buttons-wrap {
                                         display: flex;
-                                        gap: 10px;
+                                        flex-direction: row;
+                                        gap: 5px;
                                         /* Adjust the space between buttons */
                                     }
 

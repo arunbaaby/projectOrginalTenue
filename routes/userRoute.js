@@ -59,12 +59,12 @@ user_route.get('/home',isLoggedIn,userController.loadUserHome);
 user_route.get('/allProducts',isLoggedIn,productController.allProductsLoad);
 user_route.get('/product-details',isLoggedIn,productController.productDetailsLoad);
 
-user_route.get('/auth/google', passport.authenticate('google', {
+user_route.get('/auth/google',isLoggedOut, passport.authenticate('google', {
     scope: ['profile', 'email'],
     prompt: 'select_account'  // Forces account selection prompt
 }));
 
-user_route.get('/auth/google/callback', (req, res, next) => {
+user_route.get('/auth/google/callback',isLoggedOut, (req, res, next) => {
     passport.authenticate('google', { session: false }, (err, user, info) => {
         userController.googleAuthCallback(err, user, info, req, res, next);
     })(req, res, next);

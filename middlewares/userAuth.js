@@ -32,7 +32,6 @@ const isLoggedIn = async (req, res, next) => {
                 });
             }
 
-            // `decoded` should contain the `id` field if the token was signed correctly.
             console.log(`Decoded user ID: ${decoded.id}`);
             if (!decoded.id) {
                 console.log("No user ID found in the decoded token.");
@@ -53,7 +52,7 @@ const isLoggedIn = async (req, res, next) => {
                 return res.redirect('/auth');
             }
 
-            req.user = decoded; // Attach the decoded information to the request
+            req.user = decoded;
             next();
         });
     } catch (error) {
@@ -72,7 +71,14 @@ const isLoggedIn = async (req, res, next) => {
 
 const isLoggedOut = async (req, res, next) => {
     try {
-        if (req.cookies.token) {
+        console.log('isLoggedOut working');
+        
+        if (req.cookies.jwt) {
+            console.log('isLoggedOut token');
+            
+            if (req.path === "/auth") {
+                return res.redirect("/home");
+            }
             res.redirect('/home');
         }
         else {
