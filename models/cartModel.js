@@ -23,8 +23,8 @@ const cartSchema = new mongoose.Schema({
             price:{
                 type:Number
             },
-            sizes:{
-                type:[String],
+            size:{
+                type:String,
                 enum:['S','M','L','XL','XXL']
             },
             is_selected:{

@@ -33,7 +33,7 @@ user_route.use(passport.initialize());
 const userController = require('../controllers/userController');
 const { registerValidator, loginValidator, otpMailValidator, verifyOtpValidator } = require('../helpers/validation');
 const productController = require('../controllers/productController');
-const categoryController = require('../controllers/cartController');
+const cartController = require('../controllers/cartController');
 const { log } = require('console');
 // Route for rendering combined login/register page
 user_route.get('/auth',isLoggedOut,userController.loadAuth);
@@ -51,14 +51,6 @@ user_route.post('/verify-otp',isLoggedOut, verifyOtpValidator, userController.ve
 user_route.post('/resend-otp',isLoggedOut, userController.resendOtp);
 user_route.post('/login',isLoggedOut, loginValidator, userController.loginUser);
 
-user_route.get('/logout',isLoggedIn,userController.logoutUser);
-
-user_route.get('/home',isLoggedIn,userController.loadUserHome);
-
-//shop-fullwide all products
-user_route.get('/allProducts',isLoggedIn,productController.allProductsLoad);
-user_route.get('/product-details',isLoggedIn,productController.productDetailsLoad);
-
 user_route.get('/auth/google',isLoggedOut, passport.authenticate('google', {
     scope: ['profile', 'email'],
     prompt: 'select_account'  // Forces account selection prompt
@@ -69,6 +61,19 @@ user_route.get('/auth/google/callback',isLoggedOut, (req, res, next) => {
         userController.googleAuthCallback(err, user, info, req, res, next);
     })(req, res, next);
 });
+
+user_route.get('/logout',isLoggedIn,userController.logoutUser);
+
+user_route.get('/home',isLoggedIn,userController.loadUserHome);
+
+//shop-fullwide all products
+user_route.get('/allProducts',isLoggedIn,productController.allProductsLoad);
+user_route.get('/product-details',isLoggedIn,productController.productDetailsLoad);
+
+//cart
+user_route.post('/add-to-cart',isLoggedIn,cartController.addToCart);
+
+
 
 
 
