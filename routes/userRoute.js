@@ -61,8 +61,9 @@ user_route.get('/auth/google/callback',isLoggedOut, (req, res, next) => {
         userController.googleAuthCallback(err, user, info, req, res, next);
     })(req, res, next);
 });
-
+user_route.get('/my-account',isLoggedIn,userController.myAccountLoad);
 user_route.get('/logout',isLoggedIn,userController.logoutUser);
+
 
 user_route.get('/home',isLoggedIn,userController.loadUserHome);
 
@@ -72,6 +73,7 @@ user_route.get('/product-details',isLoggedIn,productController.productDetailsLoa
 
 //cart
 user_route.post('/add-to-cart',isLoggedIn,cartController.addToCart);
+user_route.get('/cart',isLoggedIn,cartController.loadCart);
 
 
 

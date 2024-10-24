@@ -389,34 +389,7 @@
                                             <% } %>
                                 </div>
 
-                                <style>
-                                    .offer-percentage {
-                                        color: rgba(255, 0, 0, 0.84);
-                                    }
-
-                                    .new-price {
-                                        font-weight: 600;
-                                    }
-
-                                    .price-container h4 {
-                                        display: inline-block;
-                                        margin: 0;
-                                    }
-
-                                    .discounted-new-price,
-                                    .regular-new-price {
-                                        font-size: 1.5rem;
-                                        color: #140f0f;
-                                    }
-
-                                    .discounted-old-price {
-                                        font-size: 1.2rem;
-                                        text-decoration: line-through;
-                                        color: #211818;
-                                        margin-left: 10px;
-                                        vertical-align: middle;
-                                    }
-                                </style>
+                                
                                 <div class="product-details-action-wrap">
                                     <div class="product-filter">
                                         <h5>Size</h5>
@@ -450,7 +423,7 @@
                                             </div>
                                     
                                             <div class="product-details-cart">
-                                                <a title="Add to cart" href="#" onclick="event.preventDefault(); this.closest('form').submit();">Add to cart</a>
+                                                <a id="addToCartButton" title="Add to cart" href="#" onclick="event.preventDefault(); this.closest('form').submit();">Add to cart</a>
                                             </div>
                                         </form>
                                     
@@ -463,107 +436,6 @@
                                     
                                     </div>
                                 </div>
-
-
-
-
-
-                                <style>
-                                    /* Product Details Action Wrapper */
-                                    .product-details-action-wrap {
-                                        display: flex;
-                                        flex-direction: column;
-                                        align-items: flex-start;
-                                        gap: 20px;
-                                    }
-
-                                    /* Size Options Styling */
-                                    .product-size ul.size-options {
-                                        display: flex;
-                                        justify-content: flex-start;
-                                        gap: 10px;
-                                        padding: 0;
-                                        list-style: none;
-                                    }
-
-                                    .product-size ul.size-options li a {
-                                        padding: 5px 15px;
-                                        border: 1px solid #ccc;
-                                        border-radius: 4px;
-                                        text-align: center;
-                                        text-decoration: none;
-                                        transition: background-color 0.3s ease;
-                                    }
-
-                                    /* Active state for selected size */
-                                    .product-size ul.size-options li a.active {
-                                        background-color: #fc4f4f;
-                                        /* Active background color */
-                                        color: #fff;
-                                        /* Text color for active */
-                                        border-color: #fc4f4f;
-                                        /* Border color for active */
-                                    }
-
-                                    .product-size ul.size-options li a:hover {
-                                        background-color: #f0f0f0;
-                                        border-color: #000;
-                                        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-                                        /* Subtle shadow effect on hover */
-                                    }
-
-                                    /* Accessibility focus style */
-                                    .product-size ul.size-options li a:focus {
-                                        outline: 2px solid #fc4f4f;
-                                        /* Highlight for accessibility */
-                                    }
-
-                                    /* Style for the buttons in a row */
-                                    .product-buttons-wrap {
-                                        display: flex;
-                                        flex-direction: row;
-                                        gap: 5px;
-                                        /* Adjust the space between buttons */
-                                    }
-
-                                    /* Button styles for cart, wishlist, and compare */
-                                    .product-details-cart a,
-                                    .product-details-wishlist a,
-                                    .product-details-compare a {
-                                        padding: 10px 20px;
-                                        border: 1px solid #ccc;
-                                        border-radius: 4px;
-                                        text-decoration: none;
-                                        color: #000;
-                                        transition: background-color 0.3s ease;
-                                    }
-
-                                    .product-details-cart a:hover,
-                                    .product-details-wishlist a:hover,
-                                    .product-details-compare a:hover {
-                                        background-color: #f0f0f0;
-                                        border-color: #000;
-                                    }
-
-                                    /* Icon spacing in buttons */
-                                    .product-details-wishlist a i,
-                                    .product-details-compare a i {
-                                        margin-right: 5px;
-                                    }
-
-                                    /* Responsive Design */
-                                    @media (max-width: 768px) {
-                                        .product-size ul.size-options {
-                                            flex-direction: column;
-                                            /* Stack sizes vertically on small screens */
-                                        }
-
-                                        .product-buttons-wrap {
-                                            flex-direction: column;
-                                            /* Stack buttons vertically on small screens */
-                                        }
-                                    }
-                                </style>
                                 <!-- <div class="product-details-action-wrap">
                                     <div class="product-details-quality">
                                         <div class="cart-plus-minus">

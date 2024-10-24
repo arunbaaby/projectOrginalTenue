@@ -1,4 +1,5 @@
 const Cart = require('../models/cartModel');
+const Product = require('../models/productModel');
 
 const addToCart = async(req,res)=>{
     try {
@@ -9,6 +10,23 @@ const addToCart = async(req,res)=>{
         
         console.log(`quatity: ${quantity}`);
         console.log(size);
+
+        const product = await Product.findById(productId);
+        console.log(product);
+        
+
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        if(!size){
+            return res.status(404).json({ message: 'Size not selected' });
+        }
+
+        // Check if requested quantity is greater than the stock
+        if (quantity > product.stock) {
+            return res.status(400).json({ message: `Only ${product.stock} units of this product are available` });
+        }
         
         let cart = await Cart.findOne({user:userId});
         if(!cart){
@@ -42,7 +60,7 @@ const addToCart = async(req,res)=>{
         }
 
         await cart.save();
-        res.status(200).json({ msg: 'Product added to cart successfully', cart });
+        res.redirect('/cart');
         
     } catch (error) {
         console.error(error);
@@ -50,35 +68,26 @@ const addToCart = async(req,res)=>{
     }
 }
 
-// const addToCart = async (req, res) => {
-//     const { productId, quantity, sizes } = req.body;
-//     console.log(productId);
-    
-//     // const userId = req.user._id;
-//     // console.log(userId);
-    
-//     try {
-//         // let cart = await Cart.findOne({user:userId});
 
-//         // if (!cart) {
-//         //     cart = new Cart({
-//         //         user: userId,
-//         //         items: [{
-//         //             product: productId,
-//         //             quantity: quantity,
-//         //             sizes: sizes,
-//         //             is_selected: true // or set according to your logic
-//         //         }]
-//         //     });
-//         // }
+const loadCart = async(req,res)=>{
+    try {
+        const userId = req.user.id;
+        const cart = await Cart.findOne({ user: userId }).populate('items.product');
 
+        if (!cart) {
+            return res.render('cart', { items: [] }); //render empty cart if user have no cart
+        }
 
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ message: 'Internal server error', error });
-//     }
-// }
+        console.log('cartinte akathe :'+userId);
+        res.render('cart', { items: cart.items });
+        
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error', error });
+    }
+}
 
 module.exports = {
-    addToCart
+    addToCart,
+    loadCart
 }

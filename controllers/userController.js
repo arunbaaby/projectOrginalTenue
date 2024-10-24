@@ -322,6 +322,8 @@ const loginUser = async (req, res) => {
 
 
 
+
+
 // const generateAccessToken = async (user) => {
 //     const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '2h' });
 //     return token;
@@ -398,6 +400,19 @@ const logoutUser = async (req,res)=>{
     }
 }
 
+
+const myAccountLoad = async (req,res) => {
+    try {
+        res.render('my-account');
+    } catch (error) {
+        console.error('My account load error:', error.message);
+        return res.status(400).json({
+            success: false,
+            msg: error.message
+        });
+    }
+}
+
 module.exports = {
     loadAuth,
     userRegister,
@@ -407,5 +422,6 @@ module.exports = {
     resendOtp,
     loadUserHome,
     logoutUser,
-    googleAuthCallback
+    googleAuthCallback,
+    myAccountLoad
 }

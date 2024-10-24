@@ -411,7 +411,8 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const sizeOptions = document.querySelectorAll('.size-option');
-        const selectedSizeInput = document.getElementById('selectedSize'); // Hidden input for selected size
+        const selectedSizeInput = document.getElementById('selectedSize');
+        const addToCartButton = document.getElementById('addToCartButton');
 
         sizeOptions.forEach(option => {
             option.addEventListener('click', function (event) {
@@ -430,6 +431,16 @@
                 // Update the hidden input with the selected size
                 selectedSizeInput.value = selectedSize;
             });
+        });
+
+        addToCartButton.addEventListener('click', function (event) {
+            const selectedSize = selectedSizeInput.value;
+
+            if (!selectedSize) {
+                event.preventDefault(); // Prevent form submission
+                alert('Please select a size before adding to cart.');
+                return;
+            }
         });
     });
 </script>
