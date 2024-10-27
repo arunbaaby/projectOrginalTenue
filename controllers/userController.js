@@ -401,17 +401,7 @@ const logoutUser = async (req,res)=>{
 }
 
 
-const myAccountLoad = async (req,res) => {
-    try {
-        res.render('my-account');
-    } catch (error) {
-        console.error('My account load error:', error.message);
-        return res.status(400).json({
-            success: false,
-            msg: error.message
-        });
-    }
-}
+
 
 module.exports = {
     loadAuth,
@@ -423,5 +413,4 @@ module.exports = {
     loadUserHome,
     logoutUser,
     googleAuthCallback,
-    myAccountLoad
 }

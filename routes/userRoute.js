@@ -34,6 +34,7 @@ const userController = require('../controllers/userController');
 const { registerValidator, loginValidator, otpMailValidator, verifyOtpValidator } = require('../helpers/validation');
 const productController = require('../controllers/productController');
 const cartController = require('../controllers/cartController');
+const myAccountController = require('../controllers/myAccountController');
 const { log } = require('console');
 // Route for rendering combined login/register page
 user_route.get('/auth',isLoggedOut,userController.loadAuth);
@@ -61,8 +62,14 @@ user_route.get('/auth/google/callback',isLoggedOut, (req, res, next) => {
         userController.googleAuthCallback(err, user, info, req, res, next);
     })(req, res, next);
 });
-user_route.get('/my-account',isLoggedIn,userController.myAccountLoad);
+
 user_route.get('/logout',isLoggedIn,userController.logoutUser);
+
+//userAccount
+user_route.get('/my-account',isLoggedIn,myAccountController.myAccountLoad);
+user_route.post('/add-address',isLoggedIn,myAccountController.addAddress);
+user_route.post('/delete-address/:id',isLoggedIn,myAccountController.deleteAddress);
+user_route.post('/edit-address/:id',isLoggedIn,myAccountController.editAddress);
 
 
 user_route.get('/home',isLoggedIn,userController.loadUserHome);
