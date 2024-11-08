@@ -201,8 +201,26 @@ const allProductsLoad = async (req, res) => {
         const currentPage = parseInt(req.query.page) || 1;
         const itemsPerPage = 16;
 
-        // MongoDB aggregate pipeline to join category and filter by active categories
-        const productsResult = await Product.aggregate([
+        // Sorting logic
+        let sortOption = req.query.sort;
+        let sortCriteria;
+
+        switch (sortOption) {
+            case 'latest':
+                sortCriteria = { createdAt: -1 };
+                break;
+            case 'priceAsc':
+                sortCriteria = { price: 1 };
+                break;
+            case 'priceDesc':
+                sortCriteria = { price: -1 }; 
+                break;
+            default:
+                sortCriteria = null;
+                break;
+        }
+
+        const pipeline = [
             {
                 $match: {
                     is_active: true,
@@ -211,7 +229,7 @@ const allProductsLoad = async (req, res) => {
             },
             {
                 $lookup: {
-                    from: 'categories', // Assuming your collection is named 'categories'
+                    from: 'categories',
                     localField: 'category',
                     foreignField: '_id',
                     as: 'category'
@@ -222,18 +240,21 @@ const allProductsLoad = async (req, res) => {
             },
             {
                 $match: {
-                    'category.is_active': true // Filter only products with active categories
+                    'category.is_active': true
                 }
             },
+            // Conditionally add $sort only if sortCriteria exists
+            ...(sortCriteria ? [{ $sort: sortCriteria }] : []),
             {
                 $skip: (currentPage - 1) * itemsPerPage
             },
             {
                 $limit: itemsPerPage
             }
-        ]);
+        ];
 
-        // Count total items with active categories
+        const productsResult = await Product.aggregate(pipeline);
+
         const totalItemsResult = await Product.aggregate([
             {
                 $match: {
@@ -265,7 +286,7 @@ const allProductsLoad = async (req, res) => {
         const totalItems = totalItemsResult.length > 0 ? totalItemsResult[0].totalItems : 0;
         const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-        // first product's category
+        // Related products based on the first product's category
         let relatedProducts = [];
         if (productsResult.length > 0) {
             const mainProductCategory = productsResult[0].category._id;
@@ -286,14 +307,16 @@ const allProductsLoad = async (req, res) => {
             products: productsResult,
             relatedProducts,
             currentPage,
-            totalPages,    // Pass totalPages to the view
-            query
+            totalPages,
+            query,
+            sortOption
         });
     } catch (error) {
         console.error(`Error loading allProducts: ${error.message}`);
         res.status(500).send('Internal Server Error');
     }
 };
+
 
 //user side 
 const productDetailsLoad = async (req, res) => {

@@ -87,7 +87,30 @@ const loadCart = async(req,res)=>{
     }
 }
 
+const deleteCartItem = async(req,res)=>{
+    try {
+        const itemId = req.params.itemId;
+        const userId = req.user.id;
+
+        const cart = await Cart.findOne({ user: userId });
+        if (cart) {
+            cart.items = cart.items.filter(item => item._id.toString() !== itemId);//cart.items is now the new array consists items except the one with matching itemId.
+            await cart.save();
+        }
+
+        // Redirect back to the cart page
+        res.redirect('/cart');
+    } catch (error) {
+        console.error('Error deleting cart item:', error.message);
+        return res.status(400).json({
+            success: false,
+            msg: error.message
+        });
+    }
+}
+
 module.exports = {
     addToCart,
-    loadCart
+    loadCart,
+    deleteCartItem
 }

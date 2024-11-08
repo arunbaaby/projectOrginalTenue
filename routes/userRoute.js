@@ -35,6 +35,7 @@ const { registerValidator, loginValidator, otpMailValidator, verifyOtpValidator 
 const productController = require('../controllers/productController');
 const cartController = require('../controllers/cartController');
 const myAccountController = require('../controllers/myAccountController');
+const orderController = require('../controllers/orderController');
 const { log } = require('console');
 // Route for rendering combined login/register page
 user_route.get('/auth',isLoggedOut,userController.loadAuth);
@@ -81,6 +82,15 @@ user_route.get('/product-details',isLoggedIn,productController.productDetailsLoa
 //cart
 user_route.post('/add-to-cart',isLoggedIn,cartController.addToCart);
 user_route.get('/cart',isLoggedIn,cartController.loadCart);
+user_route.get('/delete-cart-item/:itemId',isLoggedIn,cartController.deleteCartItem);
+
+//order(checkout)
+user_route.get('/order',isLoggedIn,orderController.loadCheckout);
+user_route.post('/place-order',isLoggedIn,orderController.placeOrder);
+user_route.get('/order-confirmation',isLoggedIn,orderController.loadOrderConfirmation);
+user_route.get('/my-orders',isLoggedIn,orderController.loadMyOrders);
+user_route.get('/view-order',isLoggedIn,orderController.loadViewOrder);
+user_route.post('/cancel-order-item',isLoggedIn,orderController.cancelOrderItem);
 
 
 

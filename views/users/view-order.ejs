@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 24px;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto 24px;
+            padding: 0 16px;
+        }
+
+        .back-link {
+            color: #0066cc;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .need-help {
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 1.8fr 1fr;
+            gap: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        .left-section {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+        }
+
+
+        .right-section {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .order-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .order-status img {
+            width: 22px;
+            height: 22px;
+        }
+
+        .product-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 24px;
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .product-image {
+            width: 84px;
+            height: 84px;
+        }
+
+        .product-details {
+            flex: 1;
+            padding-right: 100px;
+            /* Make space for cancel button */
+        }
+
+        .cancel-order-btn {
+            color: #0066cc;
+            /* Blue text color */
+            border: 2px solid white;
+            /* Border matching the text color */
+            background-color: white;
+            /* White background */
+            text-decoration: none;
+            font-size: 14px;
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            padding: 8px 16px;
+            /* Adjusted padding for a better button size */
+            border-radius: 4px;
+            /* Rounded corners */
+            /* font-weight: 600; */
+            /* Bold font */
+            cursor: pointer;
+            /* Pointer cursor on hover */
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+            /* Smooth transitions for hover effects */
+        }
+
+        /* On hover, change the background and text color */
+        .cancel-order-btn:hover {
+            /* color: white; */
+            /* White text on hover */
+            /* background-color: #0066cc; */
+            /* Blue background on hover */
+            border-color: #0066cc;
+            /* Keep border color same as background on hover */
+        }
+
+
+        .product-title {
+            font-size: 14px;
+            font-weight: normal;
+            margin: 0 0 8px 0;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .product-size {
+            font-size: 14px;
+            color: #666;
+            margin: 4px 0;
+        }
+
+        .product-quantity {
+            font-size: 14px;
+            color: #181717;
+            margin: 4px 0;
+        }
+
+        .product-price {
+            font-size: 14px;
+            color: black;
+        }
+
+        .delivery-estimate {
+            font-size: 14px;
+            color: #666;
+            margin: 4px 0;
+        }
+
+        .order-info-box {
+            background: #fff3e0;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .order-info-box p {
+            margin: 4px 0;
+            font-size: 14px;
+        }
+
+        .payment-details {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .payment-details h3 {
+            font-size: 16px;
+            margin: 0 0 16px 0;
+            font-weight: 600;
+        }
+
+        .payment-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+
+        .payment-savings {
+            color: #00a100;
+        }
+
+        .delivery-address {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .delivery-address h3 {
+            font-size: 16px;
+            margin: 0 0 16px 0;
+            font-weight: 600;
+        }
+
+        .delivery-address p {
+            margin: 6px 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .whats-this {
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 12px;
+            margin-left: 4px;
+        }
+
+        .return-info {
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 13px;
+            text-align: right;
+            display: block;
+            margin-top: 12px;
+        }
+
+        .convenience-fee {
+            color: #666;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            text-align: center;
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+            max-width: 1200px;
+            margin: 48px auto 0;
+            padding: 24px 16px 0;
+        }
+
+        .feature {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .feature img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .feature-text {
+            font-size: 13px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        .edit-text {
+            font-size: 12px;
+            color: #666;
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <a href="/my-orders" class="back-link">← Back to Orders</a>
+        <a href="#" class="need-help">Need help?</a>
+    </div>
+
+    <div class="main-container">
+        <div class="left-section">
+
+
+            <% orderDetails.items.forEach(item=> { %>
+                <div class="order-status">
+                    <img src="/api/placeholder/22/22" alt="Confirmed icon" />
+                    <h1 style="margin: 0; font-size: 18px; font-weight: 600;">
+                        <%=item.status %>
+                    </h1>
+                </div>
+                <div class="product-container">
+                    <% if (item.product.images && item.product.images.length> 0) { %>
+                        <img src="/admin/productImages/<%= item.product.images[0] %>" alt="<%= item.product.name %>"
+                            class="product-image" width="84" height="84">
+                        <% } else { %>
+                            <img src="defaultImage.jpg" alt="No Image" class="product-image" width="84" height="84">
+                            <% } %>
+
+                                <div class="product-details">
+                                    <h2 class="product-title">
+                                        <%= item.product.name %>
+                                    </h2>
+                                    <div class="product-size">Size: <%= item.size %>
+                                            <div class="product-quantity">Quantity: <%= item.quantity %>
+                                            </div>
+                                            <div class="product-price">
+                                                ₹<%= item.discountPriceAtPurchase * item.quantity %>
+                                            </div>
+                                    </div>
+                                    <!-- <div class="delivery-estimate">Estimated Delivery: 13 Nov</div> -->
+                                </div>
+                                <!-- Cancel button with SweetAlert confirmation -->
+                                <!-- <a href="javascript:void(0);"
+                                    onclick="confirmCancelItem('<%= item._id %>', '<%= orderDetails._id %>')"
+                                    class="cancel-link">Cancel Item</a> -->
+
+                                <!-- Cancel button with SweetAlert confirmation -->
+                                <button class="cancel-order-btn" data-item-id="<%= item._id %>"
+                                    data-order-id="<%= orderDetails._id %>">
+                                    Cancel Order Item
+                                </button>
+
+
+
+                </div>
+                <% }) %>
+        </div>
+
+
+        <div class="right-section">
+            <div class="order-info-box">
+                <p>Order Number: <%= orderDetails.orderNumber %>
+                </p>
+                <!-- Render the first product name or modify as needed if multiple products should be displayed -->
+                <!-- <p>Product Name: <%= orderDetails.items.length > 0 ? orderDetails.items[0].product.name : 'No items in order' %></p> -->
+                <p>Payment Method: <%= orderDetails.paymentMethod %>
+                </p>
+            </div>
+
+
+            <div class="payment-details">
+                <h3>Order Payment Details</h3>
+                <div class="payment-row">
+                    <span>Order Amount</span>
+                    <!-- Calculate and display the total amount for all items -->
+                    <span>
+                        <%= orderDetails.items .filter(item=> item.status !== 'Cancelled')
+                            .reduce((acc, item) => acc + (item.priceAtPurchase * item.quantity), 0) %>
+                    </span>
+                </div>
+                <div class="payment-row">
+                    <span>Order Savings</span>
+                    <span class="payment-savings">
+                        <%= orderDetails.items .filter(item=> item.status !== 'Cancelled')
+                            .reduce((acc, item) => acc + ((item.priceAtPurchase - item.discountPriceAtPurchase) *
+                            item.quantity), 0) %>
+                    </span>
+                </div>
+                <div class="payment-row">
+                    <div>
+                        <span>Delivery Charge</span>
+                        <div class="convenience-fee">(Non-refundable)</div>
+                    </div>
+                    <span>
+                        <%= orderDetails.deliveryCharges %>
+                    </span>
+                </div>
+                <div class="payment-row" style="font-weight: 600; margin-top: 12px;">
+                    <span>Order Total</span>
+                    <span>
+                        <%= orderDetails.total %>
+                    </span>
+                </div>
+
+                <h3 style="margin-top: 24px;">Payment Mode</h3>
+                <div class="payment-row">
+                    <span>Cash on Delivery</span>
+                    <span>
+                        <%= orderDetails.total %>
+                    </span>
+                </div>
+                <a href="#" class="return-info">Return Information</a>
+            </div>
+
+
+            <div class="delivery-address">
+                <h3>Deliver to</h3>
+                <!-- Dynamically display the first name, last name, and phone -->
+                <p>
+                    <%= shippingAddress.firstName %>
+                        <%= shippingAddress.lastName %>
+                            <span class="edit-text">edit</span>
+                </p>
+                <!-- Dynamically display the address details -->
+                <p>
+                    <%= shippingAddress.houseNo %>, <%= shippingAddress.street %>, <%= shippingAddress.landmark %>
+                </p>
+                <p>
+                    <%= shippingAddress.city %>, <%= shippingAddress.district %>,
+                </p>
+                <p>
+                    <%= shippingAddress.state %>, India - <%= shippingAddress.pincode %>
+                </p>
+                <!-- <p>Phone: <%= shippingAddress.phone || 'N/A' %></p> -->
+            </div>
+
+            <!-- <div class="delivery-address">
+                <h3>Deliver to</h3>
+                <p>
+                    Arun
+                    <span class="edit-text">edit</span>
+                </p>
+                <p>266, Vengoor, Kidangoor P.O Angamaly /Kidangoor</p>
+                <p>kavala /near snra 66,</p>
+                <p>Surabhi marbles, Angamaly,</p>
+                <p>Angamaly, KERALA</p>
+                <p>India - 683572</p>
+                <p>Phone: 8590260356</p>
+            </div> -->
+        </div>
+    </div>
+
+    <div class="features">
+        <div class="feature">
+            <img src="/api/placeholder/40/40" alt="Easy Exchange" />
+            <span class="feature-text">EASY EXCHANGE</span>
+        </div>
+        <div class="feature">
+            <img src="/api/placeholder/40/40" alt="100% Handpicked" />
+            <span class="feature-text">100% HANDPICKED</span>
+        </div>
+        <div class="feature">
+            <img src="/api/placeholder/40/40" alt="Assured Quality" />
+            <span class="feature-text">ASSURED QUALITY</span>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.querySelectorAll('.cancel-order-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const itemId = this.getAttribute('data-item-id');
+                const orderId = this.getAttribute('data-order-id');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to cancel this item?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, cancel it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        cancelOrderItem(itemId, orderId);
+                    }
+                });
+            });
+        });
+
+        async function cancelOrderItem(itemId, orderId) {
+            try {
+                const response = await fetch('/cancel-order-item', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ itemId, orderId })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    Swal.fire('Cancelled!', 'Your item has been cancelled.', 'success').then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire('Error', result.message || 'Could not cancel item', 'error');
+                }
+            } catch (error) {
+                Swal.fire('Error', 'Something went wrong. Please try again later.', 'error');
+            }
+        }
+    </script>
+
+</body>
+
+</html>

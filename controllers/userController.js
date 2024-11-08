@@ -284,7 +284,18 @@ const loginUser = async (req, res) => {
             });
         }
 
-        const passwordMatch = await bcrypt.compare(password, userData.password);
+        if (!userData.password) {
+            return res.status(401).render('auth', {
+                loginErrors: [{ msg: 'Password is missing in the database. Contact support.' }],
+                registerErrors: [],
+                success: false,
+                msg: ''
+            });
+        }
+        
+
+        const passwordMatch = userData.password && await bcrypt.compare(password, userData.password);
+
         if (!passwordMatch) {
             console.log('Password mismatch');
             return res.status(401).render('auth', {

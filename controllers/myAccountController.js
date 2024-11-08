@@ -73,10 +73,16 @@ const addAddress = async (req, res) => {
         }
 
         await userAddress.save();
-        res.status(200).json({
-            success: true,
-            msg: 'Address added successfully.'
-        });
+        // Determine response based on AJAX request
+        if (req.xhr) {
+            return res.status(200).json({
+                success: true,
+                msg: 'Address added successfully.',
+                data: userAddress.addresses[userAddress.addresses.length - 1]
+            });
+        } else {
+            res.redirect(req.headers.referer || '/my-account');
+        }
     } catch (error) {
         console.error('Error adding the address:', error.message);
         return res.status(400).json({

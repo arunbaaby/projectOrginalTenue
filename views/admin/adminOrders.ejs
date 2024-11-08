@@ -1,0 +1,118 @@
+<%- include ('../layouts/admin/adminHeader') %>
+        
+<section class="content-main">
+    <h1>ORDER LIST</h1>
+    <div class="row">
+        <div class="col-lg-9"> <!-- Adjusted to take up 9 columns -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <form id="searchForm" action="/admin/order?q=<%= query %>&page=<%= currentPage %>" method="GET">
+                        <div class="input-group">
+                            <input type="search" class="form-control" placeholder="Search by username, OrderID or order status" name="q">
+                            <!-- Include hidden input field for current page -->
+                            <input type="hidden" name="page" value="<%= currentPage %>">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-lg btn-secondary" style="height: 45px;">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                                               
+                </div>
+            </div>
+        </div>
+    <div class="card mb-1">
+        <header class="card-header">
+            <!-- Card header -->
+            <div class="row gx-3">
+                <div class="col-lg-4 col-md-6 me-auto">
+                    <!-- Search input -->
+                </div>
+                <div class="col-lg-2 col-6 col-md-3">
+                    <!-- Status select -->
+                </div>
+                <div class="col-lg-2 col-6 col-md-3">
+                    <!-- Show select -->
+                </div>
+            </div>
+        </header>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Product Name</th>
+                            <th scope="col">Bill Total</th>
+                            <th scope="col">Order Status</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">View </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (order && order.length > 0) { %>
+                            <% order.forEach((orderItem, index) => { %>
+                                <tr>
+                                    <td><%= orderItem.orderNumber %></td>
+                                    <td><b><%= orderItem.user.name %></b></td>
+                                    <td>
+                                        <% let billTotal = 0; %>
+                                        <% orderItem.items.forEach((item, itemIndex) => { %>
+                                            <%= item.name %> (Quantity: <%= item.quantity %>, Price: INR <%= item.price %>)
+                                            <% if(itemIndex < orderItem.items.length - 1) { %>
+                                                                                        <br>
+                                            <% } %>
+                                            <% billTotal += item.quantity * item.price; %>
+                                        <% }) %> <!-- Closing tag for orderItem.items.forEach -->
+                                    </td>
+                                    <td>INR <%= billTotal %></td>
+                                    <td>
+                                        <span class="badge rounded-pill 
+                                            <%= orderItem.status === 'Pending' ? 'alert-warning' : 
+                                               orderItem.status === 'Processing' ? 'alert-primary' : 
+                                               orderItem.status === 'Shipped' ? 'alert-warning' : 
+                                               orderItem.status === 'Delivered' ? 'alert-success' : 
+                                               orderItem.status === 'Returned' ? 'alert-danger' : 
+                                               orderItem.status === 'Canceled' ? 'alert-danger' : '' %>">
+                                            <%= orderItem.status %>
+                                        </span>
+                                    </td>
+                                    <td><%= orderItem.orderDate.toLocaleDateString() %></td>
+                                    <td class="text-end">
+                                        <a href="adminorderdetails?id=<%= orderItem._id %>" class="btn btn-md rounded font-sm">Detail</a>
+                                    </td>
+                                </tr>
+                            <% }) %> 
+                        <% } %>
+                    </tbody>
+                </table>
+            
+<!-- pagination starts here -->
+<div class="page-pagination aos-init aos-animate" data-aos="fade-up" data-aos-delay="0">
+<ul class="pagination">
+<% if (currentPage > 1) { %>
+    <li class="page-item">
+        <a class="page-link" href="/admin/order?q=<%= query %>&page=<%= currentPage - 1 %>" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+        </a>
+    </li>
+<% } %>
+
+<% for (let i = 1; i <= totalPages; i++) { %>
+    <li class="page-item">
+        <a class="page-link <% if (currentPage === i) { %> active <% } %>" href="/admin/order?q=<%= query %>&page=<%= i %>"><%= i %></a>
+    </li>
+<% } %>
+
+<% if (currentPage < totalPages) { %>
+    <li class="page-item">
+        <a class="page-link" href="/admin/order?q=<%= query %>&page=<%= currentPage + 1 %>" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+        </a>
+    </li>
+<% } %>
+</ul>
+</div>
+</section>
+
+<%- include ('../layouts/admin/adminFooter') %>

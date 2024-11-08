@@ -1,6 +1,6 @@
 const User = require('../models/userModel');
 const Category = require('../models/categoryModel');
-
+const Order = require('../models/orderModel');
 //to decrypt the password
 const bcrypt = require('bcrypt');
 
@@ -159,6 +159,21 @@ const loadCategory = async(req,res)=>{
     }
 }
 
+
+const loadOrderAdmin = async (req, res) => {
+    try {
+
+        res.render('adminOrders', { orders });
+    } catch (error) {
+        console.log('adminOrder loading error:', error.message);
+        return res.status(400).json({
+            success: false,
+            msg: error.message
+        });
+    }
+};
+
+
 module.exports = {
     loadLogin,
     adminLogin,
@@ -166,5 +181,6 @@ module.exports = {
     userList,
     blockUser,
     unblockUser,
-    loadCategory
+    loadCategory,
+    loadOrderAdmin
 }

@@ -281,133 +281,267 @@
         <div class="container-fluid">
             <div class="breadcrumb-content text-center">
                 <div class="breadcrumb-title">
-                    <h2>Shopping Cart</h2>
+                    <h2>Checkout</h2>
                 </div>
                 <ul>
                     <li>
-                        <a href="index.html">Home 01 </a>
+                        <a href="/home">Home 01 </a>
                     </li>
                     <li><span> &gt; </span></li>
-                    <li class="active"> Shopping Cart </li>
+                    <li class="active">Checkout </li>
                 </ul>
             </div>
         </div>
     </div>
-    <!-- cart start -->
-    <div class="cart-main-area pt-90 pb-100">
+    <!-- checkout start -->
+    <div class="checkout-main-area pt-100 pb-100">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="customer-zone mb-30">
+                <p class="cart-page-title">Have a coupon? <a class="checkout-click" href="#">Click here to enter your
+                        code</a></p>
+                <div class="checkout-login-info">
+                    <p>If you have a coupon code, please apply it below.</p>
                     <form action="#">
-                        <div class="row">
-                            <div class="col-lg-8">
-                                <div class="table-content table-responsive cart-table-content">
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th></th>
-                                                <th>Product</th>
-                                                <th> Price</th>
-                                                <th>Quantity</th>
-                                                <th>total</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <% if (items.length === 0) { %>
-                                                <tr>
-                                                    <td colspan="6">Your cart is empty.</td>
-                                                </tr>
-                                            <% } else { %>
-                                                <% items.forEach(function(item) { %>
-                                                <tr>
-                                                    <td class="product-remove">
-                                                        <a href="/delete-cart-item/<%= item._id %>">
-                                                            <i class="dlicon ui-1_simple-remove"></i>
-                                                        </a>
-                                                    </td>
-                                                    <td class="product-img">
-                                                        <% if(item.product.images.length > 0) { %>
-                                                            <img src="/admin/productImages/<%= item.product.images[0] %>" alt="<%= item.product.name %>" height="90px" width="90px ">
-                                                        <% } else { %>
-                                                            <img src="defaultImage.jpg" alt="No Image" >
-                                                        <% } %>
-                                                    </td>
-                                                    <td class="product-name"><a href="#"><%= item.product.name %></a></td>
-                                                    <td class="product-price"><span class="amount">$<%= item.product.discountPrice %></span></td>
-                                                    <td class="cart-quality">
-                                                        <div class="product-details-quality quality-width-cart">
-                                                            <div class="cart-plus-minus">
-                                                                <input class="cart-plus-minus-box" type="text" name="qtybutton" value="<%= item.quantity %>">
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td class="product-total"><span>$<%= (item.product.discountPrice * item.quantity).toFixed(2) %></span></td>
-                                                </tr>
-                                                <% }); %>
-                                            <% } %>
-                                            <!-- <tr>
-                                                <td class="product-remove">
-                                                    <a href="#"><i class="dlicon ui-1_simple-remove"></i></a>
-                                                </td>
-                                                <td class="product-img">
-                                                    <a href="#"><img src="assets/images/cart/cart-2.jpg" alt=""></a>
-                                                </td>
-                                                <td class="product-name"><a href="#">High Collar Jacket</a></td>
-                                                <td class="product-price"><span class="amount">$26.00</span></td>
-                                                <td class="cart-quality">
-                                                    <div class="product-details-quality quality-width-cart">
-                                                        <div class="cart-plus-minus">
-                                                            <input class="cart-plus-minus-box" type="text"
-                                                                name="qtybutton" value="2">
-                                                        </div>
+                        <input type="text" placeholder="Coupon code">
+                        <input type="submit" value="Apply Coupon">
+                    </form>
+                </div>
+            </div>
+            <div class="checkout-wrap">
+                <div class="row">
+                    <div class="col-lg-7">
+                        <h3>Select an Address</h3>
+                        <div class="address-selection">
+                            <% if (userAddresses && userAddresses.addresses.length > 0) { %>
+                                <form id="selectAddressForm" action="/place-order" method="POST">
+                                    <!-- <input type="hidden" name="isNewAddress" id="isNewAddress" value="false"> -->
+                                    
+                                    <!-- Address Options -->
+                                    <% userAddresses.addresses.forEach((address, index) => { %>
+                                        <div class="address-option" style="border: 1px solid #e0e0e0; padding: 20px; margin-bottom: 15px; border-radius: 8px;">
+                                            <div style="display: flex; align-items: flex-start;">
+                                                <input type="radio" name="selectedAddress" value="<%= address._id %>" 
+                                                       id="address<%= index %>" <%= index === 0 ? 'checked' : '' %> 
+                                                       class="address-radio" style="margin-top: 5px; margin-right: 10px;">
+                                                <div style="flex-grow: 1;">
+                                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                                        <label for="address<%= index %>" style="font-weight: bold; font-size: 16px;">
+                                                            <%= address.firstName %> <%= address.lastName %>
+                                                            <span style="background-color: #e8f5e9; color: #2e7d32; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px;">
+                                                                <%= address.addressType.toUpperCase() %>
+                                                            </span>
+                                                        </label>
                                                     </div>
-                                                </td>
-                                                <td class="product-total"><span>$110.00</span></td>
-                                            </tr> -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="cart-shiping-update-wrapper">
-                                    <div class="discount-code">
-                                        <input type="text" required="" name="name" placeholder="Coupon code">
-                                        <button class="coupon-btn" type="submit">Apply coupon</button>
-                                    </div>
-                                    <div class="cart-clear">
-                                        <a href="#">Clear Cart</a>
-                                        <a href="#">Update cart</a>
-                                    </div>
+                                                    <div style="color: #666; margin-bottom: 5px;">
+                                                        <%= address.houseNo %>, <%= address.street %>,
+                                                        <% if (address.landmark) { %>
+                                                            <%= address.landmark %>,
+                                                        <% } %>
+                                                        <%= address.city %>, <%= address.district %>,
+                                                        <%= address.state %> - <%= address.pincode %>
+                                                    </div>
+                                                    <div style="color: #666;">
+                                                        Mobile: <%= address.mobile %>
+                                                    </div>
+                                                    <div style="margin-top: 15px;">
+                                                        <button type="button" class="remove-btn" 
+                                                                style="border: 1px solid #666; background: none; padding: 5px 15px; margin-right: 10px; border-radius: 4px;">
+                                                            REMOVE
+                                                        </button>
+                                                        <button type="button" class="edit-btn"
+                                                                style="border: 1px solid #666; background: none; padding: 5px 15px; border-radius: 4px;">
+                                                            EDIT
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <% }); %>
+                            <% } else { %>
+                                <p>No addresses available. Please add an address.</p>
+                            <% } %>
+                
+                            <!-- Add New Address button -->
+                            <div class="add-address-btn" style="margin-top: 20px; padding: 15px; border: 2px dashed #fc4f4f; border-radius: 8px; cursor: pointer;">
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#addAddressModal" 
+                                   style="color: #fc4f4f; text-decoration: none; display: block; text-align: center; font-weight: bold;">
+                                    + Add New Address
+                                </a>
+                            </div>
+                
+                            <!-- Payment Selection Section -->
+                            <div class="payment-selection" style="margin-top: 20px; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #ffffff;">
+                                <h3 style="margin-bottom: 15px;">Select Payment Method</h3>
+                                <div class="payment-option" style="display: flex; align-items: center;">
+                                    <input type="radio" name="paymentMethod" value="Cash on Delivery" id="cod" checked class="payment-radio" 
+                                           style="margin-right: 10px; width: 20px; height: 20px;">
+                                    <label for="cod" class="payment-label" style="font-size: 16px; margin-bottom: 0;">Cash on Delivery</label>
                                 </div>
                             </div>
-                            <div class="col-lg-4">
-                                <div class="grand-total-wrap">
-                                    <h4>Cart totals</h4>
-                                    <div class="grand-total-content">
-                                        <ul>
-                                            <% 
-                                                let subtotal = 0;
-                                                let total = 0;
-                                    
-                                                // Calculate subtotal and total
-                                                items.forEach(item => {
-                                                    subtotal += item.product.price * item.quantity; // Assuming price is the original price
-                                                    total += item.product.discountPrice * item.quantity; // Assuming discountPrice is the discounted price
-                                                });
-                                            %>
-                                            <li>Subtotal <span>$<%= subtotal %></span></li>
-                                            <li>Total <span>$<%= total %></span></li>
-                                        </ul>
+
+                        </form>
+                        </div>
+                
+                        <!-- Add Address Modal -->
+                        <div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content p-3 p-lg-5">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="addAddressModalLabel">Add New Address</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    
-                                    <div class="grand-btn">
-                                        <a href="/order">Proceed to checkout</a>
+                                    <div class="modal-body">
+                                        <div class="myaccount-content">
+                                            <div class="account-details-form">
+                                                <form id="addAddressForm" action="/add-address" method="post">
+                                                    <div class="row">
+                                                        <div class="col-lg-6">
+                                                            <div class="single-input-item">
+                                                                <label for="firstName" class="required">First Name <span>*</span></label>
+                                                                <input type="text" id="firstName" name="firstName" required />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="single-input-item">
+                                                                <label for="lastName" class="required">Last Name <span>*</span></label>
+                                                                <input type="text" id="lastName" name="lastName" required />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-6">
+                                                            <div class="single-input-item">
+                                                                <label for="addressType" class="required">Address Type <span>*</span></label>
+                                                                <select id="addressType" name="addressType" required class="form-select">
+                                                                    <option value="" disabled selected>Select Address Type</option>
+                                                                    <option value="home">Home</option>
+                                                                    <option value="office">Office</option>
+                                                                    <option value="temporary">Temporary</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="single-input-item">
+                                                                <label for="houseNo" class="required">House Number <span>*</span></label>
+                                                                <input type="text" id="houseNo" name="houseNo" required />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-6">
+                                                            <div class="single-input-item">
+                                                                <label for="street" class="required">Street <span>*</span></label>
+                                                                <input type="text" id="street" name="street" required />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="single-input-item">
+                                                                <label for="landmark">Landmark</label>
+                                                                <input type="text" id="landmark" name="landmark" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-6">
+                                                            <div class="single-input-item">
+                                                                <label for="city" class="required">City <span>*</span></label>
+                                                                <input type="text" id="city" name="city" required />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="single-input-item">
+                                                                <label for="district" class="required">District <span>*</span></label>
+                                                                <input type="text" id="district" name="district" required />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-6">
+                                                            <div class="single-input-item">
+                                                                <label for="state" class="required">State <span>*</span></label>
+                                                                <input type="text" id="state" name="state" required />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="single-input-item">
+                                                                <label for="pincode" class="required">Pincode <span>*</span></label>
+                                                                <input type="text" id="pincode" name="pincode" required />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="single-input-item">
+                                                        <button type="submit" class="check-btn sqr-btn">Save Address</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </form>
+                    </div>
+                
+                    <div class="col-lg-5">
+                        <div class="your-order-area">
+                            <h3>Your order</h3>
+                            
+                            <!-- Moved the product image here, below the heading -->
+                            <% if(items[0].product.images.length > 0) { %>
+                                <img src="/admin/productImages/<%= items[0].product.images[0] %>" alt="<%= items[0].product.name %>" height="90px" width="90px" style="display: block; margin: 15px auto;">
+                            <% } else { %>
+                                <img src="defaultImage.jpg" alt="No Image" height="90px" width="90px" style="display: block; margin: 15px auto;">
+                            <% } %>
+                    
+                            <div class="your-order-wrap gray-bg-4">
+                                <div class="your-order-info-wrap">
+                                    <div class="your-order-info">
+                                        <ul>
+                                            <li>Product <span>Total</span></li>
+                                        </ul>
+                                    </div>
+                                    <div class="your-order-middle">
+                                        <ul>
+                                            <% let subtotal = 0; let total = 0; let deliveryCharges = 50; %>
+                                            <% items.forEach(item => { %>
+                                                <li style="display: flex; align-items: center;">
+                                                    <%= item.product.name %> X <%= item.quantity %>
+                                                    <span style="margin-left: auto;">$<%= (item.product.discountPrice * item.quantity).toFixed(2) %></span>
+                                                </li>
+                                                <% subtotal += item.product.price * item.quantity; 
+                                                   total += item.product.discountPrice * item.quantity; %>
+                                            <% }); %>
+                                        </ul>
+                                    </div>
+                                    <div class="your-order-info order-subtotal">
+                                        <ul>
+                                            <li>Subtotal <span>$<%= subtotal.toFixed(2) %></span></li>
+                                        </ul>
+                                    </div>
+                                    <div class="your-order-info order-delivery">
+                                        <ul>
+                                            <li>Delivery Charges <span>$<%= deliveryCharges.toFixed(2) %></span></li>
+                                        </ul>
+                                    </div>
+                                    <div class="your-order-info order-total">
+                                        <ul>
+                                            <!-- Adding deliveryCharges to total -->
+                                            <li>Total <span>$<%= (total + deliveryCharges).toFixed(2) %></span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="place-order-btn mt-30">
+                                <button type="submit" form="selectAddressForm">Place Order</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    
                 </div>
             </div>
         </div>
     </div>
+    <!-- checkout end -->
     <%- include ('../layouts/footer') %>

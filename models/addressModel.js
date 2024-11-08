@@ -47,6 +47,10 @@ const addressSchema = new mongoose.Schema({
         state: {
             type: String,
             required: true
+        },
+        isSelected: {
+            type: Boolean,
+            default: false
         }
 
     }],

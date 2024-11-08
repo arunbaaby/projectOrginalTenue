@@ -58,6 +58,9 @@ admin_route.get('/restore-product',productController.restoreProduct);
 admin_route.get('/edit-product',productController.editProductLoad);
 admin_route.post('/edit-product', upload.array('images', 3), productController.updateProduct);
 
+//order
+admin_route.get('/order',adminController.loadOrderAdmin);
+
 
 
 module.exports = admin_route;   

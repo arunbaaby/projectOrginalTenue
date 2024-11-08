@@ -51,7 +51,8 @@ const isLoggedIn = async (req, res, next) => {
                 });
                 return res.redirect('/auth');
             }
-
+            console.log('dfasdfasdf');
+            
             req.user = decoded;
             next();
         });

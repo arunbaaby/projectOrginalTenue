@@ -445,6 +445,66 @@
     });
 </script>
 
+<script>
+    // Function to create HTML for the new address
+    function addAddressToPage(address) {
+        // Select the container where the addresses are listed
+        const addressSelectionDiv = document.getElementById('address-selection');
+    
+        // Create a new div element for the address
+        const addressDiv = document.createElement('div');
+        addressDiv.className = 'address-item'; // Add class for styling
+    
+        // Set up the HTML structure for the new address
+        addressDiv.innerHTML = `
+            <h4>${address.firstName} ${address.lastName}</h4>
+            <p>${address.houseNo}, ${address.street}, ${address.landmark}</p>
+            <p>${address.city}, ${address.district}, ${address.state} - ${address.pincode}</p>
+            <p>Type: ${address.addressType}</p>
+            <button onclick="selectAddress('${address._id}')">Select this Address</button>
+        `;
+    
+        // Append the new address to the address selection div
+        addressSelectionDiv.appendChild(addressDiv);
+    }
+    
+    // Function to handle form submission for adding an address
+    async function submitAddressForm(event) {
+        event.preventDefault(); // Prevent form from submitting normally
+    
+        // Gather form data
+        const formData = new FormData(event.target);
+        const data = Object.fromEntries(formData.entries());
+    
+        try {
+            const response = await fetch('/add-address', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+    
+            const result = await response.json();
+            if (result.success) {
+                // If successful, add the new address to the page
+                addAddressToPage(result.data); // Pass the newly added address
+                alert(result.msg); // Show success message
+            } else {
+                alert(result.msg); // Show error message if any
+            }
+        } catch (error) {
+            console.error('Error adding address:', error);
+            alert('There was an error adding the address.');
+        }
+    }
+    
+    // Attach submit handler to the form
+    document.getElementById('addressForm').addEventListener('submit', submitAddressForm);
+    </script>
+    
+
+
 
 </body>
 
