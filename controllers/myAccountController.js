@@ -92,18 +92,25 @@ const addAddress = async (req, res) => {
     }
 };
 
-const deleteAddress = async(req,res)=>{
+const deleteAddress = async (req, res) => {
     try {
         const addressId = req.params.id;
-        console.log(addressId);
+        console.log('Address ID:', addressId);
 
         // Find the user and remove the address with the given ID
-        await Address.updateOne(
+        const result = await Address.updateOne(
             { user: req.user.id },
             { $pull: { addresses: { _id: addressId } } }
         );
 
-        res.redirect('/my-account');
+        if (req.xhr) {  // Check if it's an AJAX request
+            console.log('AJAX request detected');
+            return res.status(200).json({ success: true, msg: 'Address deleted successfully.' });
+        } else {
+            // Regular request, redirect back to the referer or to the account page
+            console.log('Redirecting after delete');
+            res.redirect(req.headers.referer || '/my-account');
+        }
     } catch (error) {
         console.error('Error deleting the address:', error.message);
         return res.status(400).json({
@@ -112,6 +119,7 @@ const deleteAddress = async(req,res)=>{
         });
     }
 }
+
 
 const editAddress = async(req,res)=>{
     try {
@@ -136,7 +144,12 @@ const editAddress = async(req,res)=>{
             }
         );
 
-        res.redirect('/my-account');
+        if (req.xhr) { // Handle AJAX request
+            return res.status(200).json({ success: true, msg: 'Address updated successfully.' });
+        } else {
+            res.redirect(req.headers.referer || '/my-account');
+        }
+        
     } catch (error) {
         console.error('Error editing the address:', error.message);
         return res.status(400).json({

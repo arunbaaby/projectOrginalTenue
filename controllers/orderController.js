@@ -53,7 +53,7 @@ const loadCheckout = async (req, res) => {
         // console.log(cart.items[0].product._id);
 
         if (!cart || !cart.items.length) {
-            res.status(400).json('no items in the cart')
+            return res.status(400).json('no items in the cart');
         }
 
         res.render('checkout', { userAddresses, cart, user, items: cart.items });

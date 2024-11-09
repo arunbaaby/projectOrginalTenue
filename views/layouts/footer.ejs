@@ -56,8 +56,7 @@
                         <div id="contact-map">
                             <iframe
                                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.838709675939!2d144.95320007668528!3d-37.817246734238516!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad65d4dd5a05d97%3A0x3e64f855a564844d!2s121%20King%20St%2C%20Melbourne%20VIC%203000%2C%20Australia!5e0!3m2!1sen!2sus!4v1670477011653!5m2!1sen!2sus"
-                                style="border:0;width:100%;height:100%;" allowfullscreen=""
-                                loading="lazy"></iframe>
+                                style="border:0;width:100%;height:100%;" allowfullscreen="" loading="lazy"></iframe>
                         </div>
                     </div>
                 </div>
@@ -422,7 +421,7 @@
                 sizeOptions.forEach(opt => opt.classList.remove('active'));
 
                 // Add 'active' class to the clicked option
-                this.classList.add('active');   
+                this.classList.add('active');
 
                 // Get the selected size
                 const selectedSize = this.getAttribute('data-size');
@@ -450,11 +449,11 @@
     function addAddressToPage(address) {
         // Select the container where the addresses are listed
         const addressSelectionDiv = document.getElementById('address-selection');
-    
+
         // Create a new div element for the address
         const addressDiv = document.createElement('div');
         addressDiv.className = 'address-item'; // Add class for styling
-    
+
         // Set up the HTML structure for the new address
         addressDiv.innerHTML = `
             <h4>${address.firstName} ${address.lastName}</h4>
@@ -463,19 +462,19 @@
             <p>Type: ${address.addressType}</p>
             <button onclick="selectAddress('${address._id}')">Select this Address</button>
         `;
-    
+
         // Append the new address to the address selection div
         addressSelectionDiv.appendChild(addressDiv);
     }
-    
+
     // Function to handle form submission for adding an address
     async function submitAddressForm(event) {
         event.preventDefault(); // Prevent form from submitting normally
-    
+
         // Gather form data
         const formData = new FormData(event.target);
         const data = Object.fromEntries(formData.entries());
-    
+
         try {
             const response = await fetch('/add-address', {
                 method: 'POST',
@@ -484,7 +483,7 @@
                 },
                 body: JSON.stringify(data)
             });
-    
+
             const result = await response.json();
             if (result.success) {
                 // If successful, add the new address to the page
@@ -498,14 +497,38 @@
             alert('There was an error adding the address.');
         }
     }
-    
+
     // Attach submit handler to the form
     document.getElementById('addressForm').addEventListener('submit', submitAddressForm);
-    </script>
-    
+</script>
 
-
-
+<script>document.querySelectorAll('.remove-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const addressId = this.getAttribute('data-address-id');
+        
+        fetch(`/delete-address/${addressId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'  // Set the X-Requested-With header
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Address deleted successfully.');
+                location.reload();  // Refresh to update the addresses list
+            } else {
+                alert('Failed to delete address: ' + data.msg);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while deleting the address.');
+        });
+    });
+});
+</script>
 </body>
 
 
