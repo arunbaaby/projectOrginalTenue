@@ -20,7 +20,7 @@ const addToCart = async(req,res)=>{
         }
 
         if(!size){
-            return res.status(404).json({ message: 'Size not selected' });
+            return res.redirect(req.get('referer')); // redirects to the previous page and that is the product detials page 
         }
 
         // Check if requested quantity is greater than the stock

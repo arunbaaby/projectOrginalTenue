@@ -3,6 +3,7 @@ const User = require('../models/userModel');
 const Otp = require('../models/otpModel');
 const bcrypt = require('bcrypt');
 const otpgenerator = require('otp-generator');
+const crypto = require('crypto');
 
 const { validationResult } = require('express-validator');
 
@@ -13,6 +14,7 @@ const { generateAccessToken } = require('../utils/generateAccessToken');
 
 const jwt = require('jsonwebtoken');
 const { token } = require('morgan');
+const { log } = require('console');
 
 // First we have to show the register page..async method
 const loadAuth = async (req, res) => {
@@ -412,6 +414,114 @@ const logoutUser = async (req,res)=>{
 }
 
 
+const loadForgotPassword = async(req,res)=>{
+    try {
+        res.render('forgotPassword');
+    } catch (error) {
+        console.error('Logout Error:', error.message);
+        return res.status(400).json({
+            success: false,
+            msg: error.message
+        });
+    }
+}
+
+const forgotPasswordLink = async(req,res)=>{
+    try {
+        const userEmail = req.body.email;
+        console.log(userEmail);
+        
+        const user = await User.findOne({ email: userEmail });
+        console.log(user);
+        
+        if (!user) {
+          return res.status(404).render("forgotPassword", { userNotFound: true });
+        }
+    
+        // random token
+        const resetToken = crypto.randomBytes(32).toString("hex");
+        console.log(resetToken);
+        
+    
+        // Set token and expiration on the user's record
+        user.resetPasswordToken = resetToken;
+        user.resetPasswordExpires = Date.now() + 3600000; // 1 hour from now
+        await user.save();
+    
+        const resetLink = `${process.env.BASE_URL}/reset-password?token=${resetToken}`;
+        console.log(resetLink);
+        
+    
+        // email content
+        const subject = "Password Reset Request";
+        const content = `
+          <p>Hello,</p>
+          <p>You requested a password reset. Click the link below to reset your password:</p>
+          <a href="${resetLink}">Reset Password</a>
+          <p>This link is valid for 1 hour. If you did not request a password reset, please ignore this email.</p>
+        `;
+    
+        // Send the email
+        await mailer.sendMail(userEmail, subject, content);
+    
+        res.render("forgotPassword", { success: true });
+      } catch (error) {
+        res.render("forgotPassword", { error: true });
+      }
+}
+
+const resetPassword = async (req, res) => {
+    const token = req.query.token; 
+    console.log("reset:", token);
+    try {
+      const user = await User.findOne({
+        resetPasswordToken: token,
+        resetPasswordExpires: { $gt: Date.now() },
+      });
+  
+      if (!user) {
+        return res.render("reset-password", { token: null, invalidToken: true });
+      }
+  
+      return res.render("reset-password", { token, invalidToken: false });
+    } catch (error) {
+      console.error("Error finding user by token:", error);
+      res.status(500).send("Server error");
+    }
+  };
+  
+
+  const newPasswordUpdate = async (req, res) => {
+    const { token } = req.body;  // changed to req.body for hidden input
+    const { password } = req.body;
+  
+    try {
+      const user = await User.findOne({
+        resetPasswordToken: token,
+        resetPasswordExpires: { $gt: Date.now() },
+      });
+  
+      if (!user) {
+        return res.render("reset-password", { token, invalidToken: true });
+      }
+  
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      user.password = hashedPassword;
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpires = undefined;
+      await user.save();
+  
+      return res.redirect('/auth');
+    } catch (error) {
+      console.error("Error resetting password:", error);
+      return res.render("reset-password", { token, serverError: true });
+    }
+  };
+  
+
+
+
 
 
 module.exports = {
@@ -424,4 +534,8 @@ module.exports = {
     loadUserHome,
     logoutUser,
     googleAuthCallback,
+    loadForgotPassword,
+    forgotPasswordLink,
+    resetPassword,
+    newPasswordUpdate
 }

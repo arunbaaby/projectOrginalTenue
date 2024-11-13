@@ -53,7 +53,8 @@ const loadCheckout = async (req, res) => {
         // console.log(cart.items[0].product._id);
 
         if (!cart || !cart.items.length) {
-            return res.status(400).json('no items in the cart');
+            res.redirect('/cart');
+            // return res.status(400).json('no items in the cart');
         }
 
         res.render('checkout', { userAddresses, cart, user, items: cart.items });
@@ -74,7 +75,7 @@ const placeOrder = async (req, res) => {
 
         // console.log(userId);
         
-        // console.log(selectedAddress);
+        console.log(selectedAddress);
         // console.log('Payment method '+paymentMethod);
         
         
@@ -85,8 +86,20 @@ const placeOrder = async (req, res) => {
             return res.status(400).json({ success: false, message: 'No items in the cart to place order' });
         }
 
+        // Find the user's address document and then the specific address within it
+        const userAddresses = await Address.findOne({ user: userId });
+        if (!userAddresses) {
+            return res.status(400).json({ success: false, message: 'User addresses not found' });
+        }
+
+        const selectedAddressObj = userAddresses.addresses.find(addr => addr._id.toString() === selectedAddress);
+        if (!selectedAddressObj) {
+            return res.status(400).json({ success: false, message: 'Selected address not found' });
+        }
+
         console.log(cart.items[0].product.name);
 
+        console.log('selectedAddressObj: '+selectedAddressObj);
         
 
         // console.log(orderNumber);
@@ -102,16 +115,34 @@ const placeOrder = async (req, res) => {
         
         const itemsTotal = orderItems.reduce((sum, item) => sum + item.discountPriceAtPurchase * item.quantity, 0);
         
-        // Define or fetch the delivery charge (for example, a fixed charge of 50)
-        const deliveryCharge = 50; // Adjust this as needed or fetch from a settings/config model
+        const deliveryCharge = 50; 
         const total = itemsTotal + deliveryCharge;
 
         const orderNumber = await generateUniqueOrderNumber();
 
+        // Check and update stock for each product
+        for (const item of cart.items) {
+            const product = item.product;
+
+            // Check if there’s enough stock for the order quantity
+            if (product.stock < item.quantity) {
+                return res.status(400).json({
+                    success: false,
+                    message: `Insufficient stock for ${product.name}`
+                });
+            }
+
+            // Reduce the stock
+            product.stock -= item.quantity;
+
+            // Save the updated product
+            await product.save();
+        }
+
         const newOrder = new Order({
             user: userId,
             items: orderItems,
-            shippingAddress:selectedAddress,
+            shippingAddress:selectedAddressObj,
             total,
             orderNumber,
             paymentMethod,
@@ -124,69 +155,7 @@ const placeOrder = async (req, res) => {
 
         await Cart.updateOne({ user: userId }, { items: [] });
 
-        res.redirect(`/order-confirmation?selectedAddress=${selectedAddress}`);
-
-
-
-
-
-        
-
-        // let shippingAddress;
-
-        // if (isNewAddress === 'true') {
-        //     // Normalize the new address for consistent storage and comparison
-        //     const newAddress = normalizeAddress(req.body);
-
-        //     // Check if the normalized new address already exists
-        //     const userAddresses = await Address.findOne({ user: userId });
-        //     const addressExists = userAddresses.addresses.some(existingAddress => {
-        //         const normalizedExisting = normalizeAddress(existingAddress);
-        //         return (
-        //             normalizedExisting.street === newAddress.street &&
-        //             normalizedExisting.city === newAddress.city &&
-        //             normalizedExisting.pincode === newAddress.pincode &&
-        //             normalizedExisting.houseNo === newAddress.houseNo
-        //         );
-        //     });//return true or false
-
-        //     if (!addressExists) {
-        //         // Save the new address if it doesn't exist
-        //         const updatedAddressDoc = await Address.findOneAndUpdate(
-        //             { user: userId },
-        //             { $push: { addresses: newAddress } },
-        //             { new: true }
-        //         );
-        //         shippingAddress = updatedAddressDoc.addresses[updatedAddressDoc.addresses.length - 1];
-        //     } else {
-        //         return res.status(400).json({ success: false, message: 'This address already exists.' });
-        //     }
-        // } else {
-        //     // Use selected existing address
-        //     const userAddresses = await Address.findOne({ user: userId });
-        //     shippingAddress = userAddresses.addresses.find(addr => addr._id.toString() === selectedAddress);
-        // }
-
-        
-
-        // const total = orderItems.reduce((sum, item) => sum + item.discountPriceAtPurchase * item.quantity, 0);
-        // const orderNumber = await generateUniqueOrderNumber();
-
-        // const newOrder = new Order({
-        //     user: userId,
-        //     items: orderItems,
-        //     shippingAddress,
-        //     total,
-        //     orderNumber,
-        //     paymentMethod: 'Cash on Delivery',
-        //     paymentStatus: 'Pending'
-        // });
-        // await newOrder.save();
-
-        // // Clear the cart
-        // await Cart.updateOne({ user: userId }, { items: [] });
-
-        // res.json({ success: true, message: 'Order placed successfully!' });
+        res.redirect(`/order-confirmation?orderId=${newOrder._id}`);
     } catch (error) {
         console.error('Error placing order:', error.message);
         res.status(500).json({ success: false, msg: error.message });
@@ -194,27 +163,23 @@ const placeOrder = async (req, res) => {
 };
 
 
-const loadOrderConfirmation = async(req,res)=>{
+const loadOrderConfirmation = async (req, res) => {
     try {
-        const selectedAddress =  req.query.selectedAddress;
-        console.log('order confirm page :'+selectedAddress);
+        const orderId = req.query.orderId;
+        const order = await Order.findById(orderId);
 
-        const userAddress = await Address.findOne({
-            addresses: { $elemMatch: { _id: selectedAddress } }
-        });
+        if (!order) {
+            return res.status(404).json({ success: false, msg: 'Order not found' });
+        }
 
-        const shippingAddress = userAddress ? userAddress.addresses.find(addr => addr._id.toString() === selectedAddress) : null;
-
-        console.log(shippingAddress);
-        
-        
-        // const userAddresses = await Address.findOne({ user: userId }) || null;
-        res.render('order-confirmation',{shippingAddress});
+        const shippingAddress = order.shippingAddress;
+        res.render('order-confirmation', { shippingAddress });
     } catch (error) {
         console.error('Error loading the order confirmation page:', error.message);
         res.status(500).json({ success: false, msg: error.message });
     }
-}
+};//corrected
+
 
 const loadMyOrders = async(req,res)=>{
     try {
@@ -231,29 +196,13 @@ const loadMyOrders = async(req,res)=>{
 const loadViewOrder = async (req, res) => {
     try {
         const orderId = req.query.orderId;
-        console.log('orderId:', orderId);
-
         const orderDetails = await Order.findById(orderId).populate('items.product');
+
         if (!orderDetails) {
             return res.status(404).json({ success: false, msg: 'Order not found' });
         }
 
-        // Retrieve the address document associated with the user
-        const addressDocument = await Address.findOne({ user: orderDetails.user });
-        if (!addressDocument) {
-            return res.status(404).json({ success: false, msg: 'Address not found' });
-        }
-
-        // address matching the order's shipping address ID
-        const shippingAddress = addressDocument.addresses.find(
-            (address) => address._id.equals(orderDetails.shippingAddress)
-        );
-        if (!shippingAddress) {
-            return res.status(404).json({ success: false, msg: 'Shipping address not found' });
-        }
-
-        console.log("Shipping Address:", shippingAddress);
-
+        const shippingAddress = orderDetails.shippingAddress; // Directly access the address
         res.render('view-order', { orderDetails, shippingAddress });
     } catch (error) {
         console.error('Error loading the view-order page:', error.message);
@@ -275,7 +224,7 @@ const cancelOrderItem = async (req, res) => {
             return res.status(404).json({ success: false, msg: 'Item not found' });
         }
 
-        // status updadte to 'Cancelled'
+        // status to cancelled
         item.status = 'Cancelled';
 
         const updatedTotal = order.items.reduce((acc, item) => {
@@ -292,7 +241,6 @@ const cancelOrderItem = async (req, res) => {
             return acc;
         }, 0);
 
-        // Update the order total and save the changes
         order.total = updatedTotal;
         await order.save();
 

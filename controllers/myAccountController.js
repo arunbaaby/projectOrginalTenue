@@ -1,3 +1,5 @@
+const bcrypt = require('bcrypt');
+
 const Address = require('../models/addressModel');
 const User = require('../models/userModel');
 
@@ -159,9 +161,44 @@ const editAddress = async(req,res)=>{
     }
 }
 
+const editUserProfile = async (req, res) => {
+    try {
+        const { name, email, mobile, newPassword, confirmPassword } = req.body;
+        const userId = req.user.id;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.redirect('/my-account?message=User not found');
+        }
+
+        if (name) user.name = name;
+        if (email) user.email = email;
+        if (mobile) user.mobile = mobile;
+
+        if (newPassword && confirmPassword) {
+            if (newPassword !== confirmPassword) {
+                return res.redirect('/my-account?message=Passwords do not match');
+            }
+
+            const salt = await bcrypt.genSalt(10);
+            user.password = await bcrypt.hash(newPassword, salt);
+        }
+
+        await user.save();
+
+        res.redirect('/my-account?message=Account details updated successfully');
+
+    } catch (error) {
+        console.error('Error editing user profile:', error.message);
+        res.status(500).redirect(`/my-account?message=${encodeURIComponent(error.message)}`);
+    }
+};
+
+
 module.exports = {
     myAccountLoad,
     addAddress,
     deleteAddress,
-    editAddress
+    editAddress,
+    editUserProfile
 }

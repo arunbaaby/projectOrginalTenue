@@ -201,7 +201,7 @@ const allProductsLoad = async (req, res) => {
         const currentPage = parseInt(req.query.page) || 1;
         const itemsPerPage = 16;
 
-        // Sorting logic
+        // Sorting 
         let sortOption = req.query.sort;
         let sortCriteria;
 
@@ -213,18 +213,28 @@ const allProductsLoad = async (req, res) => {
                 sortCriteria = { price: 1 };
                 break;
             case 'priceDesc':
-                sortCriteria = { price: -1 }; 
+                sortCriteria = { price: -1 };
                 break;
             default:
                 sortCriteria = null;
                 break;
         }
 
+        // Price filter
+        const priceMin = parseInt(req.query.priceMin) || 0;
+        const priceMax = parseInt(req.query.priceMax) || Infinity;
+
+        // Brand filter case insetive 
+        const brand = req.query.brand ? new RegExp(`^${req.query.brand}$`, 'i') : null;
+
+
         const pipeline = [
             {
                 $match: {
                     is_active: true,
-                    name: { $regex: query, $options: 'i' }
+                    name: { $regex: query, $options: 'i' },
+                    price: { $gte: priceMin, $lte: priceMax },
+                    ...(brand && { brand: { $regex: brand } }) // regex =case-insensitive brand filtering
                 }
             },
             {
@@ -243,7 +253,6 @@ const allProductsLoad = async (req, res) => {
                     'category.is_active': true
                 }
             },
-            // Conditionally add $sort only if sortCriteria exists
             ...(sortCriteria ? [{ $sort: sortCriteria }] : []),
             {
                 $skip: (currentPage - 1) * itemsPerPage
@@ -259,7 +268,9 @@ const allProductsLoad = async (req, res) => {
             {
                 $match: {
                     is_active: true,
-                    name: { $regex: query, $options: 'i' }
+                    name: { $regex: query, $options: 'i' },
+                    price: { $gte: priceMin, $lte: priceMax },
+                    ...(brand && { brand: brand }) 
                 }
             },
             {
@@ -295,27 +306,30 @@ const allProductsLoad = async (req, res) => {
                 category: mainProductCategory,
                 _id: { $ne: productsResult[0]._id }
             })
-            .populate({
-                path: 'category',
-                match: { is_active: true }
-            })
-            .limit(5);
+                .populate({
+                    path: 'category',
+                    match: { is_active: true }
+                })
+                .limit(5);
         }
 
-        // Render the products and related products to the view
         res.render('allProducts', {
             products: productsResult,
             relatedProducts,
             currentPage,
             totalPages,
             query,
-            sortOption
+            sortOption,
+            brand // Pass the selected brand to the template if needed
         });
     } catch (error) {
         console.error(`Error loading allProducts: ${error.message}`);
         res.status(500).send('Internal Server Error');
     }
 };
+
+
+
 
 
 //user side 
@@ -326,20 +340,20 @@ const productDetailsLoad = async (req, res) => {
 
 
         //category field in each product should have all the category documents and info
-        const products = await Product.find({is_active:true}).populate('category')
+        const products = await Product.find({ is_active: true }).populate('category')
 
         //related products logic
         let relatedProducts = [];
 
-        if(products.length>0){
+        if (products.length > 0) {
             const mainProductCategory = product.category;
             relatedProducts = await Product.find({
-                is_active:true,
-                category:mainProductCategory,
-                _id:{$ne:product._id}//avoid the same product(main product);
+                is_active: true,
+                category: mainProductCategory,
+                _id: { $ne: product._id }//avoid the same product(main product);
             }).limit(5);
         }
-        res.render('product-details', { product,relatedProducts,products});
+        res.render('product-details', { product, relatedProducts, products });
     } catch (error) {
         console.error(`Error loading productDetails: ${error.message}`);
         res.status(500).send('Internal Server Error');

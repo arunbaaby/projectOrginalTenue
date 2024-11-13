@@ -71,6 +71,13 @@ user_route.get('/my-account',isLoggedIn,myAccountController.myAccountLoad);
 user_route.post('/add-address',isLoggedIn,myAccountController.addAddress);
 user_route.post('/delete-address/:id',isLoggedIn,myAccountController.deleteAddress);
 user_route.post('/edit-address/:id',isLoggedIn,myAccountController.editAddress);
+user_route.post('/edit-user-profile',isLoggedIn,myAccountController.editUserProfile);
+
+//forgot Password
+user_route.get('/forgot-password',userController.loadForgotPassword);
+user_route.post('/forgot-password-link',userController.forgotPasswordLink);
+user_route.get('/reset-password',userController.resetPassword);
+user_route.post('/new-password',userController.newPasswordUpdate);
 
 
 user_route.get('/home',isLoggedIn,userController.loadUserHome);

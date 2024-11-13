@@ -19,14 +19,20 @@ const userSchema = new mongoose.Schema({
         sparse: true,
         default: null
     },
-    googleId:{
-        type:String,
-        unique:true
+    googleId: {
+        type: String,
+        unique: true
     },
     password: {
         type: String,
         required: false
-    },//is user admin or not if admin value 1 else 0
+    },
+    resetPasswordToken: {
+        type: String,
+    },
+    resetPasswordExpires: {
+        type: Date,
+    },
     is_admin: {
         type: Number,
         required: true,

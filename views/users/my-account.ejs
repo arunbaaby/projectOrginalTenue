@@ -314,18 +314,17 @@
                             <div class="myaccount-content">
                                 <div class="welcome">
                                     <% if (user) { %>
-                                        <p>Hello, <strong>
-                                                <%= user.name %>
-                                            </strong>
-                                            (If Not <strong>
-                                                <%= user.name %>!
-                                            </strong>
+                                        <p>Hello, <strong><%= user.name %></strong>!</p>
+                                        <p>Email: <strong><%= user.email %></strong></p>
+                                        <p>Mobile: <strong><%= user.mobile %></strong></p>
+                                        <p>(If Not <strong><%= user.name %></strong>! 
                                             <a href="/logout" class="logout">Logout</a>)
                                         </p>
-                                        <% } else { %>
-                                            <p>Hello, Guest! <a href="/login" class="login">Login</a></p>
-                                            <% } %>
+                                    <% } else { %>
+                                        <p>Hello, Guest! <a href="/login" class="login">Login</a></p>
+                                    <% } %>
                                 </div>
+                                
 
                                 <p class="mb-0">
                                     From your account dashboard, you can view your recent orders, manage your shipping
@@ -684,62 +683,51 @@
                         <div class="tab-pane fade" id="account-info" role="tabpanel">
                             <div class="myaccount-content">
                                 <div class="account-details-form">
-                                    <form action="#">
+                                    <!-- Set the form's action to submit the user details for saving -->
+                                    <form id="editUserForm" action="/edit-user-profile" method="POST">
                                         <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="single-input-item">
-                                                    <label for="first-name" class="required">First Name
-                                                        <span>*</span></label>
-                                                    <input type="text" id="first-name" />
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div class="single-input-item">
-                                                    <label for="last-name" class="required">Last Name
-                                                        <span>*</span></label>
-                                                    <input type="text" id="last-name" />
-                                                </div>
+                                            <!-- First Name -->
+                                            <div class="single-input-item">
+                                                <label for="name" class="required">Name <span>*</span></label>
+                                                <input type="text" id="name" name="name" value="<%= user.name %>" required />
                                             </div>
                                         </div>
                                         <div class="single-input-item">
-                                            <label for="display-name" class="required">Display Name
-                                                <span>*</span></label>
-                                            <input type="text" id="display-name" />
+                                            <label for="mobile" class="required">Mobile Number <span>*</span></label>
+                                            <input type="text" id="mobile" name="mobile" value="<%= user.mobile %>" required />
                                         </div>
                                         <div class="single-input-item">
-                                            <label for="email" class="required">Email Addres <span>*</span></label>
-                                            <input type="email" id="email" />
+                                            <label for="email" class="required">Email Address <span>*</span></label>
+                                            <input type="email" id="email" name="email" value="<%= user.email %>" required />
                                         </div>
+                            
+                                        <!-- Password change section -->
                                         <fieldset>
                                             <legend>Password change</legend>
-                                            <div class="single-input-item">
-                                                <label for="current-pwd" class="required">Current password (leave blank
-                                                    to leave unchanged)</label>
-                                                <input type="password" id="current-pwd" />
-                                            </div>
                                             <div class="row">
                                                 <div class="col-lg-12">
                                                     <div class="single-input-item">
-                                                        <label for="new-pwd" class="required">New password (leave blank
-                                                            to leave unchanged)</label>
-                                                        <input type="password" id="new-pwd" />
+                                                        <label for="new-pwd" class="required">New password (leave blank to keep current password)</label>
+                                                        <input type="password" id="new-pwd" name="newPassword" />
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-12">
                                                     <div class="single-input-item">
-                                                        <label for="confirm-pwd" class="required">Confirm new
-                                                            password</label>
-                                                        <input type="password" id="confirm-pwd" />
+                                                        <label for="confirm-pwd" class="required">Confirm new password</label>
+                                                        <input type="password" id="confirm-pwd" name="confirmPassword" />
                                                     </div>
                                                 </div>
                                             </div>
                                         </fieldset>
+                            
+                                        <!-- Save changes button -->
                                         <div class="single-input-item">
-                                            <button class="check-btn sqr-btn ">Save Changes</button>
+                                            <button type="submit" class="check-btn sqr-btn">Save Changes</button>
                                         </div>
                                     </form>
                                 </div>
                             </div>
+                            
                         </div> <!-- Single Tab Content End -->
                     </div>
                 </div>

@@ -10,12 +10,13 @@ const jwt = require('jsonwebtoken');
 
 const loadLogin = async (req, res) => {
     try {
-        res.render('adminLogin',{errors:[],msg:''});
+        res.render('adminLogin', { errors: [], msg: '' });
     } catch (error) {
         console.log(error);
         res.status(500).send('Server error');
     }
-}
+};
+
 
 const adminLogin = async (req, res) => {
     try {
@@ -39,8 +40,8 @@ const adminLogin = async (req, res) => {
             console.log('User not found');
             return res.status(401).render('adminLogin', {
                 success: false,
-                msg: 'Invalid email or password', 
-                errors: [] // No validation errors here
+                msg: 'Invalid email or password',
+                errors: []
             });
         }
 
@@ -48,8 +49,8 @@ const adminLogin = async (req, res) => {
             console.log('User is not admin');
             return res.status(401).render('adminLogin', {
                 success: false,
-                msg: 'Access denied', 
-                errors: [] // No validation errors here
+                msg: 'Access denied',
+                errors: []
             });
         }
 
@@ -58,8 +59,8 @@ const adminLogin = async (req, res) => {
             console.log('Password mismatch');
             return res.status(400).render('adminLogin', {
                 success: false,
-                msg: 'Invalid email or password', 
-                errors: [] // No validation errors here
+                msg: 'Invalid email or password',
+                errors: []
             });
         }
 
@@ -69,23 +70,22 @@ const adminLogin = async (req, res) => {
         // Set JWT token in cookie
         res.cookie('jwt', accessToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', 
-            maxAge: 2 * 60 * 60 * 1000, // 2 hours
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 2 * 60 * 60 * 1000,
         });
 
         console.log('Login successful:', email);
-
         return res.redirect('/admin/home');
     } catch (error) {
         console.log('Login error:', error.message);
-
         return res.status(400).render('adminLogin', {
             success: false,
-            msg: error.message, 
-            errors: [] // No validation errors in this case
+            msg: error.message,
+            errors: []
         });
     }
 };
+
 
 
 
@@ -159,19 +159,75 @@ const loadCategory = async(req,res)=>{
     }
 }
 
-
 const loadOrderAdmin = async (req, res) => {
     try {
+        const page = parseInt(req.query.page) || 1;
+        let query = req.query.q || 'All';
+        const limit = 18; // Max number of items per page
+        const currentPage = Math.max(page, 1);
 
-        res.render('adminOrders', { orders });
-    } catch (error) {
-        console.log('adminOrder loading error:', error.message);
-        return res.status(400).json({
-            success: false,
-            msg: error.message
+        let filter = {};
+
+        if (query && query.toLowerCase() !== 'all') {
+            const users = await User.find({ name: { $regex: new RegExp(query, 'i') } });
+            const userIDs = users.map(user => user._id);
+
+            if (userIDs.length > 0) {
+                filter.user = { $in: userIDs };
+            } else if (['Delivered', 'Pending', 'Processing', 'Shipped', 'Cancelled', 'Returned'].includes(query)) {
+                filter.items = { $elemMatch: { status: query } };
+            } else {
+                // Search by order number
+                filter.orderNumber = query;
+            }
+        }
+
+        const totalOrders = await Order.countDocuments(filter);
+        const totalPages = totalOrders > 0 ? Math.ceil(totalOrders / limit) : 1;
+        const skip = (Math.min(currentPage, totalPages) - 1) * limit;
+
+        let orders = [];
+
+        //if the orders are empty we can avoid these queries
+        if (totalOrders > 0) {
+            orders = await Order.find(filter)
+                .skip(skip)
+                .limit(limit)
+                .populate({ path: 'user', select: 'name' })
+                .lean();
+            
+            // Filter out orders with a null user field becuase the if the user data is deleted form the DB
+            orders = orders.filter(order => order.user !== null);
+        }
+
+        res.render('adminOrders', {
+            order: orders,
+            currentPage,
+            totalPages,
+            query,
         });
+    } catch (error) {
+        console.error("Error:", error.message);
+        res.status(500).send('Internal Server Error');
     }
 };
+
+
+
+
+
+// const loadOrderAdmin = async (req, res) => {
+//     try {
+//         const orders = await Order.find();
+//         res.render('adminOrders', { orders }); 
+//     } catch (error) {
+//         console.log('adminOrder loading error:', error.message);
+//         return res.status(400).json({
+//             success: false,
+//             msg: error.message
+//         });
+//     }
+// };
 
 
 module.exports = {

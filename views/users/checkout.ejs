@@ -487,108 +487,113 @@
                         </div>
 
 
-                        <% userAddresses.addresses.forEach(address => { %>
-                            <!-- Edit Address Modal for each address -->
-                            <div class="modal fade" id="editAddressModal-<%= address._id %>" tabindex="-1" 
-                                aria-labelledby="editAddressModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content p-3 p-lg-5">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editAddressModalLabel">Edit Address</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="myaccount-content">
-                                                <div class="account-details-form">
-                                                    <!-- Form with unique ID and class for AJAX functionality -->
-                                                    <form id="editAddressForm-<%= address._id %>" class="editAddressForm" action="/edit-address/<%= address._id %>" method="POST">
-                                                        <div class="row">
-                                                            <div class="col-lg-6">
-                                                                <div class="single-input-item">
-                                                                    <label for="firstName-<%= address._id %>" class="required">First Name <span>*</span></label>
-                                                                    <input type="text" id="firstName-<%= address._id %>" name="firstName" value="<%= address.firstName %>" required />
+                        <% if (userAddresses && userAddresses.addresses && userAddresses.addresses.length > 0) { %>
+                            <% userAddresses.addresses.forEach(address => { %>
+                                <!-- Edit Address Modal for each address -->
+                                <div class="modal fade" id="editAddressModal-<%= address._id %>" tabindex="-1" 
+                                     aria-labelledby="editAddressModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content p-3 p-lg-5">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="editAddressModalLabel">Edit Address</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="myaccount-content">
+                                                    <div class="account-details-form">
+                                                        <!-- Form with unique ID and class for AJAX functionality -->
+                                                        <form id="editAddressForm-<%= address._id %>" class="editAddressForm" action="/edit-address/<%= address._id %>" method="POST">
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="single-input-item">
+                                                                        <label for="firstName-<%= address._id %>" class="required">First Name <span>*</span></label>
+                                                                        <input type="text" id="firstName-<%= address._id %>" name="firstName" value="<%= address.firstName %>" required />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="single-input-item">
+                                                                        <label for="lastName-<%= address._id %>" class="required">Last Name <span>*</span></label>
+                                                                        <input type="text" id="lastName-<%= address._id %>" name="lastName" value="<%= address.lastName %>" required />
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-lg-6">
-                                                                <div class="single-input-item">
-                                                                    <label for="lastName-<%= address._id %>" class="required">Last Name <span>*</span></label>
-                                                                    <input type="text" id="lastName-<%= address._id %>" name="lastName" value="<%= address.lastName %>" required />
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="single-input-item">
+                                                                        <label for="addressType-<%= address._id %>" class="required">Address Type <span>*</span></label>
+                                                                        <select id="addressType-<%= address._id %>" name="addressType" required class="form-select">
+                                                                            <option value="" disabled>Select Address Type</option>
+                                                                            <option value="home" <%= address.addressType === 'home' ? 'selected' : '' %>>Home</option>
+                                                                            <option value="office" <%= address.addressType === 'office' ? 'selected' : '' %>>Office</option>
+                                                                            <option value="temporary" <%= address.addressType === 'temporary' ? 'selected' : '' %>>Temporary</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="single-input-item">
+                                                                        <label for="houseNo-<%= address._id %>" class="required">House Number <span>*</span></label>
+                                                                        <input type="text" id="houseNo-<%= address._id %>" name="houseNo" value="<%= address.houseNo %>" required />
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-lg-6">
-                                                                <div class="single-input-item">
-                                                                    <label for="addressType-<%= address._id %>" class="required">Address Type <span>*</span></label>
-                                                                    <select id="addressType-<%= address._id %>" name="addressType" required class="form-select">
-                                                                        <option value="" disabled>Select Address Type</option>
-                                                                        <option value="home" <%= address.addressType === 'home' ? 'selected' : '' %>>Home</option>
-                                                                        <option value="office" <%= address.addressType === 'office' ? 'selected' : '' %>>Office</option>
-                                                                        <option value="temporary" <%= address.addressType === 'temporary' ? 'selected' : '' %>>Temporary</option>
-                                                                    </select>
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="single-input-item">
+                                                                        <label for="street-<%= address._id %>" class="required">Street <span>*</span></label>
+                                                                        <input type="text" id="street-<%= address._id %>" name="street" value="<%= address.street %>" required />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="single-input-item">
+                                                                        <label for="landmark-<%= address._id %>">Landmark</label>
+                                                                        <input type="text" id="landmark-<%= address._id %>" name="landmark" value="<%= address.landmark %>" />
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-lg-6">
-                                                                <div class="single-input-item">
-                                                                    <label for="houseNo-<%= address._id %>" class="required">House Number <span>*</span></label>
-                                                                    <input type="text" id="houseNo-<%= address._id %>" name="houseNo" value="<%= address.houseNo %>" required />
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="single-input-item">
+                                                                        <label for="city-<%= address._id %>" class="required">City <span>*</span></label>
+                                                                        <input type="text" id="city-<%= address._id %>" name="city" value="<%= address.city %>" required />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="single-input-item">
+                                                                        <label for="district-<%= address._id %>" class="required">District <span>*</span></label>
+                                                                        <input type="text" id="district-<%= address._id %>" name="district" value="<%= address.district %>" required />
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-lg-6">
-                                                                <div class="single-input-item">
-                                                                    <label for="street-<%= address._id %>" class="required">Street <span>*</span></label>
-                                                                    <input type="text" id="street-<%= address._id %>" name="street" value="<%= address.street %>" required />
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="single-input-item">
+                                                                        <label for="state-<%= address._id %>" class="required">State <span>*</span></label>
+                                                                        <input type="text" id="state-<%= address._id %>" name="state" value="<%= address.state %>" required />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="single-input-item">
+                                                                        <label for="pincode-<%= address._id %>" class="required">Pincode <span>*</span></label>
+                                                                        <input type="text" id="pincode-<%= address._id %>" name="pincode" value="<%= address.pincode %>" required />
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-lg-6">
-                                                                <div class="single-input-item">
-                                                                    <label for="landmark-<%= address._id %>">Landmark</label>
-                                                                    <input type="text" id="landmark-<%= address._id %>" name="landmark" value="<%= address.landmark %>" />
-                                                                </div>
+                                                            <!-- Add other fields similarly -->
+                                                            <div class="single-input-item">
+                                                                <button type="submit" class="check-btn sqr-btn">Save Changes</button>
                                                             </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-lg-6">
-                                                                <div class="single-input-item">
-                                                                    <label for="city-<%= address._id %>" class="required">City <span>*</span></label>
-                                                                    <input type="text" id="city-<%= address._id %>" name="city" value="<%= address.city %>" required />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-lg-6">
-                                                                <div class="single-input-item">
-                                                                    <label for="district-<%= address._id %>" class="required">District <span>*</span></label>
-                                                                    <input type="text" id="district-<%= address._id %>" name="district" value="<%= address.district %>" required />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-lg-6">
-                                                                <div class="single-input-item">
-                                                                    <label for="state-<%= address._id %>" class="required">State <span>*</span></label>
-                                                                    <input type="text" id="state-<%= address._id %>" name="state" value="<%= address.state %>" required />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-lg-6">
-                                                                <div class="single-input-item">
-                                                                    <label for="pincode-<%= address._id %>" class="required">Pincode <span>*</span></label>
-                                                                    <input type="text" id="pincode-<%= address._id %>" name="pincode" value="<%= address.pincode %>" required />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <!-- Add other fields similarly -->
-                                                        <div class="single-input-item">
-                                                            <button type="submit" class="check-btn sqr-btn">Save Changes</button>
-                                                        </div>
-                                                    </form>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        <% }) %>
+                            <% }) %>
+                        <% } else { %>
+                            <p>No addresses available.</p>
+                        <% } %>
+                        
                         
                         
 

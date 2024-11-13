@@ -1,18 +1,144 @@
-<%- include ('../layouts/header') %>
-    <h1>Verify OTP</h1>
-    <form action="/verify-otp" method="post">
-        <input type="hidden" name="user_id" value="<%= user_id %>">
-        <div>
-            <label for="otp">Enter OTP:</label>
-            <input type="text" id="otp" name="otp" required>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify with OTP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f9f3f3;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .icon {
+            background-color: #f1f6f8;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .icon svg {
+            width: 40px;
+            height: 40px;
+            fill: #fc4f4f;
+        }
+
+        h1 {
+            color: #1a1a1a;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .email {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .otp-input {
+            margin-bottom: 1.5rem;
+        }
+
+        .otp-input input {
+            width: 200px;
+            height: 40px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 1.25rem;
+            letter-spacing: 4px;
+            padding: 0 10px;
+        }
+
+        .otp-input input:focus {
+            outline: none;
+            border-color: #1890ff;
+        }
+
+        .timer {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .password-link {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .password-link a {
+            color: #1890ff;
+            text-decoration: none;
+            margin-left: 0.25rem;
+        }
+
+        .help-text {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .help-text a {
+            color: #ff4d4f;
+            text-decoration: none;
+            margin-left: 0.25rem;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            .otp-input input {
+                width: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">
+            <svg viewBox="0 0 24 24">
+                <path d="M17,19H7V5H17M17,1H7C5.89,1 5,1.89 5,3V21A2,2 0 0,0 7,23H17A2,2 0 0,0 19,21V3C19,1.89 18.1,1 17,1M9,7H15V9H9M9,11H13V13H9"></path>
+            </svg>
         </div>
-    
-        <button type="submit">Verify</button>
+        <h1>Verify with OTP</h1>
+        <form action="/verify-otp" method="post">
+            <input type="hidden" name="user_id" value="<%= user_id %>">
+            <div class="otp-input">
+                <input type="text" id="otp" name="otp" required>
+            </div>
+            <button type="submit">Verify</button>
+        </form>
         
         <!-- Resend OTP Section -->
         <button type="button" id="resend-otp" disabled>Resend OTP</button>
-        <p>Wait <span id="timer">60</span> seconds before resending OTP.</p>
-    
+        <p class="timer">Wait <span id="timer">60</span> seconds before resending OTP.</p>
+        <p class="password-link">Log in using<a href="#">Password</a></p>
+        <p class="help-text">Having trouble logging in?<a href="#">Get Help</a></p>
+        
         <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
             <ul>
                 <% errors.forEach(function(error) { %>
@@ -20,10 +146,9 @@
                 <% }); %>
             </ul>
         <% } %>
-    </form>
-    
+    </div>
+
     <script>
-        // Timer countdown in seconds
         let timer = 60;
         const timerElement = document.getElementById('timer');
         const resendOtpButton = document.getElementById('resend-otp');
@@ -34,14 +159,12 @@
             if (timer <= 0) {
                 clearInterval(countdown);
                 resendOtpButton.disabled = false;
-                document.querySelector('p').textContent = 'You can resend OTP now.';
+                document.querySelector('.timer').textContent = 'You can resend OTP now.';
             }
         }, 1000);
     
         // Handle resend OTP button click
         resendOtpButton.addEventListener('click', () => {
-            // Make an AJAX request to resend the OTP or submit the form
-            // Example: Use fetch API to call the server to resend the OTP
             fetch('/resend-otp', {
                 method: 'POST',
                 headers: {
@@ -52,17 +175,16 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Restart timer after resending OTP
                     timer = 60;
                     resendOtpButton.disabled = true;
-                    document.querySelector('p').textContent = `Wait ${timer} seconds before resending OTP.`;
+                    document.querySelector('.timer').textContent = `Wait ${timer} seconds before resending OTP.`;
                     countdown = setInterval(() => {
                         timer--;
                         timerElement.textContent = timer;
                         if (timer <= 0) {
                             clearInterval(countdown);
                             resendOtpButton.disabled = false;
-                            document.querySelector('p').textContent = 'You can resend OTP now.';
+                            document.querySelector('.timer').textContent = 'You can resend OTP now.';
                         }
                     }, 1000);
                 }
@@ -70,5 +192,6 @@
             .catch(error => console.error('Error:', error));
         });
     </script>
-    
-    <%- include ('../layouts/footer') %>
+</body>
+</html>
+

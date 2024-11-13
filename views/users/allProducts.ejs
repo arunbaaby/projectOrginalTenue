@@ -34,12 +34,13 @@
         <a class="search-close"><i class="dlicon ui-1_simple-remove"></i></a>
         <div class="search-content">
             <p>Start typing and press Enter to search</p>
-            <form class="search-form" action="#">
-                <input type="text" placeholder="Search">
-                <button class="button-search"><i class="dlicon ui-1_zoom"></i></button>
+            <form class="search-form" action="/allProducts" method="GET">
+                <input type="text" name="q" placeholder="Search" value="<%= query %>">
+                <button class="button-search" type="submit"><i class="dlicon ui-1_zoom"></i></button>
             </form>
         </div>
     </div>
+    
     <!-- mini cart start -->
     <div class="sidebar-cart-active">
         <div class="sidebar-cart-all">
@@ -341,15 +342,15 @@
                             <h5>Price</h5>
                             <div class="price-filter">
                                 <ul>
-                                    <li><a href="#">$0.00 - $20.00</a></li>
-                                    <li><a href="#">$20.00 - $40.00</a></li>
-                                    <li><a href="#">$30.00 - $50.00</a></li>
+                                    <li><a href="/allProducts?priceMin=900&priceMax=2000">₹900 - ₹2000</a></li>
+                                    <li><a href="/allProducts?priceMin=2000&priceMax=5000">₹2000 - ₹5000</a></li>
+                                    <li><a href="/allProducts?priceMin=5000&priceMax=15000">₹5000 - ₹15000</a></li>
                                 </ul>
                             </div>
-                        </div>
+                        </div>                        
                     </div>
                     <!-- Product Filter -->
-                    <div class="col-md-3 col-sm-6 col-xs-12 mb-20">
+                    <!-- <div class="col-md-3 col-sm-6 col-xs-12 mb-20">
                         <div class="product-filter">
                             <h5>Size</h5>
                             <div class="product-size">
@@ -363,9 +364,9 @@
                                 </ul>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <!-- Product Filter -->
-                    <div class="col-md-3 col-sm-6 col-xs-12 mb-20">
+                    <!-- <div class="col-md-3 col-sm-6 col-xs-12 mb-20">
                         <div class="product-filter">
                             <h5>Color</h5>
                             <div class="product-color">
@@ -379,21 +380,21 @@
                                 </ul>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <!-- Product Filter -->
                     <div class="col-md-3 col-sm-6 col-xs-12 mb-20">
                         <div class="product-filter">
                             <h5>Brands</h5>
                             <div class="product-brands">
                                 <ul>
-                                    <li><a href="#">Airi</a></li>
-                                    <li><a href="#">Draven</a></li>
-                                    <li><a href="#">Mango</a></li>
-                                    <li><a href="#"> Valentino</a></li>
-                                    <li><a href="#">Zara </a></li>
+                                    <li><a href="/allProducts?brand=Raymond">Raymond</a></li>
+                                    <li><a href="/allProducts?brand=Levis">Levis</a></li>
+                                    <li><a href="/allProducts?brand=Zara">Zara</a></li>
+                                    <li><a href="/allProducts?brand=FabIndia">FabIndia</a></li>
+                                    <li><a href="/allProducts?brand=Puma">Puma</a></li>
                                 </ul>
                             </div>
-                        </div>
+                        </div>                        
                     </div>
                 </div>
             </div>

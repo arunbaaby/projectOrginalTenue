@@ -103,8 +103,7 @@
                     </div>
                     <p class="text-center mb-4">Don't have account? <a href="#">Sign up</a></p>
                     <div class="errors">
-                        <!-- Check if there are any validation errors -->
-                        <% if (errors && errors.length > 0) { %>
+                        <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
                             <ul class="error-list">
                                 <% errors.forEach(function(error) { %>
                                     <li><%= error.msg %></li>
@@ -114,11 +113,11 @@
                     </div>
                     
                     <div class="general-error">
-                        <% if (msg) { %>
+                        <% if (typeof msg !== 'undefined' && msg) { %>
                             <div class="alert alert-danger"><%= msg %></div>
                         <% } %>
-                    </div>         
-                
+                    </div>
+
             </div>
         </section>
         <footer class="main-footer text-center">
