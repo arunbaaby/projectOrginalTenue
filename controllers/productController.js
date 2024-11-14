@@ -1,6 +1,7 @@
 //prouctController.js
 const Category = require('../models/categoryModel');
 const Product = require('../models/productModel');
+const Cart = require('../models/cartModel');
 
 //all products for the admin side
 const productLoad = async (req, res) => {
@@ -201,6 +202,23 @@ const allProductsLoad = async (req, res) => {
         const currentPage = parseInt(req.query.page) || 1;
         const itemsPerPage = 16;
 
+        const userId = req.user.id;
+        let cart = null;
+
+        if (userId) {
+            // Load cart only if user is logged in
+            cart = await Cart.findOne({ user: userId }).populate('items.product');
+        }
+
+        
+        let subtotal = 0;
+        if (cart) {
+            subtotal = cart.items.reduce((acc, item) => {
+                const productPrice = item.product.discountPrice ?? item.product.price ?? 0;
+                return acc + (productPrice * item.quantity);
+            }, 0);
+        }
+
         // Sorting 
         let sortOption = req.query.sort;
         let sortCriteria;
@@ -320,7 +338,9 @@ const allProductsLoad = async (req, res) => {
             totalPages,
             query,
             sortOption,
-            brand // Pass the selected brand to the template if needed
+            brand, // Pass the selected brand to the template if needed
+            cart,
+            subtotal: subtotal.toFixed(2) 
         });
     } catch (error) {
         console.error(`Error loading allProducts: ${error.message}`);

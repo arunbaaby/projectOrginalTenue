@@ -40,7 +40,7 @@
             </form>
         </div>
     </div>
-    
+
     <!-- mini cart start -->
     <div class="sidebar-cart-active">
         <div class="sidebar-cart-all">
@@ -48,34 +48,39 @@
             <div class="cart-content">
                 <h3>Shopping Cart</h3>
                 <ul>
-                    <li class="single-product-cart">
-                        <div class="cart-img">
-                            <a href="#"><img src="assets/images/cart/cart-1.jpg" alt=""></a>
-                        </div>
-                        <div class="cart-title">
-                            <h4><a href="#">Bejewelled velvet sandals</a></h4>
-                            <span> 1 × $49.00 </span>
-                        </div>
-                        <div class="cart-delete">
-                            <a href="#">×</a>
-                        </div>
-                    </li>
-                    <li class="single-product-cart">
-                        <div class="cart-img">
-                            <a href="#"><img src="assets/images/cart/cart-2.jpg" alt=""></a>
-                        </div>
-                        <div class="cart-title">
-                            <h4><a href="#">Contrast faux fur jacket</a></h4>
-                            <span> 1 × $49.00 </span>
-                        </div>
-                        <div class="cart-delete">
-                            <a href="#">×</a>
-                        </div>
-                    </li>
+                    <% if (cart && cart.items.length> 0) { %>
+                        <% cart.items.forEach(item=> { %>
+                            <li class="single-product-cart">
+                                <div class="cart-img">
+                                    <a href="#">
+                                        <img src="/admin/productImages/<%= item.product.images && item.product.images[0] %>"
+                                            alt="<%= item.product.name %>" height="90px" width="90px">
+                                    </a>
+                                </div>
+                                <div class="cart-title">
+                                    <h4><a href="#">
+                                            <%= item.product.name %>
+                                        </a></h4>
+                                    <span>
+                                        <%= item.quantity %> × $<%= item.discountPrice || item.price %>
+                                    </span>
+                                </div>
+                                <div class="cart-delete">
+                                    <a href="#">×</a>
+                                </div>
+                            </li>
+                            <% }) %>
+                                <% } else { %>
+                                    <li>Your cart is empty</li>
+                                    <% } %>
                 </ul>
+
+
+
                 <div class="cart-total">
-                    <h4>Subtotal: <span>$170.00</span></h4>
+                    <h4>Subtotal: <span>₹<%= subtotal %></span></h4>
                 </div>
+                
                 <div class="cart-checkout-btn">
                     <a class="btn-hover cart-btn-style" href="/cart">view cart</a>
                     <a class="no-mrg btn-hover cart-btn-style" href="/order">checkout</a>
@@ -237,7 +242,7 @@
                                 <ul>
                                     <li><a href="#">Login</a></li>
                                     <li><a href="#">Creat Account</a></li>
-                                    <li><a href="my-account.html">My Account</a></li>
+                                    <li><a href="/my-account">My Account</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -322,7 +327,7 @@
                     <div class="shop-short-by ml-50">
                         <input type="checkbox" id="sortToggle" style="display: none;">
                         <label for="sortToggle">
-                            Sort by <i class="fa fa-angle-down angle-down"></i> 
+                            Sort by <i class="fa fa-angle-down angle-down"></i>
                         </label>
                         <ul>
                             <li class="active"><a href="/allProducts?sort=default">Default sorting</a></li>
@@ -331,7 +336,7 @@
                             <li><a href="/allProducts?sort=priceDesc">Sort by price: high to low</a></li>
                         </ul>
                     </div>
-                                        
+
                 </div>
             </div>
             <div class="product-filter-wrapper">
@@ -347,7 +352,7 @@
                                     <li><a href="/allProducts?priceMin=5000&priceMax=15000">₹5000 - ₹15000</a></li>
                                 </ul>
                             </div>
-                        </div>                        
+                        </div>
                     </div>
                     <!-- Product Filter -->
                     <!-- <div class="col-md-3 col-sm-6 col-xs-12 mb-20">
@@ -394,7 +399,7 @@
                                     <li><a href="/allProducts?brand=Puma">Puma</a></li>
                                 </ul>
                             </div>
-                        </div>                        
+                        </div>
                     </div>
                 </div>
             </div>

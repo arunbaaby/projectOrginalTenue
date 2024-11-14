@@ -25,7 +25,8 @@ const addToCart = async(req,res)=>{
 
         // Check if requested quantity is greater than the stock
         if (quantity > product.stock) {
-            return res.status(400).json({ message: `Only ${product.stock} units of this product are available` });
+            return res.redirect(req.get('referer'));
+            // return res.status(400).json({ message: `Only ${product.stock} units of this product are available` });
         }
         
         let cart = await Cart.findOne({user:userId});
