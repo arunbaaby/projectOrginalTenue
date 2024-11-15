@@ -36,6 +36,8 @@ const productController = require('../controllers/productController');
 const cartController = require('../controllers/cartController');
 const myAccountController = require('../controllers/myAccountController');
 const orderController = require('../controllers/orderController');
+const wishlistController = require('../controllers/wishlistController');
+
 const { log } = require('console');
 // Route for rendering combined login/register page
 user_route.get('/auth',isLoggedOut,userController.loadAuth);
@@ -90,6 +92,12 @@ user_route.get('/product-details',isLoggedIn,productController.productDetailsLoa
 user_route.post('/add-to-cart',isLoggedIn,cartController.addToCart);
 user_route.get('/cart',isLoggedIn,cartController.loadCart);
 user_route.get('/delete-cart-item/:itemId',isLoggedIn,cartController.deleteCartItem);
+
+//wishlist
+user_route.get('/wishlist',isLoggedIn,wishlistController.loadWishlist);
+user_route.post('/add-to-wishlist',isLoggedIn,wishlistController.addToWishlist);
+user_route.post('/remove-from-wishlist',isLoggedIn,wishlistController.removeFromWishlist);
+
 
 //order(checkout)
 user_route.get('/order',isLoggedIn,orderController.loadCheckout);

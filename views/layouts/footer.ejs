@@ -517,6 +517,73 @@
     });
 });
 </script>
+
+<script>
+    // Select all wishlist buttons
+    document.querySelectorAll('.wishlist-button').forEach(button => {
+      button.addEventListener('click', async (event) => {
+        event.preventDefault(); // Prevent default link behavior
+  
+        const productId = button.getAttribute('data-product-id'); // Get product ID
+  
+        try {
+          // Send AJAX request to the server
+          const response = await fetch('/add-to-wishlist', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ productId }),
+          });
+  
+          const data = await response.json(); // Parse the JSON response
+          if (response.ok) {
+            // Success feedback (e.g., change the icon or show a toast)
+            alert(data.message || 'Product added to wishlist');
+            button.querySelector('i').classList.add('added'); // Add a class for styling
+          } else {
+            // Handle errors
+            alert(data.error || 'Failed to add to wishlist');
+          }
+        } catch (err) {
+          console.error(err);
+          alert('An error occurred. Please try again.');
+        }
+      });
+    });
+  </script>
+
+<script>
+    document.querySelectorAll('.remove-from-wishlist').forEach((button) => {
+      button.addEventListener('click', async (event) => {
+        event.preventDefault();
+  
+        const productId = button.getAttribute('data-product-id');
+  
+        try {
+          const response = await fetch('/remove-from-wishlist', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ productId }),
+          });
+  
+          const data = await response.json();
+          if (response.ok) {
+            alert(data.message);
+            // Remove the row from the table
+            button.closest('tr').remove();
+          } else {
+            alert(data.error || 'Failed to remove product');
+          }
+        } catch (err) {
+          console.error(err);
+          alert('An error occurred. Please try again.');
+        }
+      });
+    });
+  </script>
+  
+  
 </body>
 
 
