@@ -52,7 +52,12 @@ const orderSchema = new mongoose.Schema({
     },
     paymentMethod: {
         type: String,
-        default: 'Cash on Delivery'
+        default: 'Cash on Delivery',
+        enum: ["Razorpay", "Cash on Delivery", "Wallet"]
+    },
+    razorpayOrderId: {
+        type: String,
+        default: null,
     },
     deliveryCharges: {
         type: Number,

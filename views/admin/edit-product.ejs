@@ -148,7 +148,7 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-    const nameInput = document.getElementById('product_name');
+    // const nameInput = document.getElementById('product_name');
     const descriptionInput = document.getElementById('product_description');
     const priceInput = document.getElementById('regular_price');
     const brandInput =document.getElementById('brand_name');
@@ -157,7 +157,7 @@
     const stockInput = document.getElementById('stock_count');
     const imagesInput = document.getElementById('product_images');
 
-    nameInput.addEventListener('blur', () => validateInput('product_name', /^([A-Za-z0-9.,]+\s?)+$/, 'nameError', 'Product Name'));
+    // nameInput.addEventListener('blur', () => validateInput('product_name', /^([A-Za-z0-9.,]+\s?)+$/, 'nameError', 'Product Name'));
 
     brandInput.addEventListener('blur', () => validateInput('brand_name', /^([A-Za-z0-9.,]+\s?)+$/, 'brandError', 'Brand Name'));
 
@@ -183,7 +183,7 @@
 
 function validateForm() {
     
-    const isValidName = validateInput('product_name', /^([A-Za-z0-9.,]+\s?)+$/, 'nameError', 'Product Name');
+    // const isValidName = validateInput('product_name', /^([A-Za-z0-9.,]+\s?)+$/, 'nameError', 'Product Name');
     const isValidbrandName = validateInput('brand_name', /^([A-Za-z0-9.,]+\s?)+$/, 'brandError', 'Brand Name');
     const isValidgenderName = validateInput('gender_name', /^([A-Za-z0-9.,]+\s?)+$/, 'genderError', 'Gender Name');
     const isValidDescription = validateInput('product_description', /^\s*[A-Z][\s\S]{13,}$/, 'descriptionError', 'Description');
@@ -257,6 +257,8 @@ function validateCategory() {
     </script>
     <script>
         function deleteImage(productId, imageId, element) {
+            console.log('fetch delete image');
+            
             if (confirm('Are you sure you want to delete this image?')) {
                 fetch(`/product/delete-image?productId=${productId}&image=${imageId}`, { 
                     method: 'DELETE',

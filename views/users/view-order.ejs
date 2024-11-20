@@ -338,6 +338,8 @@
                 <!-- <p>Product Name: <%= orderDetails.items.length > 0 ? orderDetails.items[0].product.name : 'No items in order' %></p> -->
                 <p>Payment Method: <%= orderDetails.paymentMethod %>
                 </p>
+                <p>Payment status: <%= orderDetails.paymentStatus %>
+                </p>
             </div>
 
 
@@ -377,7 +379,7 @@
 
                 <h3 style="margin-top: 24px;">Payment Mode</h3>
                 <div class="payment-row">
-                    <span>Cash on Delivery</span>
+                    <span><%= orderDetails.paymentMethod %></span>
                     <span>
                         <%= orderDetails.total %>
                     </span>
