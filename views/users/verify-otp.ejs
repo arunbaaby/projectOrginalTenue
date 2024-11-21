@@ -1,6 +1,6 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -115,40 +115,178 @@
                 width: 180px;
             }
         }
+
+        .disabled {
+            opacity: 0.5;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        #resend-otp {
+            padding: 10px 20px;
+            background-color: #fc4f4f;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #resend-otp.disabled {
+            background-color: #cccccc;
+        }
+
+        .timer {
+            font-size: 14px;
+            color: rgb(59, 55, 55)
+        }
+
+        #timer {
+            color: red;
+            font-size: 18px;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="icon">
             <svg viewBox="0 0 24 24">
-                <path d="M17,19H7V5H17M17,1H7C5.89,1 5,1.89 5,3V21A2,2 0 0,0 7,23H17A2,2 0 0,0 19,21V3C19,1.89 18.1,1 17,1M9,7H15V9H9M9,11H13V13H9"></path>
+                <path
+                    d="M17,19H7V5H17M17,1H7C5.89,1 5,1.89 5,3V21A2,2 0 0,0 7,23H17A2,2 0 0,0 19,21V3C19,1.89 18.1,1 17,1M9,7H15V9H9M9,11H13V13H9">
+                </path>
             </svg>
         </div>
         <h1>Verify with OTP</h1>
-        <form action="/verify-otp" method="post">
+        <form id="otp-form" action="/verify-otp" method="post">
             <input type="hidden" name="user_id" value="<%= user_id %>">
             <div class="otp-input">
                 <input type="text" id="otp" name="otp" required>
             </div>
             <button type="submit">Verify</button>
         </form>
-        
+
         <!-- Resend OTP Section -->
-        <button type="button" id="resend-otp" disabled>Resend OTP</button>
-        <p class="timer">Wait <span id="timer">60</span> seconds before resending OTP.</p>
-        <p class="password-link">Log in using<a href="#">Password</a></p>
-        <p class="help-text">Having trouble logging in?<a href="#">Get Help</a></p>
-        
-        <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
-            <ul>
-                <% errors.forEach(function(error) { %>
-                    <li><%= error.msg %></li>
-                <% }); %>
-            </ul>
-        <% } %>
+        <button type="button" id="resend-otp" class="disabled">Resend OTP</button>
+        <p class="timer">
+            Wait <span id="timer">60</span> seconds before resending OTP.
+        </p>
+
+        <% if (typeof errors !=='undefined' && errors.length> 0) { %>
+            <div class="error-messages">
+                <ul>
+                    <% errors.forEach(function (error) { %>
+                        <li>
+                            <%= error.msg %>
+                        </li>
+                        <% }); %>
+                </ul>
+            </div>
+            <% console.log(errors); %>
+                <% } %>
+
+
     </div>
 
     <script>
+        let timer = 60;
+        let countdown; // Declare countdown globally for control
+
+        const timerElement = document.getElementById('timer');
+        const resendOtpButton = document.getElementById('resend-otp');
+        const timerMessage = document.querySelector('.timer');
+
+        // Start Timer Function
+        function startTimer() {
+            clearInterval(countdown); // Clear any existing interval
+            timer = 60; // Reset timer to 60 seconds
+
+            console.log('Timer started');
+            resendOtpButton.classList.add('disabled');
+            resendOtpButton.setAttribute('disabled', true);
+
+            // Set the message to show the initial countdown
+            timerMessage.textContent = `Wait ${timer} seconds before resending OTP.`;
+
+            countdown = setInterval(() => {
+                timer--;
+                console.log('Updating timer:', timer);
+
+                if (timerElement) {
+                    timerElement.textContent = timer; // Update the timer display
+                }
+
+                // Update message while countdown is happening
+                if (timer > 0) {
+                    timerMessage.textContent = `Wait ${timer} seconds before resending OTP.`;
+                }
+
+                // When timer reaches 0, enable the resend button and change the message
+                if (timer <= 0) {
+                    clearInterval(countdown); // Stop the timer when it reaches 0
+                    resendOtpButton.classList.remove('disabled');
+                    resendOtpButton.removeAttribute('disabled');
+                    timerMessage.textContent = 'You can resend OTP now.';
+                }
+            }, 1000); // Update every second
+        }
+
+        // Call the timer on page load
+        startTimer();
+
+
+        // Handle Form Submission
+        const form = document.getElementById('otp-form');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault(); // Prevent page reload
+
+            const formData = new FormData(form);
+            const user_id = formData.get('user_id');
+            const otp = formData.get('otp');
+
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ user_id, otp }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = '/auth?message=User registration successful';
+                    } else {
+                        alert(data.error || 'Wrong OTP entered. Please try again.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+
+        // Handle Resend OTP
+        resendOtpButton.addEventListener('click', () => {
+            if (resendOtpButton.classList.contains('disabled')) return;
+
+            fetch('/resend-otp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ user_id: "<%= user_id %>" }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // startTimer(); // Restart timer
+                        alert('A new OTP has been sent to your email.');
+                        startTimer(); // Restart timer
+                    } else {
+                        alert(data.error || 'Unable to resend OTP. Please try again later.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+
+    <!-- <script>
         let timer = 60;
         const timerElement = document.getElementById('timer');
         const resendOtpButton = document.getElementById('resend-otp');
@@ -191,7 +329,7 @@
             })
             .catch(error => console.error('Error:', error));
         });
-    </script>
+    </script> -->
 </body>
-</html>
 
+</html>

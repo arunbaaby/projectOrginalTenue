@@ -146,39 +146,19 @@ const sendOtp = async (req, res) => {
 
 const verifyOtp = async (req, res) => {
     try {
-        const errors = validationResult(req);
-
-        if (!errors.isEmpty()) {
-            return res.status(400).render('verify-otp', {
-                user_id: req.body.user_id,
-                errors: errors.array()
-            });
-        }
-
         const { user_id, otp } = req.body;
 
-        const otpData = await Otp.findOne({
-            user_id,
-            otp
-        });
-
+        const otpData = await Otp.findOne({ user_id, otp });
         if (!otpData) {
-            return res.status(400).render('verify-otp', {
-                user_id,
-                errors: [{ msg: 'You have entered the wrong OTP' }]
-            });
+            return res.status(400).json({ success: false, error: 'You have entered the wrong OTP' });
         }
 
         const isOtpExpired = await threeMinuteExpiry(otpData.timestamp);
         if (isOtpExpired) {
-            return res.status(400).render('verify-otp', {
-                user_id,
-                errors: [{ msg: 'Your OTP has expired' }]
-            });
+            return res.status(400).json({ success: false, error: 'Your OTP has expired' });
         }
 
         const { name, mobile, password } = pendingUsers[user_id];
-
         const hashPassword = await bcrypt.hash(password, 10);
 
         const user = new User({
@@ -186,25 +166,82 @@ const verifyOtp = async (req, res) => {
             email: user_id,
             mobile,
             password: hashPassword,
-            is_verified: 1
+            is_verified: 1,
         });
 
-        const userData = await user.save();
+        await user.save();
         delete pendingUsers[user_id];
 
-        res.redirect('/auth?message=User registration successful');
-        // return res.status(200).json({
-        //     success: true,
-        //     msg: 'User verification successful'
-        // });
-
+        return res.status(200).json({ success: true, message: 'User registration successful' });
     } catch (error) {
-        return res.status(400).render('verify-otp', {
-            user_id: req.body.user_id,
-            errors: [{ msg: error.message }]
-        });
+        console.error('Verify OTP Error:', error.message);
+        return res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
-}
+};
+
+
+// const verifyOtp = async (req, res) => {
+//     try {
+//         const errors = validationResult(req);
+
+//         if (!errors.isEmpty()) {
+//             return res.status(400).render('verify-otp', {
+//                 user_id: req.body.user_id,
+//                 errors: errors.array()
+//             });
+//         }
+
+//         //user email is stored in the otp model as user_id
+//         const { user_id, otp } = req.body;
+
+//         const otpData = await Otp.findOne({
+//             user_id,
+//             otp
+//         });
+
+//         if (!otpData) {
+//             return res.status(400).render('verify-otp', {
+//                 user_id,
+//                 errors: [{ msg: 'You have entered the wrong OTP' }]
+//             });
+//         }
+
+//         const isOtpExpired = await threeMinuteExpiry(otpData.timestamp);
+//         if (isOtpExpired) {
+//             return res.status(400).render('verify-otp', {
+//                 user_id,
+//                 errors: [{ msg: 'Your OTP has expired' }]
+//             });
+//         }
+
+//         const { name, mobile, password } = pendingUsers[user_id];
+
+//         const hashPassword = await bcrypt.hash(password, 10);
+
+//         const user = new User({
+//             name,
+//             email: user_id,
+//             mobile,
+//             password: hashPassword,
+//             is_verified: 1
+//         });
+
+//         await user.save();
+//         delete pendingUsers[user_id];
+
+//         res.redirect('/auth?message=User registration successful');
+//         // return res.status(200).json({
+//         //     success: true,
+//         //     msg: 'User verification successful'
+//         // });
+
+//     } catch (error) {
+//         return res.status(400).render('verify-otp', {
+//             user_id: req.body.user_id,
+//             errors: [{ msg: error.message }]
+//         });
+//     }
+// }
 
 
 const resendOtp = async (req, res) => {
@@ -213,39 +250,67 @@ const resendOtp = async (req, res) => {
 
         const pendingUser = pendingUsers[user_id];
         if (!pendingUser) {
-            return res.status(400).render('verify-otp', {
-                user_id,
-                errors: [{ msg: "User not found or OTP already verified." }]
-            });
+            return res.status(400).json({ success: false, error: 'User not found or OTP already verified.' });
         }
 
-        //timelimit for resend otp
         const oldOtpData = await Otp.findOne({ user_id });
         if (oldOtpData) {
             const canSendOtp = await oneMinuteExpiry(oldOtpData.timestamp);
             if (!canSendOtp) {
-                return res.status(400).render('verify-otp', {
-                    user_id,
-                    errors: [{ msg: 'Please try resending the OTP after some time.' }]
-                });
+                return res.status(400).json({ success: false, error: 'Please try resending the OTP after some time.' });
             }
         }
 
         const userData = { email: user_id, name: pendingUser.name };
         await generateAndSendOTP(userData);
 
-        return res.status(200).render('verify-otp', {
-            user_id,
-            errors: [{ msg: 'A new OTP has been sent to your email.' }]
-        });
+        return res.status(200).json({ success: true, message: 'A new OTP has been sent to your email.' });
     } catch (error) {
-        console.log(`Resend OTP error: ${error.message}`);
-        return res.status(400).render('verify-otp', {
-            user_id: req.body.user_id,
-            errors: [{ msg: error.message }]
-        });
+        console.error('Resend OTP Error:', error.message);
+        return res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
 };
+
+
+// const resendOtp = async (req, res) => {
+//     try {
+//         const { user_id } = req.body;
+
+//         const pendingUser = pendingUsers[user_id];
+//         if (!pendingUser) {
+//             return res.status(400).render('verify-otp', {
+//                 user_id,
+//                 errors: [{ msg: "User not found or OTP already verified." }]
+//             });
+//         }
+
+//         //timelimit for resend otp
+//         const oldOtpData = await Otp.findOne({ user_id });
+//         if (oldOtpData) {
+//             const canSendOtp = await oneMinuteExpiry(oldOtpData.timestamp);
+//             if (!canSendOtp) {
+//                 return res.status(400).render('verify-otp', {
+//                     user_id,
+//                     errors: [{ msg: 'Please try resending the OTP after some time.' }]
+//                 });
+//             }
+//         }
+
+//         const userData = { email: user_id, name: pendingUser.name };
+//         await generateAndSendOTP(userData);
+
+//         return res.status(200).render('verify-otp', {
+//             user_id,
+//             errors: [{ msg: 'A new OTP has been sent to your email.' }]
+//         });
+//     } catch (error) {
+//         console.log(`Resend OTP error: ${error.message}`);
+//         return res.status(400).render('verify-otp', {
+//             user_id: req.body.user_id,
+//             errors: [{ msg: error.message }]
+//         });
+//     }
+// };
 
 
 
