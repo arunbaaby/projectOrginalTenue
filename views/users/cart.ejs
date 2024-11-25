@@ -341,7 +341,7 @@
                                                                 <input class="cart-plus-minus-box" type="text" name="qtybutton" value="<%= item.quantity %>">
                                                             </div>
                                                         </div> -->
-                                                        <button class="cart-item-count mr-12" onclick="changeQuantity('<%= item._id %>', -1)">-</button><%= item.quantity %><button class="cart-item-count ml-12" onclick="changeQuantity('<%= item._id %>', +1)">+</button>
+                                                        <button class="cart-item-count mr-12" onclick="changeQuantity('<%= item._id %>', -1 ,'<%= item.quantity %>', '<%= item.product.stock %>')">-</button><%= item.quantity %><button class="cart-item-count ml-12" onclick="changeQuantity('<%= item._id %>', +1 ,'<%= item.quantity %>', '<%= item.product.stock %>')">+</button>
                                                     </td>
                                                     <td class="product-total"><span>₹<%= (item.product.discountPrice * item.quantity).toFixed(2) %></span></td>
                                                 </tr>

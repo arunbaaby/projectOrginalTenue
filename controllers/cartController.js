@@ -112,14 +112,26 @@ const deleteCartItem = async(req,res)=>{
 
 const updateCartQuantity = async(req,res)=>{
     try {
-        const {itemId,change} = req.body;
-        console.log(itemId+" "+change);
-        const cartItem = await Cart.findOne({ 'items._id': itemId });
-        if (!cartItem) return res.status(404).json({ success: false, message: 'Item not found in cart.' });
+        const { itemId, change } = req.body;
 
-        const item = cartItem.items.id(itemId);
-        item.quantity = Math.max(1, item.quantity + change); // Math.max= qunatity > 1
-        await cartItem.save();
+        const cart = await Cart.findOne({ 'items._id': itemId }).populate('items.product');
+        if (!cart) return res.status(404).json({ success: false, message: 'Item not found in cart.' });
+
+        const item = cart.items.id(itemId);
+
+        const product = item.product;
+        const newQuantity = item.quantity + change;
+
+        if (change > 0 && newQuantity > product.stock) {
+            return res.status(400).json({ 
+                success: false, 
+                message: `Only ${product.stock} items are available in stock.` 
+            });
+        }
+
+        // Math.max = qty>1
+        item.quantity = Math.max(1, newQuantity);
+        await cart.save();
 
         res.json({ success: true });
         
