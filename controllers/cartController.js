@@ -110,8 +110,32 @@ const deleteCartItem = async(req,res)=>{
     }
 }
 
+const updateCartQuantity = async(req,res)=>{
+    try {
+        const {itemId,change} = req.body;
+        console.log(itemId+" "+change);
+        const cartItem = await Cart.findOne({ 'items._id': itemId });
+        if (!cartItem) return res.status(404).json({ success: false, message: 'Item not found in cart.' });
+
+        const item = cartItem.items.id(itemId);
+        item.quantity = Math.max(1, item.quantity + change); // Math.max= qunatity > 1
+        await cartItem.save();
+
+        res.json({ success: true });
+        
+        
+    } catch (error) {
+        console.error('Error updating cart Qty:', error.message);
+        return res.status(400).json({
+            success: false,
+            msg: error.message
+        });
+    }
+}
+
 module.exports = {
     addToCart,
     loadCart,
-    deleteCartItem
+    deleteCartItem,
+    updateCartQuantity
 }

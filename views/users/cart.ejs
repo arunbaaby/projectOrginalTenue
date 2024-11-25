@@ -336,11 +336,12 @@
                                                     <td class="product-name"><a href="#"><%= item.product.name %></a></td>
                                                     <td class="product-price"><span class="amount">$<%= item.product.discountPrice %></span></td>
                                                     <td class="cart-quality">
-                                                        <div class="product-details-quality quality-width-cart">
+                                                        <!-- <div class="product-details-quality quality-width-cart">
                                                             <div class="cart-plus-minus">
                                                                 <input class="cart-plus-minus-box" type="text" name="qtybutton" value="<%= item.quantity %>">
                                                             </div>
-                                                        </div>
+                                                        </div> -->
+                                                        <button class="cart-item-count mr-12" onclick="changeQuantity('<%= item._id %>', -1)">-</button><%= item.quantity %><button class="cart-item-count ml-12" onclick="changeQuantity('<%= item._id %>', +1)">+</button>
                                                     </td>
                                                     <td class="product-total"><span>₹<%= (item.product.discountPrice * item.quantity).toFixed(2) %></span></td>
                                                 </tr>
@@ -370,7 +371,7 @@
                                 </div>
                                 <div class="cart-shiping-update-wrapper">
                                     <div class="discount-code">
-                                        <input type="text" required="" name="name" placeholder="Coupon code">
+                                        <input type="text" name="name" placeholder="Coupon code">
                                         <button class="coupon-btn" type="submit">Apply coupon</button>
                                     </div>
                                     <div class="cart-clear">

@@ -92,6 +92,7 @@ user_route.get('/product-details',isLoggedIn,productController.productDetailsLoa
 user_route.post('/add-to-cart',isLoggedIn,cartController.addToCart);
 user_route.get('/cart',isLoggedIn,cartController.loadCart);
 user_route.get('/delete-cart-item/:itemId',isLoggedIn,cartController.deleteCartItem);
+user_route.post('/update-cart-item',isLoggedIn,cartController.updateCartQuantity);
 
 //wishlist
 user_route.get('/wishlist',isLoggedIn,wishlistController.loadWishlist);
