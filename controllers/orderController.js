@@ -6,6 +6,7 @@ const Order = require('../models/orderModel');
 
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
+const { log } = require('console');
 
 const razorpay = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID,
@@ -338,6 +339,36 @@ const cancelOrderItem = async (req, res) => {
 };
 
 
+const changeOrderStatus = async(req,res)=>{
+    try {
+        const orderId = req.params.id;
+        const { status } = req.body;
+        log(orderId+' '+status);
+
+        const validStatuses = ['Pending', 'Processed', 'Shipped', 'Delivered', 'Cancelled'];
+        if (!validStatuses.includes(status)) {
+            return res.status(400).send('Invalid status');
+        }
+
+        const order = await Order.findById(orderId);
+        if (!order) {
+            return res.status(404).send('Order not found');
+        }
+
+        // status of all items changed have to separate later
+        order.items.forEach(item => {
+            item.status = status;
+        });
+
+        await order.save();
+
+        res.redirect(`/admin/order`);
+    } catch (error) {
+        console.error('Error updating order status:', error.message);
+        res.status(500).json({ success: false, msg: 'Internal server error' });
+    }
+}
+
 
 
 
@@ -350,5 +381,6 @@ module.exports = {
     loadMyOrders,
     loadViewOrder,
     cancelOrderItem,
-    verifyPayment
+    verifyPayment,
+    changeOrderStatus
 }

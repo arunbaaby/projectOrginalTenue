@@ -213,21 +213,25 @@ const loadOrderAdmin = async (req, res) => {
 };
 
 
+const loadAdminOrderDetails = async(req,res)=>{
+    try {
+        const orderId = req.query.id;
 
+        const order = await Order.findById(orderId)
+        .populate('user')
+        .populate('items.product') // Populate product details
+        .exec();
 
+    if (!order) {
+        return res.status(404).send('Order not found');
+    }
 
-// const loadOrderAdmin = async (req, res) => {
-//     try {
-//         const orders = await Order.find();
-//         res.render('adminOrders', { orders }); 
-//     } catch (error) {
-//         console.log('adminOrder loading error:', error.message);
-//         return res.status(400).json({
-//             success: false,
-//             msg: error.message
-//         });
-//     }
-// };
+    res.render('adminOrderDetails', { order });
+    } catch (error) {
+        console.error("Error:", error.message);
+        res.status(500).send('Internal Server Error');
+    }
+}
 
 
 module.exports = {
@@ -238,5 +242,6 @@ module.exports = {
     blockUser,
     unblockUser,
     loadCategory,
-    loadOrderAdmin
+    loadOrderAdmin,
+    loadAdminOrderDetails
 }
