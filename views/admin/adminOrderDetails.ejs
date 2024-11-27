@@ -22,7 +22,7 @@
                         <form action="/admin/change-order-status/<%= order._id %>" method="POST">
                             <select class="form-select d-inline-block mb-lg-0 mb-15 mw-200" name="status">
                                 <option value="" disabled selected>Change status</option>
-                                <% ['Pending', 'Processed', 'Shipped', 'Delivered', 'Cancelled'].forEach(status => { %>
+                                <% ['Pending', 'Processed', 'Shipped', 'Delivered', 'Cancelled' , 'Returned'].forEach(status => { %>
                                     <option value="<%= status %>" <%= order.items.some(item => item.status === status) ? 'selected' : '' %>>
                                         <%= status %>
                                     </option>

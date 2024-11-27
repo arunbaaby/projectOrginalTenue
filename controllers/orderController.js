@@ -345,7 +345,7 @@ const changeOrderStatus = async(req,res)=>{
         const { status } = req.body;
         log(orderId+' '+status);
 
-        const validStatuses = ['Pending', 'Processed', 'Shipped', 'Delivered', 'Cancelled'];
+        const validStatuses = ['Pending', 'Processed', 'Shipped', 'Delivered', 'Cancelled' , 'Returned'];
         if (!validStatuses.includes(status)) {
             return res.status(400).send('Invalid status');
         }
@@ -370,6 +370,57 @@ const changeOrderStatus = async(req,res)=>{
 }
 
 
+const returnOrderItem = async (req, res) => {
+    try {
+        const { itemId, orderId } = req.body;
+
+        const order = await Order.findById(orderId);
+        if (!order) {
+            return res.status(404).json({ success: false, msg: 'Order not found' });
+        }
+
+        const item = order.items.id(itemId);
+        if (!item) {
+            return res.status(404).json({ success: false, msg: 'Item not found' });
+        }
+
+        if (item.status !== 'Delivered') {
+            return res.status(400).json({ success: false, msg: 'Item cannot be returned unless it is delivered' });
+        }
+
+        item.status = 'Returned';
+
+        const updatedTotal = order.items.reduce((acc, item) => {
+            if (item.status !== 'Cancelled' && item.status !== 'Returned') {
+                return acc + (item.discountPriceAtPurchase * item.quantity);
+            }
+            return acc;
+        }, 0);
+
+        const updatedSavings = order.items.reduce((acc, item) => {
+            if (item.status !== 'Cancelled' && item.status !== 'Returned') {
+                return acc + ((item.priceAtPurchase - item.discountPriceAtPurchase) * item.quantity);
+            }
+            return acc;
+        }, 0);
+
+        order.total = updatedTotal;
+        await order.save();
+
+        res.status(200).json({ 
+            success: true, 
+            msg: 'Item returned successfully', 
+            updatedTotal, 
+            updatedSavings,
+            deliveryCharges: order.deliveryCharges 
+        });
+    } catch (error) {
+        console.error('Error returning the item:', error.message);
+        res.status(500).json({ success: false, msg: 'Internal server error' });
+    }
+};
+
+
 
 
 
@@ -382,5 +433,6 @@ module.exports = {
     loadViewOrder,
     cancelOrderItem,
     verifyPayment,
-    changeOrderStatus
+    changeOrderStatus,
+    returnOrderItem
 }

@@ -107,6 +107,7 @@ user_route.get('/order-confirmation',isLoggedIn,orderController.loadOrderConfirm
 user_route.get('/my-orders',isLoggedIn,orderController.loadMyOrders);
 user_route.get('/view-order',isLoggedIn,orderController.loadViewOrder);
 user_route.post('/cancel-order-item',isLoggedIn,orderController.cancelOrderItem);
+user_route.post('/return-order-item',isLoggedIn,orderController.returnOrderItem);
 
 //verify payment
 user_route.post('/verify-payment',isLoggedIn,orderController.verifyPayment);
