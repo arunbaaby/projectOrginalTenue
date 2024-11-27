@@ -3,6 +3,7 @@ const Cart = require('../models/cartModel');
 const Product = require('../models/productModel');
 const User = require('../models/userModel');
 const Order = require('../models/orderModel');
+const Wallet = require('../models/walletModel');
 
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
@@ -374,7 +375,7 @@ const returnOrderItem = async (req, res) => {
     try {
         const { itemId, orderId } = req.body;
 
-        const order = await Order.findById(orderId);
+        const order = await Order.findById(orderId).populate('user');
         if (!order) {
             return res.status(404).json({ success: false, msg: 'Order not found' });
         }
@@ -388,7 +389,31 @@ const returnOrderItem = async (req, res) => {
             return res.status(400).json({ success: false, msg: 'Item cannot be returned unless it is delivered' });
         }
 
+        if (order.paymentStatus !== 'Completed') {
+            return res.status(400).json({ success: false, msg: 'Refunds can only be processed for completed payments' });
+        }
+
         item.status = 'Returned';
+
+        const refundAmount = item.discountPriceAtPurchase * item.quantity;
+
+        const wallet = await Wallet.findOne({ user: order.user._id });
+        if (wallet) {
+            wallet.amount += refundAmount;
+        } else {
+            await Wallet.create({
+                user: order.user._id,
+                amount: refundAmount,
+                orders: [order._id]
+            });
+        }
+
+        if (wallet) {
+            if (!wallet.orders.includes(order._id)) {
+                wallet.orders.push(order._id); // if order id not present in wallet model 
+            }
+            await wallet.save();
+        }
 
         const updatedTotal = order.items.reduce((acc, item) => {
             if (item.status !== 'Cancelled' && item.status !== 'Returned') {
@@ -409,7 +434,9 @@ const returnOrderItem = async (req, res) => {
 
         res.status(200).json({ 
             success: true, 
-            msg: 'Item returned successfully', 
+            msg: 'Item returned successfully and refund added to wallet', 
+            refundAmount,
+            walletAmount: wallet ? wallet.amount : refundAmount, 
             updatedTotal, 
             updatedSavings,
             deliveryCharges: order.deliveryCharges 
@@ -419,10 +446,6 @@ const returnOrderItem = async (req, res) => {
         res.status(500).json({ success: false, msg: 'Internal server error' });
     }
 };
-
-
-
-
 
 
 module.exports = {
