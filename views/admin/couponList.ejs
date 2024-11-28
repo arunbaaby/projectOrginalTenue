@@ -17,7 +17,7 @@
                     <thead>
                         <tr>
                             <th>SL NO.</th>
-                            <th>Coupon Name</th>
+                            <th>Coupon Code</th>
                             <th>Description</th>
                             <th>Discount In Purchase Amount</th>
                             <th>Minimum Purchase Amount</th>
@@ -41,13 +41,22 @@
                                 <td><%= coupon.maxUsers %></td>
                                 <td>
                                     <% if (coupon.isActive) { %>
-                                        <span style="color: green;">Active</span>
-                                    <% } else { %>
                                         <span style="color: red;">Inactive</span>
+                                    <% } else { %>
+                                        <span style="color: green;">Active</span>
                                     <% } %>
                                 </td>
                                     <td>
-                                        <button class="btn btn-danger" onclick="deleteCoupon('<%= coupon._id %>')">Delete</button>
+                                        <% if (coupon.is_active) { %>
+                                            <form action="/admin/deactivate-coupon/<%= coupon._id %>" method="POST" style="display:inline;">
+                                                <button type="submit" class="btn btn-danger">Deactivate</button>
+                                            </form>
+                                        <% } else { %>
+                                            <form action="/admin/activate-coupon/<%= coupon._id %>" method="POST" style="display:inline;">
+                                                <button type="submit" class="btn btn-success">Activate</button>
+                                            </form>
+                                        <% } %>
+                                        <!-- <button class="btn btn-danger" value="<%= coupon._id %>">Delete</button> -->
                                     </td>
                              </tr>
                         <% }); %>

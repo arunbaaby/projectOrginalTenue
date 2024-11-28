@@ -59,9 +59,38 @@ const createCoupon = async(req,res)=>{
     }
 }
 
+const deactivateCoupon = async(req,res)=>{
+    try {
+        const couponId = req.params.id;
+        await Coupon.findByIdAndUpdate(couponId, { is_active: false });
+        console.log(`Coupon with ID ${couponId} deactivated`);
+        res.redirect('/admin/coupon');
+        // res.send('decativate coupon');
+        
+    } catch (error) {
+        console.error('Error deactivating coupon :', error.message);
+        res.status(500).json({ success: false, msg: 'Internal server error' });
+    }
+}
+
+
+const activateCoupon = async(req,res)=>{
+    try {
+        const couponId = req.params.id;
+        await Coupon.findByIdAndUpdate(couponId, { is_active: true });
+        console.log(`Coupon with ID ${couponId} activated`);
+        res.redirect('/admin/coupon');
+    } catch (error) {
+        console.error('Error activating coupon :', error.message);
+        res.status(500).json({ success: false, msg: 'Internal server error' });
+    }
+}
+
 
 module.exports = {
     loadCouponList,
     loadCreateCoupon,
-    createCoupon
+    createCoupon,
+    deactivateCoupon,
+    activateCoupon
 }

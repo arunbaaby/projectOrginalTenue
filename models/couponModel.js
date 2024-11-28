@@ -44,7 +44,7 @@ const couponSchema = new Schema({
         type: Date,
         required: true,
     },
-    isActive: {
+    is_active: {
         type: Boolean,
         default: true,
     },
