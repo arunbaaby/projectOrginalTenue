@@ -19,7 +19,49 @@ const loadCreateCoupon = async(req,res)=>{
     }
 }
 
+const createCoupon = async(req,res)=>{
+    try {
+        const {
+            name,
+            code,
+            description,
+            discountPercentage,
+            minPurchaseAmount,
+            maxPurchaseAmount,
+            expirationDate,
+            maxUsers
+        } = req.body;
+
+
+        if(discountPercentage>=5 && discountPercentage<75 && minPurchaseAmount>0 && maxPurchaseAmount>0){
+            const newCoupon = new Coupon({
+                name,
+                code,
+                description,
+                minimumAmount: minPurchaseAmount,
+                maximumAmount: maxPurchaseAmount,
+                discountPercentage:discountPercentage,
+                expirationDate: new Date(expirationDate),
+                maxUsers
+            });
+            const addedcoupon = await newCoupon.save();
+            console.log(addedcoupon+" coupon saved");
+            return res.status(200).json({ success: true, message: "Coupon created successfully." });
+        }
+
+        res.status(200).json({ success: false, message: "Coupon creation failed" });
+
+        res.send('create coupon');
+        
+    } catch (error) {
+        console.error('Error creating coupon    :', error.message);
+        res.status(500).json({ success: false, msg: 'Internal server error' });
+    }
+}
+
+
 module.exports = {
     loadCouponList,
-    loadCreateCoupon
+    loadCreateCoupon,
+    createCoupon
 }

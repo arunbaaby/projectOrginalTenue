@@ -22,6 +22,7 @@
 <!-- Main Script -->
 <script src="assets/js/main.js" type="text/javascript"></script>
 <script src="assets/js/custom-chart.js" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Active Menu Script -->
 <script>
@@ -32,6 +33,242 @@
             link.parentElement.classList.remove('active');
         }
     });
+</script>
+
+<script>
+    document.getElementById('generateCode').onclick = function () {
+        const randomCode = 'CP' + Math.random().toString(36).substr(2, 8).toUpperCase();
+        document.getElementById('couponCode').value = randomCode;
+        console.log(`generate code ${randomCode}`);
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const formattedDate = tomorrow.toISOString().split('T')[0];
+
+        const expirationDateInput = document.getElementById('expirationDate');
+        expirationDateInput.value = formattedDate;
+        expirationDateInput.min = formattedDate;
+
+        const minimumAmountInput = document.getElementById('minPurchaseAmount');
+        const maximumAmountInput = document.getElementById('maxPurchaseAmount');
+        maximumAmountInput.min = minimumAmountInput.value;
+    });
+
+    function validateInput(inputId, pattern, errorId, errorMessage) {
+        const inputValue = document.getElementById(inputId).value.trim();
+        const errorElement = document.getElementById(errorId);
+
+        if (inputValue === '') {
+            errorElement.innerText = errorMessage + ' is required.';
+            return false;
+        } else if (pattern && !pattern.test(inputValue)) {
+            errorElement.innerText = 'Please enter a valid ' + errorMessage.toLowerCase() + '.';
+            return false;
+        } else {
+            errorElement.innerText = '';
+            return true;
+        }
+    }
+
+    function validateDescription() {
+        const description = document.getElementById('description').value.trim();
+        const descriptionError = document.getElementById('descriptionError');
+        const descriptionPattern = /^[a-zA-Z0-9\s,.'-]*$/;
+
+        if (description === '') {
+            descriptionError.innerText = 'Description is required.';
+            return false;
+        } else if (!descriptionPattern.test(description)) {
+            descriptionError.innerText = 'Description can only contain letters, numbers, spaces, and ,.\'- characters.';
+            return false;
+        } else if (description.length > 40) {
+            descriptionError.innerText = 'Description must be less than 40 characters.';
+            return false;
+        } else {
+            descriptionError.innerText = '';
+            return true;
+        }
+    }
+
+    function validateAmounts() {
+        const minimumAmount = parseFloat(document.getElementById('minPurchaseAmount').value);
+        const maximumAmount = parseFloat(document.getElementById('maxPurchaseAmount').value);
+        const minimumAmountError = document.getElementById('minimumAmountError');
+        const maximumAmountError = document.getElementById('maximumAmountError');
+
+        if (isNaN(minimumAmount) || isNaN(maximumAmount) || minimumAmount < 0 || maximumAmount < 0) {
+            minimumAmountError.innerText = 'Minimum and maximum amounts must be non-negative numbers.';
+            maximumAmountError.innerText = 'Minimum and maximum amounts must be non-negative numbers.';
+            return false;
+        } else if (minimumAmount >= maximumAmount) {
+            minimumAmountError.innerText = 'Minimum amount must be less than maximum amount.';
+            maximumAmountError.innerText = 'Maximum amount must be greater than minimum amount.';
+            return false;
+        } else {
+            minimumAmountError.innerText = '';
+            maximumAmountError.innerText = '';
+            return true;
+        }
+    }
+
+    function validateDiscountPercentage() {
+        const discountPercentageInput = document.getElementById('discountPercentage');
+        const discountPercentage = parseFloat(discountPercentageInput.value.trim());
+        const discountPercentageError = document.getElementById('discountPercentageError');
+
+        if (discountPercentageInput.value.trim() === '') {
+            discountPercentageError.innerHTML = "Discount percentage is required";
+        } else if (isNaN(discountPercentage) || discountPercentage < 5 || discountPercentage > 65) {
+            discountPercentageError.innerHTML = "Discount percentage should be between 5% and 65%";
+        } else {
+            discountPercentageError.innerHTML = "";
+        }
+    }
+
+    function validateMaxUsers() {
+        const maxUsersInput = document.getElementById('maxUsers');
+        const maxUsersError = document.getElementById('maxUsersError');
+        const maxUsers = parseInt(maxUsersInput.value.trim());
+
+        if (maxUsersInput.value.trim() === '') {
+            maxUsersError.innerText = "Maximum users allowed is required";
+            return false;
+        } else if (isNaN(maxUsers) || maxUsers < 1 || maxUsers > 10) {
+            maxUsersError.innerText = "Maximum users allowed should be between 1 and 10";
+            return false;
+        } else {
+            maxUsersError.innerText = '';
+            return true;
+        }
+    }
+
+    function clearErrorMessage(event) {
+        const input = event.target;
+        const errorElement = document.getElementById(input.id + 'Error');
+        errorElement.innerText = '';
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const descriptionInput = document.getElementById('description');
+        const discountPercentage = document.getElementById('discountPercentage');
+        const minAmountInput = document.getElementById('minPurchaseAmount');
+        const maxAmountInput = document.getElementById('maxPurchaseAmount');
+        const maxUsersInput = document.getElementById('maxUsers');
+
+        descriptionInput.addEventListener('blur', validateDescription);
+        discountPercentage.addEventListener('blur', validateDiscountPercentage);
+        minAmountInput.addEventListener('blur', validateAmounts);
+        maxAmountInput.addEventListener('blur', validateAmounts);
+        maxUsersInput.addEventListener('blur', validateMaxUsers);
+
+        const inputs = [descriptionInput, discountPercentage, minAmountInput, maxAmountInput, maxUsersInput];
+
+        inputs.forEach(input => {
+            input.addEventListener('focus', clearErrorMessage);
+        });
+    });
+
+    document.getElementById('generateCode').addEventListener('click', function () {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        const codeLength = 8;
+        let randomCode = '';
+
+        for (let i = 0; i < codeLength; i++) {
+            const randomIndex = Math.floor(Math.random() * characters.length);
+            randomCode += characters.charAt(randomIndex);
+        }
+
+        document.getElementById('couponCode').value = randomCode;
+    });
+
+    function submitForm(event) {
+        event.preventDefault();
+
+        const isValid = validateDescription() && validateAmounts() && validateMaxUsers() && validateDiscountPercentage();
+
+        if (!isValid) {
+            document.getElementById('main-error').innerText = 'Please correct the fields.';
+            return;
+        }
+
+        const maxUsersInput = document.getElementById('maxUsers');
+        if (maxUsersInput.value.trim() === '') {
+            document.getElementById('maxUsersError').innerText = "Maximum users allowed is required";
+            return;
+        }
+
+        addCoupon(); 
+    }
+
+    function addCoupon() {
+        const maxUsersInput = document.getElementById('maxUsers');
+        const maxUsersError = document.getElementById('maxUsersError');
+        const maxUsers = maxUsersInput.value.trim();
+
+        if (maxUsers === '') {
+            maxUsersError.innerText = "Maximum users allowed is required";
+            return; 
+        }
+
+        const description = document.getElementById('description').value;
+        const name = document.getElementById('couponName').value;
+        const code = document.getElementById('couponCode').value;
+        const discountPercentage = document.getElementById('discountPercentage').value;
+        const minPurchaseAmount = document.getElementById('minPurchaseAmount').value;
+        const maxPurchaseAmount = document.getElementById('maxPurchaseAmount').value;
+        const expirationDate = document.getElementById('expirationDate').value;
+
+        const formObject = {
+            description: description,
+            name: name,
+            code: code,
+            discountPercentage: discountPercentage,
+            minPurchaseAmount: minPurchaseAmount,
+            maxPurchaseAmount: maxPurchaseAmount,
+            expirationDate: expirationDate,
+            maxUsers: maxUsers
+        };
+
+        console.log(formObject);
+
+        fetch('/admin/create-coupon', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formObject),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success == true) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Coupon created successfully.',
+                        icon: 'success',
+                        confirmButtonText: 'Cool'
+                    }).then(() => {
+                        window.location.href = '/admin/coupon';
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: data.message || 'Failed to create coupon.',
+                        icon: 'error',
+                        confirmButtonText: 'Try Again'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'An error occurred while creating the coupon.',
+                    icon: 'error',
+                    confirmButtonText: 'Try Again'
+                });
+            });
+    }
 </script>
 </body>
 
