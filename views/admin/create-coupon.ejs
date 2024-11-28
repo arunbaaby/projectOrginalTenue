@@ -1,0 +1,82 @@
+<%- include ('../layouts/admin/adminHeader') %>
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Create Coupon </h2>
+
+        </div>
+
+        <div>
+            <!-- <input type="text" placeholder="Search Categories" class="form-control bg-white"> -->
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+                <div class="mb-4">
+                    <label for="couponName" class="form-label">Coupon Name</label>
+                    <input type="text" placeholder="Type here" class="form-control" name="name" id="couponName"
+                        required />
+                    <p id="nameError" class="text-danger"></p>
+                </div>
+
+                <div class="mb-4">
+                    <label for="couponCode" class="form-label">Coupon Code</label>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" name="code" id="couponCode"
+                            placeholder="Generate or type" aria-label="Coupon code" required>
+                        <button class="btn btn-primary" type="button" id="generateCode">Generate Code</button>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Description</label>
+                    <textarea placeholder="Type here" class="form-control" name="description" id="description"
+                        required></textarea>
+                    <p id="descriptionError" class="text-danger"></p>
+                </div>
+
+                <div class="mb-4">
+                    <label for="discountPercentage" class="form-label">Discount Percentage (%)</label>
+                    <input type="number" class="form-control" min="0" name="discountPercentage"
+                        id="discountPercentage" required />
+                    <p id="discountPercentageError" class="text-danger"></p>
+                </div>
+
+                <div class="mb-4">
+                    <label for="minPurchaseAmount" class="form-label">Minimum Purchase Amount</label>
+                    <input type="number" class="form-control" name="minPurchaseAmount" id="minPurchaseAmount"
+                        required />
+                    <p id="minimumAmountError" class="text-danger"></p>
+                </div>
+
+                <div class="mb-4">
+                    <label for="maxPurchaseAmount" class="form-label">Maximum Purchase Amount</label>
+                    <input type="number" class="form-control" name="maxPurchaseAmount" id="maxPurchaseAmount"
+                        required />
+                    <p id="maximumAmountError" class="text-danger"></p>
+                </div>
+
+                <div class="mb-4">
+                    <label for="expirationDate" class="form-label">Expiration Date</label>
+                    <input type="date" class="form-control" name="expirationDate" id="expirationDate"
+                        required />
+                    <p id="expirationDateError" class="text-danger"></p>
+                </div>
+
+                <div class="mb-4">
+                    <label for="maxUsers" class="form-label">Maximum Users Allowed</label>
+                    <input type="number" class="form-control" name="maxUsers" id="maxUsers" required />
+                    <p id="maxUsersError" class="text-danger"></p>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary" id="submitForm" onclick="addCoupon()">Create Coupon</button>
+                </div>
+            <div class="mt-3">
+                <a href="/admin/coupon" class="btn btn-secondary">Go Back</a>
+            </div>
+        </div>
+    </div>
+
+</section>
+<%- include ('../layouts/admin/adminFooter') %>

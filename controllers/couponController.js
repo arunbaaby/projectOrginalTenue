@@ -10,6 +10,16 @@ const loadCouponList = async(req,res)=>{
     }
 }
 
+const loadCreateCoupon = async(req,res)=>{
+    try {
+        res.render('create-coupon');
+    } catch (error) {
+        console.error('Error loading the coupon page:', error.message);
+        res.status(500).json({ success: false, msg: 'Internal server error' });
+    }
+}
+
 module.exports = {
-    loadCouponList
+    loadCouponList,
+    loadCreateCoupon
 }

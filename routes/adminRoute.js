@@ -67,5 +67,6 @@ admin_route.post('/change-order-status/:id',orderController.changeOrderStatus);
 
 //coupon management
 admin_route.get('/coupon',couponController.loadCouponList);
+admin_route.get('/create-coupon',couponController.loadCreateCoupon);
 
 module.exports = admin_route;   
