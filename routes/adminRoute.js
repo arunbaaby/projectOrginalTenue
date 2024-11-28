@@ -25,6 +25,7 @@ const authenticateToken = require('../middlewares/adminAuth');
 const categoryController = require('../controllers/categoryController');
 const productController = require('../controllers/productController');
 const orderController = require('../controllers/orderController');
+const couponController = require('../controllers/couponController');
 
 // Route to get admin login
 admin_route.get('/login', adminController.loadLogin);
@@ -64,6 +65,7 @@ admin_route.get('/order',adminController.loadOrderAdmin);
 admin_route.get('/order-details',adminController.loadAdminOrderDetails);
 admin_route.post('/change-order-status/:id',orderController.changeOrderStatus);
 
-
+//coupon management
+admin_route.get('/coupon',couponController.loadCouponList);
 
 module.exports = admin_route;   
