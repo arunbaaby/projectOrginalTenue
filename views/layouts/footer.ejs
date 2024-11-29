@@ -406,6 +406,8 @@
 <!-- Main JS -->
 <script src="/assets/js/main.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <!-- Your Size Selection Script -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -610,6 +612,62 @@
 }
 
 
+</script>
+
+<script>
+    function setCouponCode(code) {
+        const couponInput = document.getElementById('selectedCouponCode');
+        couponInput.value = code;
+    }
+
+    document.getElementById('couponForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const couponCode = document.getElementById('selectedCouponCode').value;
+
+        if (!couponCode) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Warning',
+                text: 'Please select or enter a coupon code.',
+            });
+            return;
+        }
+
+        try {
+            const response = await fetch('/apply-coupon', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ couponCode }),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Coupon Applied!',
+                    text: `Discount Applied: ₹${data.discount}. New Total: ₹${data.newTotal}`,
+                }).then(()=>{
+                    location.reload();
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: data.msg || 'Failed to apply coupon.',
+                });
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Server Error',
+                text: 'Something went wrong while applying the coupon.',
+            });
+        }
+    });
 </script>
   
   

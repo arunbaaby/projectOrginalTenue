@@ -297,55 +297,44 @@
     <div class="checkout-main-area pt-100 pb-100">
         <div class="container">
             <div class="customer-zone mb-30">
-                <p class="cart-page-title">Want coupon discount? <a class="checkout-click" href="#">Click here to get your
+                <p class="cart-page-title">Want coupon discount? <a class="checkout-click" href="#">Click here to get
+                        your
                         code</a></p>
                 <div class="checkout-login-info">
                     <p>If you have a coupon code, please apply it below.</p>
-                    <form action="/apply-coupon" method="POST">
+                    <form id="couponForm">
                         <input type="text" id="selectedCouponCode" name="couponCode" placeholder="Coupon code" required>
-                        <input type="submit" value="Apply Coupon">
+                        <button type="submit">Apply Coupon</button>
                     </form>
 
                     <div class="coupons-list-container">
                         <h3>Applicable Coupons</h3>
                         <ul class="coupons-list">
                             <% if (availableCoupons && availableCoupons.length) { %>
-                                <% availableCoupons.forEach((coupon, index) => { %>
+                                <% availableCoupons.forEach((coupon, index)=> { %>
                                     <li class="coupon-item">
-                                        <input 
-                                            type="radio" 
-                                            name="coupon" 
-                                            value="<%= coupon.code %>" 
-                                            onclick="setCouponCode('<%= coupon.code %>')"
-                                        >
+                                        <input type="radio" name="coupon" value="<%= coupon.code %>"
+                                            onclick="setCouponCode('<%= coupon.code %>')">
                                         <div class="coupon-details">
                                             <div class="savings">
                                                 <strong>Savings: ₹<%= coupon.discountPercentage %>%</strong>
                                             </div>
                                             <div class="coupon-code">
-                                                <strong><%= coupon.code %></strong>
+                                                <strong>
+                                                    <%= coupon.code %>
+                                                </strong>
                                             </div>
                                             <div class="coupon-description">
                                                 <%= coupon.description %>
                                             </div>
-                                            <!-- <a href="#" class="view-terms">View T & C</a> -->
                                         </div>
                                     </li>
-                                <% }) %>
-                            <% } else { %>
-                                <li>No coupons available at the moment.</li>
-                            <% } %>
+                                    <% }) %>
+                                        <% } else { %>
+                                            <li>No coupons available at the moment.</li>
+                                            <% } %>
                         </ul>
                     </div>
-                    
-
-
-                    <script>
-                        function setCouponCode(code) {
-                            const couponInput = document.getElementById('selectedCouponCode');
-                            couponInput.value = code;
-                        }
-                    </script>
 
 
                 </div>
@@ -778,13 +767,25 @@
                                                             </span></li>
                                                     </ul>
                                                 </div>
-                                                <div class="your-order-info order-total">
-                                                    <ul>
-                                                        <!-- Adding deliveryCharges to total -->
-                                                        <li>Total <span>$<%= (total + deliveryCharges).toFixed(2) %>
-                                                            </span></li>
-                                                    </ul>
-                                                </div>
+                                                <!-- Display coupon discount if applicable -->
+                                                <% if (cart.couponDiscount && cart.couponDiscount> 0) { %>
+                                                    <div class="your-order-info order-coupon">
+                                                        <ul>
+                                                            <li>Coupon Discount <span>-$<%=
+                                                                        cart.couponDiscount.toFixed(2) %></span></li>
+                                                        </ul>
+                                                    </div>
+                                                    <% } %>
+                                                        <div class="your-order-info order-total">
+                                                            <ul>
+                                                                <!-- Deduct couponDiscount from total -->
+                                                                <li>Total
+                                                                    <span>$<%= (total + deliveryCharges -
+                                                                            (cart.couponDiscount || 0)).toFixed(2) %>
+                                                                            </span>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
                                             </div>
                                         </div>
 

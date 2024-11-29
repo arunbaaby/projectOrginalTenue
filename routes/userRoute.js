@@ -37,6 +37,7 @@ const cartController = require('../controllers/cartController');
 const myAccountController = require('../controllers/myAccountController');
 const orderController = require('../controllers/orderController');
 const wishlistController = require('../controllers/wishlistController');
+const couponController = require('../controllers/couponController');
 
 const { log } = require('console');
 // Route for rendering combined login/register page
@@ -111,6 +112,9 @@ user_route.post('/return-order-item',isLoggedIn,orderController.returnOrderItem)
 
 //verify payment
 user_route.post('/verify-payment',isLoggedIn,orderController.verifyPayment);
+
+//apply coupon
+user_route.post('/apply-coupon',isLoggedIn,couponController.applyCoupon);
 
 
 
