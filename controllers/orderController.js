@@ -75,7 +75,7 @@ const loadCheckout = async (req, res) => {
             expirationDate: { $gte: today },
         });
 
-        res.render('checkout', { userAddresses, cart, user, items: cart.items, availableCoupons});
+        res.render('checkout', { userAddresses, cart, user, items: cart.items, availableCoupons });
     } catch (error) {
         console.error('Error loading the checkout page:', error.message);
         return res.status(400).json({
@@ -89,14 +89,14 @@ const loadCheckout = async (req, res) => {
 const placeOrder = async (req, res) => {
     try {
         const userId = req.user.id;
-        const { selectedAddress,paymentMethod } = req.body;
+        const { selectedAddress, paymentMethod } = req.body;
 
         // console.log(userId);
-        
+
         console.log(selectedAddress);
         // console.log('Payment method '+paymentMethod);
-        
-        
+
+
 
         // Check if the cart is empty
         const cart = await Cart.findOne({ user: userId }).populate('items.product');
@@ -117,8 +117,8 @@ const placeOrder = async (req, res) => {
 
         console.log(cart.items[0].product.name);
 
-        console.log('selectedAddressObj: '+selectedAddressObj);
-        
+        console.log('selectedAddressObj: ' + selectedAddressObj);
+
 
         // console.log(orderNumber);
 
@@ -130,11 +130,13 @@ const placeOrder = async (req, res) => {
             discountPriceAtPurchase: item.product.discountPrice,
             size: item.size
         }));
-        
+
         const itemsTotal = orderItems.reduce((sum, item) => sum + item.discountPriceAtPurchase * item.quantity, 0);
-        
-        const deliveryCharge = 50; 
-        const total = itemsTotal + deliveryCharge;
+
+        const deliveryCharge = 50;
+        const couponDiscount = cart.couponDiscount || 0;
+        const total = Math.max(0, itemsTotal + deliveryCharge - couponDiscount);
+
 
         const orderNumber = await generateUniqueOrderNumber();
 
@@ -160,7 +162,7 @@ const placeOrder = async (req, res) => {
         const newOrder = new Order({
             user: userId,
             items: orderItems,
-            shippingAddress:selectedAddressObj,
+            shippingAddress: selectedAddressObj,
             total,
             orderNumber,
             paymentMethod,
@@ -180,10 +182,10 @@ const placeOrder = async (req, res) => {
         }
 
         await newOrder.save();
-        
+
 
         console.log(newOrder);
-        
+
         // await newOrder.save();
 
         await Cart.updateOne({ user: userId }, { items: [] });
@@ -195,9 +197,9 @@ const placeOrder = async (req, res) => {
                 razorpayOrderId: newOrder.razorpayOrderId,
                 amount: total * 100,
                 currency: 'INR',
-                key: process.env.RAZORPAY_KEY_ID, 
-                name: 'Your Store Name', 
-                description: 'Purchase Description', 
+                key: process.env.RAZORPAY_KEY_ID,
+                name: 'Your Store Name',
+                description: 'Purchase Description',
             });
         }
 
@@ -207,7 +209,7 @@ const placeOrder = async (req, res) => {
                 redirectUrl: `/order-confirmation?orderId=${newOrder._id}`,
             });
         }
-        
+
 
         // res.redirect(`/order-confirmation?orderId=${newOrder._id}`);
     } catch (error) {
@@ -271,12 +273,12 @@ const loadOrderConfirmation = async (req, res) => {
 };//corrected
 
 
-const loadMyOrders = async(req,res)=>{
+const loadMyOrders = async (req, res) => {
     try {
         const userId = req.user.id;
-        const orders = await Order.find({user:userId}).populate('items.product');
-        
-        res.render('my-orders',{orders});
+        const orders = await Order.find({ user: userId }).populate('items.product');
+
+        res.render('my-orders', { orders });
     } catch (error) {
         console.error('Error loading the order confirmation page:', error.message);
         res.status(500).json({ success: false, msg: error.message });
@@ -334,12 +336,12 @@ const cancelOrderItem = async (req, res) => {
         order.total = updatedTotal;
         await order.save();
 
-        res.status(200).json({ 
-            success: true, 
-            msg: 'Item cancelled successfully', 
-            updatedTotal, 
+        res.status(200).json({
+            success: true,
+            msg: 'Item cancelled successfully',
+            updatedTotal,
             updatedSavings,
-            deliveryCharges: order.deliveryCharges 
+            deliveryCharges: order.deliveryCharges
         });
     } catch (error) {
         console.error('Error cancelling the item:', error.message);
@@ -348,13 +350,13 @@ const cancelOrderItem = async (req, res) => {
 };
 
 
-const changeOrderStatus = async(req,res)=>{
+const changeOrderStatus = async (req, res) => {
     try {
         const orderId = req.params.id;
         const { status } = req.body;
-        log(orderId+' '+status);
+        log(orderId + ' ' + status);
 
-        const validStatuses = ['Pending', 'Processed', 'Shipped', 'Delivered', 'Cancelled' , 'Returned'];
+        const validStatuses = ['Pending', 'Processed', 'Shipped', 'Delivered', 'Cancelled', 'Returned'];
         if (!validStatuses.includes(status)) {
             return res.status(400).send('Invalid status');
         }
@@ -440,14 +442,14 @@ const returnOrderItem = async (req, res) => {
         order.total = updatedTotal;
         await order.save();
 
-        res.status(200).json({ 
-            success: true, 
-            msg: 'Item returned successfully and refund added to wallet', 
+        res.status(200).json({
+            success: true,
+            msg: 'Item returned successfully and refund added to wallet',
             refundAmount,
-            walletAmount: wallet ? wallet.amount : refundAmount, 
-            updatedTotal, 
+            walletAmount: wallet ? wallet.amount : refundAmount,
+            updatedTotal,
             updatedSavings,
-            deliveryCharges: order.deliveryCharges 
+            deliveryCharges: order.deliveryCharges
         });
     } catch (error) {
         console.error('Error returning the item:', error.message);
