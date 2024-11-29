@@ -4,6 +4,7 @@ const Product = require('../models/productModel');
 const User = require('../models/userModel');
 const Order = require('../models/orderModel');
 const Wallet = require('../models/walletModel');
+const Coupon = require('../models/couponModel');
 
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
@@ -67,7 +68,14 @@ const loadCheckout = async (req, res) => {
             // return res.status(400).json('no items in the cart');
         }
 
-        res.render('checkout', { userAddresses, cart, user, items: cart.items });
+        // Fetch active and valid coupons
+        const today = new Date();
+        const availableCoupons = await Coupon.find({
+            is_active: true,
+            expirationDate: { $gte: today },
+        });
+
+        res.render('checkout', { userAddresses, cart, user, items: cart.items, availableCoupons});
     } catch (error) {
         console.error('Error loading the checkout page:', error.message);
         return res.status(400).json({

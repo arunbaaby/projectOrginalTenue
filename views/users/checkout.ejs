@@ -297,14 +297,57 @@
     <div class="checkout-main-area pt-100 pb-100">
         <div class="container">
             <div class="customer-zone mb-30">
-                <p class="cart-page-title">Have a coupon? <a class="checkout-click" href="#">Click here to enter your
+                <p class="cart-page-title">Want coupon discount? <a class="checkout-click" href="#">Click here to get your
                         code</a></p>
                 <div class="checkout-login-info">
                     <p>If you have a coupon code, please apply it below.</p>
-                    <form action="#">
-                        <input type="text" placeholder="Coupon code">
+                    <form action="/apply-coupon" method="POST">
+                        <input type="text" id="selectedCouponCode" name="couponCode" placeholder="Coupon code" required>
                         <input type="submit" value="Apply Coupon">
                     </form>
+
+                    <div class="coupons-list-container">
+                        <h3>Applicable Coupons</h3>
+                        <ul class="coupons-list">
+                            <% if (availableCoupons && availableCoupons.length) { %>
+                                <% availableCoupons.forEach((coupon, index) => { %>
+                                    <li class="coupon-item">
+                                        <input 
+                                            type="radio" 
+                                            name="coupon" 
+                                            value="<%= coupon.code %>" 
+                                            onclick="setCouponCode('<%= coupon.code %>')"
+                                        >
+                                        <div class="coupon-details">
+                                            <div class="savings">
+                                                <strong>Savings: ₹<%= coupon.discountPercentage %>%</strong>
+                                            </div>
+                                            <div class="coupon-code">
+                                                <strong><%= coupon.code %></strong>
+                                            </div>
+                                            <div class="coupon-description">
+                                                <%= coupon.description %>
+                                            </div>
+                                            <!-- <a href="#" class="view-terms">View T & C</a> -->
+                                        </div>
+                                    </li>
+                                <% }) %>
+                            <% } else { %>
+                                <li>No coupons available at the moment.</li>
+                            <% } %>
+                        </ul>
+                    </div>
+                    
+
+
+                    <script>
+                        function setCouponCode(code) {
+                            const couponInput = document.getElementById('selectedCouponCode');
+                            couponInput.value = code;
+                        }
+                    </script>
+
+
                 </div>
             </div>
             <div class="checkout-wrap">
@@ -369,377 +412,391 @@
 
 
 
-                        <!-- Add New Address button -->
-                        <div class="add-address-btn"
-                            style="margin-top: 20px; padding: 15px; border: 2px dashed #fc4f4f; border-radius: 8px; cursor: pointer;">
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#addAddressModal"
-                                style="color: #fc4f4f; text-decoration: none; display: block; text-align: center; font-weight: bold;">
-                                + Add New Address
-                            </a>
-                        </div>
-
-                        <!-- Payment Selection Section -->
-                        <div class="payment-selection"
-                            style="margin-top: 20px; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #ffffff;">
-                            <h3 style="margin-bottom: 15px;">Select Payment Method</h3>
-                            <div class="payment-option" style="display: flex; align-items: center;">
-                                <input type="radio" name="paymentMethod" value="Cash on Delivery" id="cod" checked
-                                    class="payment-radio" style="margin-right: 10px; width: 20px; height: 20px;">
-                                <label for="cod" class="payment-label" style="font-size: 16px; margin-bottom: 0;">Cash
-                                    on
-                                    Delivery</label>
-                            </div>
-                            <div class="payment-option" style="display: flex; align-items: center;">
-                                <input type="radio" name="paymentMethod" value="Razorpay" id="Razorpay"
-                                    class="payment-radio" style="margin-right: 10px; width: 20px; height: 20px;">
-                                <label for="Razorpay" class="payment-label"
-                                    style="font-size: 16px; margin-bottom: 0;">Razorpay</label>
-                            </div>
-                        </div>
-
-                        </form>
-                    </div>
-
-                    <!-- Add Address Modal -->
-                    <div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel"
-                        aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content p-3 p-lg-5">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="addAddressModalLabel">Add New Address</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="myaccount-content">
-                                        <div class="account-details-form">
-                                            <form id="addAddressForm" action="/add-address" method="post">
-                                                <div class="row">
-                                                    <div class="col-lg-6">
-                                                        <div class="single-input-item">
-                                                            <label for="firstName" class="required">First Name
-                                                                <span>*</span></label>
-                                                            <input type="text" id="firstName" name="firstName"
-                                                                required />
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-6">
-                                                        <div class="single-input-item">
-                                                            <label for="lastName" class="required">Last Name
-                                                                <span>*</span></label>
-                                                            <input type="text" id="lastName" name="lastName" required />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-lg-6">
-                                                        <div class="single-input-item">
-                                                            <label for="addressType" class="required">Address Type
-                                                                <span>*</span></label>
-                                                            <select id="addressType" name="addressType" required
-                                                                class="form-select">
-                                                                <option value="" disabled selected>Select Address
-                                                                    Type</option>
-                                                                <option value="home">Home</option>
-                                                                <option value="office">Office</option>
-                                                                <option value="temporary">Temporary</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-6">
-                                                        <div class="single-input-item">
-                                                            <label for="houseNo" class="required">House Number
-                                                                <span>*</span></label>
-                                                            <input type="text" id="houseNo" name="houseNo" required />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-lg-6">
-                                                        <div class="single-input-item">
-                                                            <label for="street" class="required">Street
-                                                                <span>*</span></label>
-                                                            <input type="text" id="street" name="street" required />
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-6">
-                                                        <div class="single-input-item">
-                                                            <label for="landmark">Landmark</label>
-                                                            <input type="text" id="landmark" name="landmark" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-lg-6">
-                                                        <div class="single-input-item">
-                                                            <label for="city" class="required">City
-                                                                <span>*</span></label>
-                                                            <input type="text" id="city" name="city" required />
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-6">
-                                                        <div class="single-input-item">
-                                                            <label for="district" class="required">District
-                                                                <span>*</span></label>
-                                                            <input type="text" id="district" name="district" required />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-lg-6">
-                                                        <div class="single-input-item">
-                                                            <label for="state" class="required">State
-                                                                <span>*</span></label>
-                                                            <input type="text" id="state" name="state" required />
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-6">
-                                                        <div class="single-input-item">
-                                                            <label for="pincode" class="required">Pincode
-                                                                <span>*</span></label>
-                                                            <input type="text" id="pincode" name="pincode" required />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="single-input-item">
-                                                    <button type="submit" class="check-btn sqr-btn">Save
-                                                        Address</button>
-                                                </div>
-                                            </form>
+                                        <!-- Add New Address button -->
+                                        <div class="add-address-btn"
+                                            style="margin-top: 20px; padding: 15px; border: 2px dashed #fc4f4f; border-radius: 8px; cursor: pointer;">
+                                            <a href="#" data-bs-toggle="modal" data-bs-target="#addAddressModal"
+                                                style="color: #fc4f4f; text-decoration: none; display: block; text-align: center; font-weight: bold;">
+                                                + Add New Address
+                                            </a>
                                         </div>
+
+                                        <!-- Payment Selection Section -->
+                                        <div class="payment-selection"
+                                            style="margin-top: 20px; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #ffffff;">
+                                            <h3 style="margin-bottom: 15px;">Select Payment Method</h3>
+                                            <div class="payment-option" style="display: flex; align-items: center;">
+                                                <input type="radio" name="paymentMethod" value="Cash on Delivery"
+                                                    id="cod" checked class="payment-radio"
+                                                    style="margin-right: 10px; width: 20px; height: 20px;">
+                                                <label for="cod" class="payment-label"
+                                                    style="font-size: 16px; margin-bottom: 0;">Cash
+                                                    on
+                                                    Delivery</label>
+                                            </div>
+                                            <div class="payment-option" style="display: flex; align-items: center;">
+                                                <input type="radio" name="paymentMethod" value="Razorpay" id="Razorpay"
+                                                    class="payment-radio"
+                                                    style="margin-right: 10px; width: 20px; height: 20px;">
+                                                <label for="Razorpay" class="payment-label"
+                                                    style="font-size: 16px; margin-bottom: 0;">Razorpay</label>
+                                            </div>
+                                        </div>
+
+                                        </form>
+                        </div>
+
+                        <!-- Add Address Modal -->
+                        <div class="modal fade" id="addAddressModal" tabindex="-1"
+                            aria-labelledby="addAddressModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content p-3 p-lg-5">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="addAddressModalLabel">Add New Address</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <% if (userAddresses && userAddresses.addresses && userAddresses.addresses.length> 0) { %>
-                        <% userAddresses.addresses.forEach(address=> { %>
-                            <!-- Edit Address Modal for each address -->
-                            <div class="modal fade" id="editAddressModal-<%= address._id %>" tabindex="-1"
-                                aria-labelledby="editAddressModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content p-3 p-lg-5">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editAddressModalLabel">Edit Address</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="myaccount-content">
-                                                <div class="account-details-form">
-                                                    <!-- Form with unique ID and class for AJAX functionality -->
-                                                    <form id="editAddressForm-<%= address._id %>"
-                                                        class="editAddressForm"
-                                                        action="/edit-address/<%= address._id %>" method="POST">
-                                                        <div class="row">
-                                                            <div class="col-lg-6">
-                                                                <div class="single-input-item">
-                                                                    <label for="firstName-<%= address._id %>"
-                                                                        class="required">First Name
-                                                                        <span>*</span></label>
-                                                                    <input type="text" id="firstName-<%= address._id %>"
-                                                                        name="firstName"
-                                                                        value="<%= address.firstName %>" required />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-lg-6">
-                                                                <div class="single-input-item">
-                                                                    <label for="lastName-<%= address._id %>"
-                                                                        class="required">Last Name
-                                                                        <span>*</span></label>
-                                                                    <input type="text" id="lastName-<%= address._id %>"
-                                                                        name="lastName" value="<%= address.lastName %>"
-                                                                        required />
-                                                                </div>
+                                    <div class="modal-body">
+                                        <div class="myaccount-content">
+                                            <div class="account-details-form">
+                                                <form id="addAddressForm" action="/add-address" method="post">
+                                                    <div class="row">
+                                                        <div class="col-lg-6">
+                                                            <div class="single-input-item">
+                                                                <label for="firstName" class="required">First Name
+                                                                    <span>*</span></label>
+                                                                <input type="text" id="firstName" name="firstName"
+                                                                    required />
                                                             </div>
                                                         </div>
-                                                        <div class="row">
-                                                            <div class="col-lg-6">
-                                                                <div class="single-input-item">
-                                                                    <label for="addressType-<%= address._id %>"
-                                                                        class="required">Address Type
-                                                                        <span>*</span></label>
-                                                                    <select id="addressType-<%= address._id %>"
-                                                                        name="addressType" required class="form-select">
-                                                                        <option value="" disabled>Select Address
-                                                                            Type</option>
-                                                                        <option value="home"
-                                                                            <%=address.addressType==='home' ? 'selected'
-                                                                            : '' %>>Home</option>
-                                                                        <option value="office"
-                                                                            <%=address.addressType==='office'
-                                                                            ? 'selected' : '' %>>Office</option>
-                                                                        <option value="temporary"
-                                                                            <%=address.addressType==='temporary'
-                                                                            ? 'selected' : '' %>>Temporary</option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-lg-6">
-                                                                <div class="single-input-item">
-                                                                    <label for="houseNo-<%= address._id %>"
-                                                                        class="required">House Number
-                                                                        <span>*</span></label>
-                                                                    <input type="text" id="houseNo-<%= address._id %>"
-                                                                        name="houseNo" value="<%= address.houseNo %>"
-                                                                        required />
-                                                                </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="single-input-item">
+                                                                <label for="lastName" class="required">Last Name
+                                                                    <span>*</span></label>
+                                                                <input type="text" id="lastName" name="lastName"
+                                                                    required />
                                                             </div>
                                                         </div>
-                                                        <div class="row">
-                                                            <div class="col-lg-6">
-                                                                <div class="single-input-item">
-                                                                    <label for="street-<%= address._id %>"
-                                                                        class="required">Street
-                                                                        <span>*</span></label>
-                                                                    <input type="text" id="street-<%= address._id %>"
-                                                                        name="street" value="<%= address.street %>"
-                                                                        required />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-lg-6">
-                                                                <div class="single-input-item">
-                                                                    <label
-                                                                        for="landmark-<%= address._id %>">Landmark</label>
-                                                                    <input type="text" id="landmark-<%= address._id %>"
-                                                                        name="landmark"
-                                                                        value="<%= address.landmark %>" />
-                                                                </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-6">
+                                                            <div class="single-input-item">
+                                                                <label for="addressType" class="required">Address Type
+                                                                    <span>*</span></label>
+                                                                <select id="addressType" name="addressType" required
+                                                                    class="form-select">
+                                                                    <option value="" disabled selected>Select Address
+                                                                        Type</option>
+                                                                    <option value="home">Home</option>
+                                                                    <option value="office">Office</option>
+                                                                    <option value="temporary">Temporary</option>
+                                                                </select>
                                                             </div>
                                                         </div>
-                                                        <div class="row">
-                                                            <div class="col-lg-6">
-                                                                <div class="single-input-item">
-                                                                    <label for="city-<%= address._id %>"
-                                                                        class="required">City <span>*</span></label>
-                                                                    <input type="text" id="city-<%= address._id %>"
-                                                                        name="city" value="<%= address.city %>"
-                                                                        required />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-lg-6">
-                                                                <div class="single-input-item">
-                                                                    <label for="district-<%= address._id %>"
-                                                                        class="required">District
-                                                                        <span>*</span></label>
-                                                                    <input type="text" id="district-<%= address._id %>"
-                                                                        name="district" value="<%= address.district %>"
-                                                                        required />
-                                                                </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="single-input-item">
+                                                                <label for="houseNo" class="required">House Number
+                                                                    <span>*</span></label>
+                                                                <input type="text" id="houseNo" name="houseNo"
+                                                                    required />
                                                             </div>
                                                         </div>
-                                                        <div class="row">
-                                                            <div class="col-lg-6">
-                                                                <div class="single-input-item">
-                                                                    <label for="state-<%= address._id %>"
-                                                                        class="required">State
-                                                                        <span>*</span></label>
-                                                                    <input type="text" id="state-<%= address._id %>"
-                                                                        name="state" value="<%= address.state %>"
-                                                                        required />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-lg-6">
-                                                                <div class="single-input-item">
-                                                                    <label for="pincode-<%= address._id %>"
-                                                                        class="required">Pincode
-                                                                        <span>*</span></label>
-                                                                    <input type="text" id="pincode-<%= address._id %>"
-                                                                        name="pincode" value="<%= address.pincode %>"
-                                                                        required />
-                                                                </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-6">
+                                                            <div class="single-input-item">
+                                                                <label for="street" class="required">Street
+                                                                    <span>*</span></label>
+                                                                <input type="text" id="street" name="street" required />
                                                             </div>
                                                         </div>
-                                                        <!-- Add other fields similarly -->
-                                                        <div class="single-input-item">
-                                                            <button type="submit" class="check-btn sqr-btn">Save
-                                                                Changes</button>
+                                                        <div class="col-lg-6">
+                                                            <div class="single-input-item">
+                                                                <label for="landmark">Landmark</label>
+                                                                <input type="text" id="landmark" name="landmark" />
+                                                            </div>
                                                         </div>
-                                                    </form>
-                                                </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-6">
+                                                            <div class="single-input-item">
+                                                                <label for="city" class="required">City
+                                                                    <span>*</span></label>
+                                                                <input type="text" id="city" name="city" required />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="single-input-item">
+                                                                <label for="district" class="required">District
+                                                                    <span>*</span></label>
+                                                                <input type="text" id="district" name="district"
+                                                                    required />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-6">
+                                                            <div class="single-input-item">
+                                                                <label for="state" class="required">State
+                                                                    <span>*</span></label>
+                                                                <input type="text" id="state" name="state" required />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="single-input-item">
+                                                                <label for="pincode" class="required">Pincode
+                                                                    <span>*</span></label>
+                                                                <input type="text" id="pincode" name="pincode"
+                                                                    required />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="single-input-item">
+                                                        <button type="submit" class="check-btn sqr-btn">Save
+                                                            Address</button>
+                                                    </div>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <% }) %>
+                        </div>
+
+
+                        <% if (userAddresses && userAddresses.addresses && userAddresses.addresses.length> 0) { %>
+                            <% userAddresses.addresses.forEach(address=> { %>
+                                <!-- Edit Address Modal for each address -->
+                                <div class="modal fade" id="editAddressModal-<%= address._id %>" tabindex="-1"
+                                    aria-labelledby="editAddressModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content p-3 p-lg-5">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="editAddressModalLabel">Edit Address</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="myaccount-content">
+                                                    <div class="account-details-form">
+                                                        <!-- Form with unique ID and class for AJAX functionality -->
+                                                        <form id="editAddressForm-<%= address._id %>"
+                                                            class="editAddressForm"
+                                                            action="/edit-address/<%= address._id %>" method="POST">
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="single-input-item">
+                                                                        <label for="firstName-<%= address._id %>"
+                                                                            class="required">First Name
+                                                                            <span>*</span></label>
+                                                                        <input type="text"
+                                                                            id="firstName-<%= address._id %>"
+                                                                            name="firstName"
+                                                                            value="<%= address.firstName %>" required />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="single-input-item">
+                                                                        <label for="lastName-<%= address._id %>"
+                                                                            class="required">Last Name
+                                                                            <span>*</span></label>
+                                                                        <input type="text"
+                                                                            id="lastName-<%= address._id %>"
+                                                                            name="lastName"
+                                                                            value="<%= address.lastName %>" required />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="single-input-item">
+                                                                        <label for="addressType-<%= address._id %>"
+                                                                            class="required">Address Type
+                                                                            <span>*</span></label>
+                                                                        <select id="addressType-<%= address._id %>"
+                                                                            name="addressType" required
+                                                                            class="form-select">
+                                                                            <option value="" disabled>Select Address
+                                                                                Type</option>
+                                                                            <option value="home"
+                                                                                <%=address.addressType==='home'
+                                                                                ? 'selected' : '' %>>Home</option>
+                                                                            <option value="office"
+                                                                                <%=address.addressType==='office'
+                                                                                ? 'selected' : '' %>>Office</option>
+                                                                            <option value="temporary"
+                                                                                <%=address.addressType==='temporary'
+                                                                                ? 'selected' : '' %>>Temporary</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="single-input-item">
+                                                                        <label for="houseNo-<%= address._id %>"
+                                                                            class="required">House Number
+                                                                            <span>*</span></label>
+                                                                        <input type="text"
+                                                                            id="houseNo-<%= address._id %>"
+                                                                            name="houseNo"
+                                                                            value="<%= address.houseNo %>" required />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="single-input-item">
+                                                                        <label for="street-<%= address._id %>"
+                                                                            class="required">Street
+                                                                            <span>*</span></label>
+                                                                        <input type="text"
+                                                                            id="street-<%= address._id %>" name="street"
+                                                                            value="<%= address.street %>" required />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="single-input-item">
+                                                                        <label
+                                                                            for="landmark-<%= address._id %>">Landmark</label>
+                                                                        <input type="text"
+                                                                            id="landmark-<%= address._id %>"
+                                                                            name="landmark"
+                                                                            value="<%= address.landmark %>" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="single-input-item">
+                                                                        <label for="city-<%= address._id %>"
+                                                                            class="required">City <span>*</span></label>
+                                                                        <input type="text" id="city-<%= address._id %>"
+                                                                            name="city" value="<%= address.city %>"
+                                                                            required />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="single-input-item">
+                                                                        <label for="district-<%= address._id %>"
+                                                                            class="required">District
+                                                                            <span>*</span></label>
+                                                                        <input type="text"
+                                                                            id="district-<%= address._id %>"
+                                                                            name="district"
+                                                                            value="<%= address.district %>" required />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="single-input-item">
+                                                                        <label for="state-<%= address._id %>"
+                                                                            class="required">State
+                                                                            <span>*</span></label>
+                                                                        <input type="text" id="state-<%= address._id %>"
+                                                                            name="state" value="<%= address.state %>"
+                                                                            required />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="single-input-item">
+                                                                        <label for="pincode-<%= address._id %>"
+                                                                            class="required">Pincode
+                                                                            <span>*</span></label>
+                                                                        <input type="text"
+                                                                            id="pincode-<%= address._id %>"
+                                                                            name="pincode"
+                                                                            value="<%= address.pincode %>" required />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!-- Add other fields similarly -->
+                                                            <div class="single-input-item">
+                                                                <button type="submit" class="check-btn sqr-btn">Save
+                                                                    Changes</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% }) %>
+                                    <% } else { %>
+                                        <p>No addresses available.</p>
+                                        <% } %>
+
+
+
+
+                    </div>
+
+                    <div class="col-lg-5">
+                        <div class="your-order-area">
+                            <h3>Your order</h3>
+
+                            <!-- Moved the product image here, below the heading -->
+                            <% if(items[0].product.images.length> 0) { %>
+                                <img src="/admin/productImages/<%= items[0].product.images[0] %>"
+                                    alt="<%= items[0].product.name %>" height="90px" width="90px"
+                                    style="display: block; margin: 15px auto;">
                                 <% } else { %>
-                                    <p>No addresses available.</p>
+                                    <img src="defaultImage.jpg" alt="No Image" height="90px" width="90px"
+                                        style="display: block; margin: 15px auto;">
                                     <% } %>
 
-
-
-
-                </div>
-
-                <div class="col-lg-5">
-                    <div class="your-order-area">
-                        <h3>Your order</h3>
-
-                        <!-- Moved the product image here, below the heading -->
-                        <% if(items[0].product.images.length> 0) { %>
-                            <img src="/admin/productImages/<%= items[0].product.images[0] %>"
-                                alt="<%= items[0].product.name %>" height="90px" width="90px"
-                                style="display: block; margin: 15px auto;">
-                            <% } else { %>
-                                <img src="defaultImage.jpg" alt="No Image" height="90px" width="90px"
-                                    style="display: block; margin: 15px auto;">
-                                <% } %>
-
-                                    <div class="your-order-wrap gray-bg-4">
-                                        <div class="your-order-info-wrap">
-                                            <div class="your-order-info">
-                                                <ul>
-                                                    <li>Product <span>Total</span></li>
-                                                </ul>
-                                            </div>
-                                            <div class="your-order-middle">
-                                                <ul>
-                                                    <% let subtotal=0; let total=0; let deliveryCharges=50; %>
-                                                        <% items.forEach(item=> { %>
-                                                            <li style="display: flex; align-items: center;">
-                                                                <%= item.product.name %> X <%= item.quantity %>
-                                                                        <span style="margin-left: auto;">$<%=
-                                                                                (item.product.discountPrice *
-                                                                                item.quantity).toFixed(2) %></span>
-                                                            </li>
-                                                            <% subtotal +=item.product.price * item.quantity; total
-                                                                +=item.product.discountPrice * item.quantity; %>
-                                                                <% }); %>
-                                                </ul>
-                                            </div>
-                                            <div class="your-order-info order-subtotal">
-                                                <ul>
-                                                    <li>Subtotal <span>$<%= subtotal.toFixed(2) %></span></li>
-                                                </ul>
-                                            </div>
-                                            <div class="your-order-info order-delivery">
-                                                <ul>
-                                                    <li>Delivery Charges <span>$<%= deliveryCharges.toFixed(2) %>
-                                                        </span></li>
-                                                </ul>
-                                            </div>
-                                            <div class="your-order-info order-total">
-                                                <ul>
-                                                    <!-- Adding deliveryCharges to total -->
-                                                    <li>Total <span>$<%= (total + deliveryCharges).toFixed(2) %>
-                                                        </span></li>
-                                                </ul>
+                                        <div class="your-order-wrap gray-bg-4">
+                                            <div class="your-order-info-wrap">
+                                                <div class="your-order-info">
+                                                    <ul>
+                                                        <li>Product <span>Total</span></li>
+                                                    </ul>
+                                                </div>
+                                                <div class="your-order-middle">
+                                                    <ul>
+                                                        <% let subtotal=0; let total=0; let deliveryCharges=50; %>
+                                                            <% items.forEach(item=> { %>
+                                                                <li style="display: flex; align-items: center;">
+                                                                    <%= item.product.name %> X <%= item.quantity %>
+                                                                            <span style="margin-left: auto;">$<%=
+                                                                                    (item.product.discountPrice *
+                                                                                    item.quantity).toFixed(2) %></span>
+                                                                </li>
+                                                                <% subtotal +=item.product.price * item.quantity; total
+                                                                    +=item.product.discountPrice * item.quantity; %>
+                                                                    <% }); %>
+                                                    </ul>
+                                                </div>
+                                                <div class="your-order-info order-subtotal">
+                                                    <ul>
+                                                        <li>Subtotal <span>$<%= subtotal.toFixed(2) %></span></li>
+                                                    </ul>
+                                                </div>
+                                                <div class="your-order-info order-delivery">
+                                                    <ul>
+                                                        <li>Delivery Charges <span>$<%= deliveryCharges.toFixed(2) %>
+                                                            </span></li>
+                                                    </ul>
+                                                </div>
+                                                <div class="your-order-info order-total">
+                                                    <ul>
+                                                        <!-- Adding deliveryCharges to total -->
+                                                        <li>Total <span>$<%= (total + deliveryCharges).toFixed(2) %>
+                                                            </span></li>
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div class="place-order-btn mt-30">
-                                        <button type="submit" onclick="placeOrder()">Place
-                                            Order</button>
-                                    </div>
+                                        <div class="place-order-btn mt-30">
+                                            <button type="submit" onclick="placeOrder()">Place
+                                                Order</button>
+                                        </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
