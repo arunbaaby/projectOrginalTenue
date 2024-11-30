@@ -188,7 +188,7 @@ const placeOrder = async (req, res) => {
 
         // await newOrder.save();
 
-        await Cart.updateOne({ user: userId }, { items: [] });
+        await Cart.updateOne({ user: userId }, { items: [], couponDiscount: 0 });
 
         if (paymentMethod === 'Razorpay') {
             return res.json({
