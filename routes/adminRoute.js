@@ -26,6 +26,7 @@ const categoryController = require('../controllers/categoryController');
 const productController = require('../controllers/productController');
 const orderController = require('../controllers/orderController');
 const couponController = require('../controllers/couponController');
+const salesReportController = require('../controllers/salesReportController');
 
 // Route to get admin login
 admin_route.get('/login', adminController.loadLogin);
@@ -71,6 +72,9 @@ admin_route.get('/create-coupon',couponController.loadCreateCoupon);
 admin_route.post('/create-coupon',couponController.createCoupon);
 admin_route.post('/deactivate-coupon/:id',couponController.deactivateCoupon);
 admin_route.post('/activate-coupon/:id',couponController.activateCoupon);
+
+//sales report
+admin_route.get('/sales-report',salesReportController.loadSalesReport);
 
 
 module.exports = admin_route;   
