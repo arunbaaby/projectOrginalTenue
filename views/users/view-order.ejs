@@ -395,7 +395,7 @@
                 <div class="payment-row">
                     <span>Order Savings</span>
                     <span class="payment-savings">
-                        <%= orderDetails.items .filter(item=> item.status !== 'Cancelled')
+                        -<%= orderDetails.items .filter(item=> item.status !== 'Cancelled')
                             .reduce((acc, item) => acc + ((item.priceAtPurchase - item.discountPriceAtPurchase) *
                             item.quantity), 0) %>
                     </span>
@@ -407,6 +407,14 @@
                     </div>
                     <span>
                         <%= orderDetails.deliveryCharges %>
+                    </span>
+                </div>
+                <div class="payment-row">
+                    <div>
+                        <span>Coupon Discount</span>
+                    </div>
+                    <span style="color: #00a100;">
+                        -<%= orderDetails.couponDiscount %>
                     </span>
                 </div>
                 <div class="payment-row" style="font-weight: 600; margin-top: 12px;">

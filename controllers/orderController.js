@@ -167,6 +167,7 @@ const placeOrder = async (req, res) => {
             orderNumber,
             paymentMethod,
             paymentStatus: paymentMethod === 'Razorpay' ? 'Pending' : 'Completed',
+            couponDiscount
         });
 
         if (paymentMethod === 'Razorpay') {
