@@ -75,6 +75,7 @@ admin_route.post('/activate-coupon/:id',couponController.activateCoupon);
 
 //sales report
 admin_route.get('/sales-report',salesReportController.loadSalesReport);
+admin_route.post('/sales-date-filter',salesReportController.customDateFilter);
 
 
 module.exports = admin_route;   
