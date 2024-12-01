@@ -5,7 +5,6 @@ const Product = require('../models/productModel');
 const loadSalesReport = async (req, res) => {
     try {
         const salesData = await Order.aggregate([
-            // Unwind the items array to process each item individually
             { $unwind: "$items" },
 
             // Lookup user details
@@ -19,7 +18,7 @@ const loadSalesReport = async (req, res) => {
             },
             { $unwind: { path: "$userDetails", preserveNullAndEmptyArrays: false } },
 
-            // Lookup product details for each item
+            // Lookup product details
             {
                 $lookup: {
                     from: "products",
@@ -30,7 +29,7 @@ const loadSalesReport = async (req, res) => {
             },
             { $unwind: { path: "$productDetails", preserveNullAndEmptyArrays: false } },
 
-            // Match items with a specific status (e.g., "Delivered")
+            // Match delivered items only
             {
                 $match: {
                     "items.status": "Delivered",
@@ -43,12 +42,13 @@ const loadSalesReport = async (req, res) => {
                     orderNumber: 1,
                     "userDetails.name": 1,
                     "productDetails.name": 1,
-                    "productDetails.discountPrice": 1,
                     createdAt: 1,
                     paymentMethod: 1,
                     status: "$items.status",
                     couponDiscount: 1,
                     "items.quantity": 1,
+                    "items.priceAtPurchase": 1,
+                    "items.discountPriceAtPurchase": 1,
                 },
             },
         ]);
@@ -58,8 +58,8 @@ const loadSalesReport = async (req, res) => {
         let totalSalesPrice = 0;
 
         salesData.forEach((sale) => {
-            const regularPrice = sale.productDetails.price || 0;
-            const discountPrice = sale.productDetails.discountPrice || 0;
+            const regularPrice = sale.items.priceAtPurchase || 0;
+            const discountPrice = sale.items.discountPriceAtPurchase || 0;
 
             totalRegularPrice += regularPrice * sale.items.quantity;
             totalSalesPrice += discountPrice * sale.items.quantity;
@@ -79,9 +79,6 @@ const loadSalesReport = async (req, res) => {
         res.status(500).json({ success: false, message: "Server error." });
     }
 };
-
-
-
 
 
 module.exports = {

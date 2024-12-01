@@ -1,123 +1,159 @@
 <%- include ('../layouts/admin/adminHeader') %>
-<section class="content-main">
-    <div class="col-lg-6 col-md-12">
-        <h2 class="content-title card-title">Sales Report</h2>
-    </div>
-    <div class="card mb-4">
-        <header class="card-header">
-            <div class="row gx-3">
-                <div class="row">
-                    <div class="col-lg-4 col-md-6">
-                        <form action="/admin/salesReportSelectFilter" method="post">
-                            <div class="row align-items-end">
-                                <div class="col-6">
-                                    <label for="">Select</label>
-                                    <select class="form-select" name="timePeriod">
-                                        <option value="all">All</option>
-                                        <option value="day">Day</option>
-                                        <option value="week">Week</option>
-                                        <option value="month">Month</option>
-                                        <option value="year">Year</option>
-                                    </select>
+    <section class="content-main">
+        <div class="col-lg-6 col-md-12">
+            <h2 class="content-title card-title">Sales Report</h2>
+        </div>
+        <div class="card mb-4">
+            <header class="card-header">
+                <div class="row gx-3">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6">
+                            <form action="/admin/salesReportSelectFilter" method="post">
+                                <div class="row align-items-end">
+                                    <div class="col-6">
+                                        <label for="">Select</label>
+                                        <select class="form-select" name="timePeriod">
+                                            <option value="all">All</option>
+                                            <option value="day">Day</option>
+                                            <option value="week">Week</option>
+                                            <option value="month">Month</option>
+                                            <option value="year">Year</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 col-4 text-center align-self-end">
+                                        <p>&nbsp;</p>
+                                        <button type="submit" id="generateExcel2"
+                                            class="btn btn-secondary mb-2">Submit</button>
+                                    </div>
                                 </div>
-                                <div class="col-md-4 col-4 text-center align-self-end">
-                                    <p>&nbsp;</p>
-                                    <button type="submit" id="generateExcel2" class="btn btn-secondary mb-2">Submit</button>
+                            </form>
+                        </div>
+                        <div class="col-lg-8 col-md-6">
+                            <form action="/admin/fileterDateRange" method="post" id="dateFilter">
+                                <div class="row">
+                                    <div class="col-md-4 col-4 text-center">
+                                        <p>Starting Date</p>
+                                        <input type="date" id="startdate" name="startingDate" class="form-control"
+                                            value="">
+                                        <div id="startingDate-error" class="error-message"></div>
+                                    </div>
+                                    <div class="col-md-4 col-4 text-center">
+                                        <p>Ending Date</p>
+                                        <input type="date" id="enddate" name="endingDate" class="form-control" value="">
+                                        <div id="endingDate-error" class="error-message"></div>
+                                    </div>
+                                    <div class="col-md-4 col-4 text-center align-self-end">
+                                        <p>&nbsp;</p>
+                                        <button type="submit" id="generateExcel2"
+                                            class="btn btn-secondary mb-2">Search</button>
+                                    </div>
                                 </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-lg-8 col-md-6">
-                        <form action="/admin/fileterDateRange" method="post" id="dateFilter">
-                            <div class="row">
-                                <div class="col-md-4 col-4 text-center">
-                                    <p>Starting Date</p>
-                                    <input type="date" id="startdate" name="startingDate"  class="form-control" value="">
-                                    <div id="startingDate-error" class="error-message"></div>
-                                </div>
-                                <div class="col-md-4 col-4 text-center">
-                                    <p>Ending Date</p>
-                                    <input type="date" id="enddate" name="endingDate" class="form-control" value="">
-                                    <div id="endingDate-error" class="error-message"></div>
-                                </div>
-                                <div class="col-md-4 col-4 text-center align-self-end">
-                                    <p>&nbsp;</p>
-                                    <button type="submit" id="generateExcel2" class="btn btn-secondary mb-2">Search</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </header>
-    </div>
-
-    <div class="card">             
-        <div class="card-body">
-            <div class="col-md-13">
-                <div class="table-responsive">
-                    <div id="salesTable">
-                        <table  class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th class="col-md-1 text-center">#</th>
-                                    <th class="col-md-1 text-center">Order ID</th>
-                                    <th class="col-md-2 text-center">Name</th>
-                                    <th class="col-md-3 text-center">Product</th>
-                                    <th class="col-md-1 text-center">Date</th>
-                                    <th class="col-md-2 text-center">Payment</th>
-                                    <th class="col-md-1 text-center">Status</th>
-                                    <th class="col-md-1 text-center">Coupon</th>
-                                    <th class="col-md-1 text-center">Sales Price</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <h5 class="mb-2" style="color: green;">Total count : <%= salesData.length %></h5>
-                                <% if (locals.salesData && salesData.length > 0) { %>
-                                    <% for (let i = 0; i < salesData.length; i++) { %>
-                                        <tr>
-                                            <td class="col-md-1 text-center"><%= i + 1 %></td>
-                                            <td class="col-md-1 text-center"><%= salesData[i].orderNumber || "N/A" %></td>
-                                            <td class="col-md-2 text-center"><%= salesData[i].userDetails.name || "Unknown User" %></td>
-                                            <td class="col-md-3 text-center"><%= salesData[i].productDetails.name || "Product Not Found" %></td>
-                                            <td class="col-md-1 text-center"><%= salesData[i].createdAt ? salesData[i].createdAt.toLocaleDateString() : "N/A" %></td>
-                                            <td class="col-md-2 text-center"><%= salesData[i].paymentMethod || "N/A" %></td>
-                                            <td class="col-md-1 text-center"><%= salesData[i].status || "N/A" %></td>
-                                            <td class="col-md-1 text-center">
-                                                <% if (salesData[i].couponDiscount>0) { %>
-                                                    <p style="color: green;">Applied</p>
-                                                <% } else { %>
-                                                    <p style="color: red;">Not Applied</p>
-                                                <% } %>
-                                            </td>
-                                            <td class="col-md-1 text-center"><%= salesData[i].items.quantity * salesData[i].productDetails.discountPrice || "N/A" %></td>
-                                        </tr>
-                                    <% } %>
-                                <% } else { %>
-                                    <tr>
-                                        <td colspan="9" class="text-center">No sales data available</td>
-                                    </tr>
-                                <% } %>
-                            </tbody>
-                            
-                            <div class="totalPrice ml-20">
-                                <h4><span class="text-primary">Overall Sales Count</span> : <%= salesData.length %></h4>
-                                <h4><span class="text-primary">Total Stock Price</span> : ₹<%= totalRegularPrice || 0 %></h4>
-                                <h4><span class="text-primary">Total Order Amount</span> : ₹<%= totalSalesPrice || 0 %></h4>
-                                <h4><span class="text-primary">Total Discount Given</span> : ₹<%= totalDiscountPrice || 0 %></h4>
-                            </div>
-                            
-
-                    <div class="content-header row d-flex justify-content-between align-items-center">
-                        <div class="col-lg-6 col-md-12 pl-30">
-                            <a href="#" id="createSalesReport" class="btn btn-primary mb-2" onclick="downloadPdf()">Download SR in PDF</a>
-                            <a href="#" id="generateExcel" class="btn btn-success mb-2" onclick="downloadExcel()">Download SR in Excel</a>
+                            </form>
                         </div>
                     </div>
                 </div>
+            </header>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="col-md-13">
+                    <div class="table-responsive">
+                        <div id="salesTable">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="col-md-1 text-center">#</th>
+                                        <th class="col-md-1 text-center">Order ID</th>
+                                        <th class="col-md-2 text-center">Name</th>
+                                        <th class="col-md-3 text-center">Product</th>
+                                        <th class="col-md-1 text-center">Date</th>
+                                        <th class="col-md-2 text-center">Payment</th>
+                                        <th class="col-md-1 text-center">Status</th>
+                                        <th class="col-md-1 text-center">Coupon</th>
+                                        <th class="col-md-1 text-center">Sales Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <h5 class="mb-2" style="color: green;">Total count : <%= salesData.length %>
+                                    </h5>
+                                    <% if (locals.salesData && salesData.length> 0) { %>
+                                        <% for (let i=0; i < salesData.length; i++) { %>
+                                            <tr>
+                                                <td class="col-md-1 text-center">
+                                                    <%= i + 1 %>
+                                                </td>
+                                                <td class="col-md-1 text-center">
+                                                    <%= salesData[i].orderNumber || "N/A" %>
+                                                </td>
+                                                <td class="col-md-2 text-center">
+                                                    <%= salesData[i].userDetails.name || "Unknown User" %>
+                                                </td>
+                                                <td class="col-md-3 text-center">
+                                                    <%= salesData[i].productDetails.name || "Product Not Found" %>
+                                                </td>
+                                                <td class="col-md-1 text-center">
+                                                    <%= salesData[i].createdAt ?
+                                                        salesData[i].createdAt.toLocaleDateString() : "N/A" %>
+                                                </td>
+                                                <td class="col-md-2 text-center">
+                                                    <%= salesData[i].paymentMethod || "N/A" %>
+                                                </td>
+                                                <td class="col-md-1 text-center" style="color: green;">
+                                                    <%= salesData[i].status || "N/A" %>
+                                                </td>
+                                                <td class="col-md-1 text-center">
+                                                    <% if (salesData[i].couponDiscount>0) { %>
+                                                        <p style="color: green;">Applied</p>
+                                                        <% } else { %>
+                                                            <p style="color: red;">Not Applied</p>
+                                                            <% } %>
+                                                </td>
+                                                <td class="col-md-1 text-center">
+                                                    <%= salesData[i].items.quantity *
+                                                        salesData[i].items.discountPriceAtPurchase || "N/A" %>
+                                                </td>
+                                            </tr>
+                                            <% } %>
+                                                <% } else { %>
+                                                    <tr>
+                                                        <td colspan="9" class="text-center">No sales data available</td>
+                                                    </tr>
+                                                    <% } %>
+                                </tbody>
+
+                                <div class="totalPrice ml-20 p-3 rounded shadow-lg bg-light">
+                                    <h4 class="mb-3">
+                                        <span class="text-primary font-weight-bold">Total Sales Count</span> : 
+                                        <span class="text-dark"><%= salesData.length %></span>
+                                    </h4>
+                                    <h4 class="mb-3">
+                                        <span class="text-primary font-weight-bold">Total Original Price</span> : 
+                                        <span class="text-dark">₹<%= totalRegularPrice || 0 %></span>
+                                    </h4>
+                                    <h4 class="mb-3">
+                                        <span class="text-primary font-weight-bold">Total Order Amount</span> : 
+                                        <span class="text-dark">₹<%= totalSalesPrice || 0 %></span>
+                                    </h4>
+                                    <h4 class="mb-3">
+                                        <span class="text-primary font-weight-bold">Total Discount Given</span> : 
+                                        <span class="text-dark">₹<%= totalDiscountPrice || 0 %></span>
+                                    </h4>
+                                </div>
+                                
+                                <div class="content-header row d-flex justify-content-between align-items-center mt-4">
+                                    <div class="col-lg-6 col-md-12 pl-30">
+                                        <a href="#" id="createSalesReport" class="btn btn-primary btn-lg mb-2 mr-3"
+                                            onclick="downloadPdf()">Download SR in PDF</a>
+                                        <a href="#" id="generateExcel" class="btn btn-success btn-lg mb-2"
+                                            onclick="downloadExcel()">Download SR in Excel</a>
+                                    </div>
+                                </div>
+                                
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
-<%- include ('../layouts/admin/adminFooter') %>
+    </section>
+    <%- include ('../layouts/admin/adminFooter') %>
