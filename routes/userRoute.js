@@ -115,6 +115,7 @@ user_route.post('/verify-payment',isLoggedIn,orderController.verifyPayment);
 
 //apply coupon
 user_route.post('/apply-coupon',isLoggedIn,couponController.applyCoupon);
+user_route.post('/remove-coupon',isLoggedIn,couponController.removeCoupon);
 
 
 

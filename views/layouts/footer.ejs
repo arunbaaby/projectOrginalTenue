@@ -669,6 +669,44 @@
         }
     });
 </script>
+
+<script>
+    document.getElementById('removeCouponBtn').addEventListener('click', async function () {
+        try {
+            const response = await fetch('/remove-coupon', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Coupon Removed!',
+                    text: `Discount removed. New Total: ₹${data.newTotal}`,
+                }).then(() => {
+                    location.reload();
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: data.msg || 'Failed to remove coupon.',
+                });
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Server Error',
+                text: 'Something went wrong while removing the coupon.',
+            });
+        }
+    });
+</script>
   
   
 </body>
