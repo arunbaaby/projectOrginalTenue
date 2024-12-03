@@ -21,7 +21,7 @@ const loadAuth = async (req, res) => {
     try {
         const message = req.query.message || null;
 
-        res.render('auth',{message});
+        res.render('auth', { message });
     } catch (error) {
         console.log(error.message);
     }
@@ -359,7 +359,7 @@ const loginUser = async (req, res) => {
                 msg: ''
             });
         }
-        
+
 
         const passwordMatch = userData.password && await bcrypt.compare(password, userData.password);
 
@@ -459,7 +459,7 @@ const googleAuthCallback = (err, user, info, req, res, next) => {
 };
 
 
-const logoutUser = async (req,res)=>{
+const logoutUser = async (req, res) => {
     try {
         // Clear the JWT cookie
         res.clearCookie('jwt', {
@@ -479,7 +479,7 @@ const logoutUser = async (req,res)=>{
 }
 
 
-const loadForgotPassword = async(req,res)=>{
+const loadForgotPassword = async (req, res) => {
     try {
         res.render('forgotPassword');
     } catch (error) {
@@ -491,32 +491,32 @@ const loadForgotPassword = async(req,res)=>{
     }
 }
 
-const forgotPasswordLink = async(req,res)=>{
+const forgotPasswordLink = async (req, res) => {
     try {
         const userEmail = req.body.email;
         console.log(userEmail);
-        
+
         const user = await User.findOne({ email: userEmail });
         console.log(user);
-        
+
         if (!user) {
-          return res.status(404).render("forgotPassword", { userNotFound: true });
+            return res.status(404).render("forgotPassword", { userNotFound: true });
         }
-    
+
         // random token
         const resetToken = crypto.randomBytes(32).toString("hex");
         console.log(resetToken);
-        
-    
+
+
         // Set token and expiration on the user's record
         user.resetPasswordToken = resetToken;
         user.resetPasswordExpires = Date.now() + 3600000; // 1 hour from now
         await user.save();
-    
+
         const resetLink = `${process.env.BASE_URL}/reset-password?token=${resetToken}`;
         console.log(resetLink);
-        
-    
+
+
         // email content
         const subject = "Password Reset Request";
         const content = `
@@ -525,65 +525,74 @@ const forgotPasswordLink = async(req,res)=>{
           <a href="${resetLink}">Reset Password</a>
           <p>This link is valid for 1 hour. If you did not request a password reset, please ignore this email.</p>
         `;
-    
+
         // Send the email
         await mailer.sendMail(userEmail, subject, content);
-    
+
         res.render("forgotPassword", { success: true });
-      } catch (error) {
+    } catch (error) {
         res.render("forgotPassword", { error: true });
-      }
+    }
 }
 
 const resetPassword = async (req, res) => {
-    const token = req.query.token; 
+    const token = req.query.token;
     console.log("reset:", token);
     try {
-      const user = await User.findOne({
-        resetPasswordToken: token,
-        resetPasswordExpires: { $gt: Date.now() },
-      });
-  
-      if (!user) {
-        return res.render("reset-password", { token: null, invalidToken: true });
-      }
-  
-      return res.render("reset-password", { token, invalidToken: false });
-    } catch (error) {
-      console.error("Error finding user by token:", error);
-      res.status(500).send("Server error");
-    }
-  };
-  
+        const user = await User.findOne({
+            resetPasswordToken: token,
+            resetPasswordExpires: { $gt: Date.now() },
+        });
 
-  const newPasswordUpdate = async (req, res) => {
+        if (!user) {
+            return res.render("reset-password", { token: null, invalidToken: true });
+        }
+
+        return res.render("reset-password", { token, invalidToken: false });
+    } catch (error) {
+        console.error("Error finding user by token:", error);
+        res.status(500).send("Server error");
+    }
+};
+
+
+const newPasswordUpdate = async (req, res) => {
     const { token } = req.body;  // changed to req.body for hidden input
     const { password } = req.body;
-  
+
     try {
-      const user = await User.findOne({
-        resetPasswordToken: token,
-        resetPasswordExpires: { $gt: Date.now() },
-      });
-  
-      if (!user) {
-        return res.render("reset-password", { token, invalidToken: true });
-      }
-  
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
-      user.password = hashedPassword;
-      user.resetPasswordToken = undefined;
-      user.resetPasswordExpires = undefined;
-      await user.save();
-  
-      return res.redirect('/auth');
+        const user = await User.findOne({
+            resetPasswordToken: token,
+            resetPasswordExpires: { $gt: Date.now() },
+        });
+
+        if (!user) {
+            return res.render("reset-password", { token, invalidToken: true });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        user.password = hashedPassword;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+        await user.save();
+
+        return res.redirect('/auth');
     } catch (error) {
-      console.error("Error resetting password:", error);
-      return res.render("reset-password", { token, serverError: true });
+        console.error("Error resetting password:", error);
+        return res.render("reset-password", { token, serverError: true });
     }
-  };
-  
+};
+
+const load404 = async (req, res) => {
+    try {
+        res.render('404');
+    } catch (error) {
+        console.error("Error resetting password:", error);
+        return res.render("reset-password", { token, serverError: true });
+    }
+}
+
 
 
 
@@ -602,5 +611,6 @@ module.exports = {
     loadForgotPassword,
     forgotPasswordLink,
     resetPassword,
-    newPasswordUpdate
+    newPasswordUpdate,
+    load404
 }

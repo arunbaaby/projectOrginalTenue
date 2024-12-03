@@ -1,0 +1,77 @@
+<%- include ('../layouts/admin/adminHeader') %>
+<section class="content-main">
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Category Offers</h2>
+               
+            </div>
+            <div>
+                <a href="/admin/add-category-offer" class="btn btn-md rounded font-sm hover-up">Add new offer</a>
+            </div>
+        </div>
+        <div class="card">
+            
+            <div class="card-body">
+              <div class="col-md-14">
+                
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th class="col-md-1">No</th>
+                                <th class="col-md-2 text-center ">Offer Name</th>
+                                <th class="col-md-2 text-center">Product</th>
+                                <th class="col-md-1 text-center">Discount</th>
+                                
+                                <th class="col-md-2 text-center">Starting Date</th>
+                                <th class="col-md-1 text-center">Ending Date</th>
+                                <th class="col-md-1 text-center">Status</th>
+                                <th class="col-md-2 text-center">Edit</th>
+                                <th class=" col-md-2 text-center col-md-1">Delete</th>
+                            </tr>
+                        </thead>
+                        <% if (locals.categoryOfferData) { %>
+                            <tbody>
+                                <% categoryOfferData.forEach((offer, index) => { %>
+                                    <tr>
+                                        <td class="col-md-1 align-self-center align-items-center text-center"><%= index + 1 %></td>
+                                        <td class="col-md-2 text-center"><%= offer.name %></td>
+                                        <td class="col-md-2 text-center"><%= offer.categoryDetails.name %></td>
+                                        <td class="col-md-1 text-center"><%= offer.categoryOffer.discount %></td>
+                                        <td class="col-md-2 text-center"><%= new Date(offer.startingDate).toLocaleDateString() %></td>
+                                        <td class="col-md-1 text-center"><%= new Date(offer.endingDate).toLocaleDateString() %></td>
+                                        <td class="col-md-1 text-center">
+                                            <% if (offer.is_active) { %>
+                                                <p>Active</p>
+                                            <% } else { %>
+                                                <p>Inactive</p>
+                                            <% } %>
+                                        </td>
+                                        <td class="col-md-2 text-center">
+                                            <a href="/admin/edit-category-offer?id=<%= offer._id %>" class="btn btn-sm font-sm btn-action btn-warning" style="width: 50%; color: white;">Edit</a>
+                                        </td>
+                                        <td>
+                                            <!-- Block/Unblock Form -->
+                                            <% if (offer.is_active) { %>
+                                                <form action="/admin/delete-category-offer?id=<%= offer._id %>" method="POST" style="display:inline;">
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                </form>
+                                            <% } else { %>
+                                                <form action="/admin/restore-category-offer?id=<%= offer._id %>" method="POST" style="display:inline;">
+                                                    <button type="submit" class="btn btn-success">Restore</button>
+                                                </form>
+                                            <% } %>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        <% } %>
+                        
+                      </table>
+                  </div>
+                </div>
+            </div> 
+        </div> 
+      </section>
+<%- include ('../layouts/admin/adminFooter') %>

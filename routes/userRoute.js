@@ -118,6 +118,10 @@ user_route.post('/apply-coupon',isLoggedIn,couponController.applyCoupon);
 user_route.post('/remove-coupon',isLoggedIn,couponController.removeCoupon);
 
 
+//404
+user_route.get('/404',isLoggedIn,userController.load404);
+
+
 
 
 

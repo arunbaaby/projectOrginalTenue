@@ -1,0 +1,55 @@
+<%- include ('../layouts/admin/adminHeader') %>
+<section class="content-main">
+    <div class="row justify-content-center mt-30">
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Edit Category Offer</h4>
+                </div>
+                <div class="card-body">
+                    <div class="mx-auto">
+                        <form action="/admin/edit-category-offer?id=<%= offerDetails._id %> %>" id="catOfferForm" method="post">
+                            <% if(locals.offerDetails){ %>
+                            <div class="mb-4">
+                                <label for="name" class="form-label">Offer Name</label>
+                                <input type="text" name="name" placeholder="Type here" class="form-control" id="name" value="<%= offerDetails.name %>">
+                                <div id="catOfferName-error" class="error-message text-danger"></div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Starting Date</label>
+                                <input id="catStartingDate" name="startingDate" type="date" class="form-control" value="<%= offerDetails.startingDate.toISOString().split('T')[0] %>">
+                                <div id="catStartingDate-error" class="error-message text-danger"></div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Ending Date</label>
+                                <input id="catEndingDate" name="endingDate" type="date" class="form-control" value="<%= offerDetails.endingDate.toISOString().split('T')[0] %>">
+                                <div id="catEndingDate-error" class="error-message text-danger"></div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" name="category">
+                                    <% if(locals.categoryData) { %>
+                                    <% for(let i = 0; i < categoryData.length; i++) { %>
+                                    <option value="<%= categoryData[i]._id %>" <% if (categoryData[i].name === offerDetails.categoryOffer.categoryName) { %>selected<% } %>>
+                                        <%= categoryData[i].name %>
+                                    </option>
+                                    <% } %>
+                                    <% } %>
+                                </select>
+                                <div id="category-error" class="error-message text-danger"></div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Category Discount</label>
+                                <input type="text" placeholder="Type here" name="categoryDiscount" class="form-control" id="categoryDiscount" value="<%= offerDetails.categoryOffer.discount %>">
+                                <div id="catDiscount-error" class="error-message text-danger"></div>
+                            </div>
+                            <button type="submit" class="btn ms-auto d-block btn-primary btn-md rounded font-sm hover-up">Update</button>
+                            <% } %>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<%- include ('../layouts/admin/adminFooter') %>

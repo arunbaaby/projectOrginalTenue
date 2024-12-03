@@ -27,6 +27,7 @@ const productController = require('../controllers/productController');
 const orderController = require('../controllers/orderController');
 const couponController = require('../controllers/couponController');
 const salesReportController = require('../controllers/salesReportController');
+const offerController = require('../controllers/offerController');
 
 // Route to get admin login
 admin_route.get('/login', adminController.loadLogin);
@@ -77,6 +78,25 @@ admin_route.post('/activate-coupon/:id',couponController.activateCoupon);
 admin_route.get('/sales-report',salesReportController.loadSalesReport);
 admin_route.post('/sales-date-filter',salesReportController.customDateFilter);
 admin_route.post('/sales-report-filter',salesReportController.filterSalesReport);
+
+//product offer
+admin_route.get('/product-offer',offerController.loadProductOffer);
+admin_route.get('/add-product-offer',offerController.loadAddProductOffer);
+admin_route.post('/add-product-offer',offerController.addProductOffer);
+admin_route.post('/delete-product-offer',offerController.deleteProductOffer);
+admin_route.post('/restore-product-offer',offerController.restoreProductOffer);
+admin_route.get('/edit-product-offer',offerController.loadEditProductOffer);
+admin_route.post('/edit-product-offer',offerController.editProductOffer);
+
+//category offers
+admin_route.get('/category-offer',offerController.loadCategoryOffer);
+admin_route.get('/add-category-offer',offerController.loadAddCategoryOffer);
+admin_route.post('/add-category-offer',offerController.addCategoryOffer);
+admin_route.post('/delete-category-offer',offerController.deleteCategoryOffer);
+admin_route.post('/restore-category-offer',offerController.restoreCategoryOffer);
+admin_route.get('/edit-category-offer',offerController.loadEditCategoryOffer);
+admin_route.post('/edit-category-offer',offerController.editCategoryOffer);
+
 
 
 module.exports = admin_route;   

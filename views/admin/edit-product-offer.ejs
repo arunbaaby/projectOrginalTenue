@@ -1,0 +1,51 @@
+<%- include ('../layouts/admin/adminHeader') %>
+<section class="content-main">
+    <div class="row justify-content-center mt-30">
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Edit Product offer</h4>
+                </div>
+                <div class="card-body">
+                    <div class="mx-auto"> 
+                        <form action="/admin/edit-product-offer?id=<%= productOfferData._id %>" method="post">
+                            <% if (locals.productOfferData) { %>
+                                <div class="mb-4">
+                                    <label for="name" class="form-label">Offer Name</label>
+                                    <input type="text" name="name" placeholder="Offer Name" class="form-control" id="name" value="<%= productOfferData.name %>" required>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="startingDate" class="form-label">Starting Date</label>
+                                    <input type="date" name="startingDate" id="startingDate" class="form-control" value="<%= productOfferData.startingDate.toISOString().split('T')[0] %>" required>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="endingDate" class="form-label">Ending Date</label>
+                                    <input type="date" name="endingDate" id="endingDate" class="form-control" value="<%= productOfferData.endingDate.toISOString().split('T')[0] %>" required>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="product" class="form-label">Product</label>
+                                    <select name="product" id="product" class="form-select" required>
+                                        <% productData.forEach(product => { %>
+                                            <option value="<%= product._id %>" <% if (product._id.toString() === productOfferData.productOffer.product.toString()) { %>selected<% } %>>
+                                                <%= product.name %>
+                                            </option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="discount" class="form-label">Discount</label>
+                                    <input type="number" name="discount" id="discount" class="form-control" value="<%= productOfferData.productOffer.discount %>" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Update Offer</button>
+                            <% } %>
+                        </form>
+                        
+                      
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<%- include ('../layouts/admin/adminFooter') %>
+

@@ -1,0 +1,73 @@
+<%- include ('../layouts/admin/adminHeader') %>
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Product Offer</h2>
+            <p>Add, edit a Product offers</p>
+           
+        </div>
+        <div>
+            <a href="/admin/add-product-offer" class="btn btn-md rounded font-sm hover-up">Add new offer</a>
+        </div>
+    </div>
+    <div class="card">
+        
+        <div class="card-body">
+          <div class="col-md-13">
+            
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th class="col-md-1">No</th>
+                    <th class="col-md-2 text-center">Offer Name</th>
+                    <th class="col-md-2 text-center">Product Name</th>
+                    <th class="col-md-1 text-center">Discount</th>
+                    <th class="col-md-2 text-center">Starting Date</th>
+                    <th class="col-md-1 text-center">Ending Date</th>
+                    <th class="col-md-2 text-center">Edit</th>
+                    <th class="col-md-1 text-center">Status</th>
+                    <th class="col-md-2 text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (locals.productOfferData) { %>
+                    <% productOfferData.forEach((offer, index) => { %>
+                      <tr>
+                        <td class="col-md-1 align-self-center align-items-center"><%= index + 1 %></td>
+                        <td class="col-md-2 text-center"><%= offer.name %></td>
+                        <td class="col-md-2 text-center"><%= offer.productDetails.name %></td>
+                        <td class="col-md-1 text-center"><%= offer.productOffer.discount %> %</td>
+                        <td class="col-md-2 text-center"><%= new Date(offer.startingDate).toLocaleDateString('en-GB') %></td>
+                        <td class="col-md-1 text-center"><%= new Date(offer.endingDate).toLocaleDateString('en-GB') %></td>
+                        <td class="col-md-2 text-center">
+                          <a href="/admin/edit-product-offer?id=<%= offer._id %>&prodId=<%= offer.productDetails._id %>" class="btn btn-sm font-sm btn-action btn-warning" style="width: 50%; color: white;">
+                            Edit
+                          </a>
+                        </td>
+                        <td class="col-md-1 text-center"><%= offer.productOffer.offerStatus ? "Active" : "Inactive" %></td>
+                        <td>
+                          <% if (offer.productOffer.offerStatus) { %>
+                            <form action="/admin/delete-product-offer?id=<%= offer._id %>" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-danger">Deactivate</button>
+                            </form>
+                        <% } else { %>
+                            <form action="/admin/restore-product-offer?id=<%= offer._id %>" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-success">Activate</button>
+                            </form>
+                        <% } %>
+                        
+                        </td>
+                      </tr>
+                    <% }); %>
+                  <% } %>
+                </tbody>
+              </table>
+              
+              </div>
+            </div>  
+        </div> 
+    </div> 
+     <!-- Edit Product Offer Modal -->
+  </section>
+<%- include ('../layouts/admin/adminFooter') %>

@@ -1,0 +1,53 @@
+<%- include ('../layouts/admin/adminHeader') %>
+<section class="content-main">
+    <div class="row justify-content-center mt-30">
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Add new Product offer</h4>
+                </div>
+                <div class="card-body">
+                    <div class="mx-auto"> 
+                        <form action="/admin/add-product-offer" id="prdOfferForm" method="post">
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label">Offer Name</label>
+                                <input type="text" name="name" placeholder="Type here" class="form-control" id="name">
+                                <div id="prdOfferName-error" class="error-message"></div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Starting Date</label>
+                                <input id="prdStartingDate" name="startingDate" type="date" placeholder="mm/dd/yy" class="form-control">
+                                <div id="prdStartingDate-error" class="error-message"></div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Ending Date</label>
+                                <input id="prdEndingDate" name="endingDate" type="date" placeholder="mm/dd/yy" class="form-control">
+                                <div id="prdEndingDate-error" class="error-message"></div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Product</label>
+                                <select class="form-select" name="products">
+                                    <% if(locals.productData) { %>
+                                        <% for(let i = 0; i < productData.length; i++) { %>
+                                                <option value="<%= productData[i]._id %>"><%= productData[i].name %></option>
+                                        <% } %>
+                                    <% } %>
+                                </select>
+                                <p><span id="error4" style="display: none;" class="mt-15 err text-danger"></span></p>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label">Product Discount%</label>
+                                <input placeholder="Type here" name="productDiscount" class="form-control" id="productDiscount">
+                                <div id="prdDiscount-error" class="error-message"></div>
+                            </div>
+                            <button type="submit" class="btn ms-auto d-block btn-md rounded font-sm hover-up">Add Offer</button>
+                        </form>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<%- include ('../layouts/admin/adminFooter') %>

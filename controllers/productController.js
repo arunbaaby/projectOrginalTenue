@@ -213,11 +213,13 @@ const allProductsLoad = async (req, res) => {
         
         let subtotal = 0;
         if (cart) {
+            cart.items = cart.items.filter(item => item.product); // Keep only items with valid products
             subtotal = cart.items.reduce((acc, item) => {
                 const productPrice = item.product.discountPrice ?? item.product.price ?? 0;
                 return acc + (productPrice * item.quantity);
             }, 0);
         }
+        
 
         // Sorting 
         let sortOption = req.query.sort;
@@ -357,6 +359,11 @@ const productDetailsLoad = async (req, res) => {
     try {
         const id = req.query.id;
         const product = await Product.findById(id);
+
+        if(!product){
+            console.warn(`Product with id ${id} not found.`);
+            return res.redirect('/404');
+        }
 
 
         //category field in each product should have all the category documents and info
