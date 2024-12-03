@@ -128,7 +128,8 @@ const placeOrder = async (req, res) => {
             quantity: item.quantity,
             priceAtPurchase: item.product.price,
             discountPriceAtPurchase: item.product.discountPrice,
-            size: item.size
+            size: item.size,
+            status: paymentMethod === 'Cash on Delivery' ? 'Processing' : 'Pending'
         }));
 
         const itemsTotal = orderItems.reduce((sum, item) => sum + item.discountPriceAtPurchase * item.quantity, 0);
