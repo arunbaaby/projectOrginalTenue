@@ -277,14 +277,21 @@ const loadOrderConfirmation = async (req, res) => {
 const loadMyOrders = async (req, res) => {
     try {
         const userId = req.user.id;
-        const orders = await Order.find({ user: userId }).populate('items.product');
+        let orders = await Order.find({ user: userId }).populate('items.product');
+
+        // Filter out orders with any null products: when product deleted from the db
+        orders = orders.filter(order => 
+            order.items.every(item => item.product !== null)
+        );
 
         res.render('my-orders', { orders });
     } catch (error) {
         console.error('Error loading the order confirmation page:', error.message);
         res.status(500).json({ success: false, msg: error.message });
     }
-}
+};
+
+
 
 const loadViewOrder = async (req, res) => {
     try {

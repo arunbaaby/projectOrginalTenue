@@ -76,8 +76,8 @@
                     <h4>Subtotal: <span>$170.00</span></h4>
                 </div>
                 <div class="cart-checkout-btn">
-                    <a class="btn-hover cart-btn-style" href="cart.html">view cart</a>
-                    <a class="no-mrg btn-hover cart-btn-style" href="checkout.html">checkout</a>
+                    <a class="btn-hover cart-btn-style" href="/cart">view cart</a>
+                    <a class="no-mrg btn-hover cart-btn-style" href="/checkout">checkout</a>
                 </div>
             </div>
         </div>
@@ -339,13 +339,13 @@
                                                     <td class="wishlist-price">
                                                       <span class="amount">$<%= product.discountPrice.toFixed(2) %></span>
                                                     </td>
-                                                    <td class="wishlist-cart">
+                                                    <!-- <td class="wishlist-cart">
                                                       <% if (product.stock > 0) { %>
                                                         <a href="#" class="add-to-cart" data-product-id="<%= product._id %>">Add to cart</a>
                                                       <% } else { %>
                                                         <span>Unavailable</span>
                                                       <% } %>
-                                                    </td>
+                                                    </td> -->
                                                   </tr>
                                                 <% }) %>
                                               <% } else { %>
