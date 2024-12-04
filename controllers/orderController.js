@@ -68,6 +68,8 @@ const loadCheckout = async (req, res) => {
             // return res.status(400).json('no items in the cart');
         }
 
+        const validItems = cart.items.filter(item => item.product);
+
         // Fetch active and valid coupons
         const today = new Date();
         const availableCoupons = await Coupon.find({
@@ -75,7 +77,7 @@ const loadCheckout = async (req, res) => {
             expirationDate: { $gte: today },
         });
 
-        res.render('checkout', { userAddresses, cart, user, items: cart.items, availableCoupons });
+        res.render('checkout', { userAddresses, cart, user, items: validItems, availableCoupons });
     } catch (error) {
         console.error('Error loading the checkout page:', error.message);
         return res.status(400).json({
@@ -219,6 +221,23 @@ const placeOrder = async (req, res) => {
         res.status(500).json({ success: false, msg: error.message });
     }
 };
+
+const notifyPaymentFailure = async(req,res)=>{
+    try {
+        const { orderId } = req.body;
+
+        // Update the payment status to Failed
+        await Order.updateOne(
+            { _id: orderId },
+            { paymentStatus: 'Failed' }
+        );
+
+        res.status(200).json({ success: true, message: 'Payment failure recorded.' });
+    } catch (error) {
+        console.error('Error notify payment failure:', error.message);
+        res.status(500).json({ success: false, msg: error.message });
+    }
+}
 
 const verifyPayment = async (req, res) => {
     try {
@@ -476,5 +495,6 @@ module.exports = {
     cancelOrderItem,
     verifyPayment,
     changeOrderStatus,
-    returnOrderItem
+    returnOrderItem,
+    notifyPaymentFailure
 }

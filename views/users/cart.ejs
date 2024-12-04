@@ -327,12 +327,13 @@
                                                         </a>
                                                     </td>
                                                     <td class="product-img">
-                                                        <% if(item.product.images.length > 0) { %>
-                                                            <img src="/admin/productImages/<%= item.product.images[0] %>" alt="<%= item.product.name %>" height="90px" width="90px ">
+                                                        <% if (item.product && item.product.images && item.product.images.length > 0) { %>
+                                                            <img src="/admin/productImages/<%= item.product.images[0] %>" alt="<%= item.product.name %>" height="90px" width="90px">
                                                         <% } else { %>
-                                                            <img src="defaultImage.jpg" alt="No Image" >
+                                                            <img src="defaultImage.jpg" alt="No Image" height="90px" width="90px">
                                                         <% } %>
                                                     </td>
+                                                    
                                                     <td class="product-name"><a href="#"><%= item.product.name %></a></td>
                                                     <td class="product-price"><span class="amount">$<%= item.product.discountPrice %></span></td>
                                                     <td class="cart-quality">

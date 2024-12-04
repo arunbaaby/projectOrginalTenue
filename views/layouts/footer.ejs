@@ -413,26 +413,26 @@
 <!-- Your Size Selection Script -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-    const sizeOptions = document.querySelectorAll('.size-option');
-    const selectedSizeInput = document.getElementById('selectedSize');
-    const addToCartButton = document.getElementById('addToCartButton');
+        const sizeOptions = document.querySelectorAll('.size-option');
+        const selectedSizeInput = document.getElementById('selectedSize');
+        const addToCartButton = document.getElementById('addToCartButton');
 
-    sizeOptions.forEach(option => {
-        option.addEventListener('click', function (event) {
-            event.preventDefault();
-            sizeOptions.forEach(opt => opt.classList.remove('active'));
-            this.classList.add('active');
-            selectedSizeInput.value = this.getAttribute('data-size');
+        sizeOptions.forEach(option => {
+            option.addEventListener('click', function (event) {
+                event.preventDefault();
+                sizeOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+                selectedSizeInput.value = this.getAttribute('data-size');
+            });
+        });
+
+        addToCartButton.addEventListener('click', function (event) {
+            if (!selectedSizeInput.value) {
+                event.preventDefault();
+                alert('Please select a size before adding to cart.');
+            }
         });
     });
-
-    addToCartButton.addEventListener('click', function (event) {
-        if (!selectedSizeInput.value) {
-            event.preventDefault();
-            alert('Please select a size before adding to cart.');
-        }
-    });
-});
 
 </script>
 
@@ -495,123 +495,123 @@
 </script>
 
 <script>document.querySelectorAll('.remove-btn').forEach(button => {
-    button.addEventListener('click', function() {
-        const addressId = this.getAttribute('data-address-id');
-        
-        fetch(`/delete-address/${addressId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'  // Set the X-Requested-With header
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Address deleted successfully.');
-                location.reload();  // Refresh to update the addresses list
-            } else {
-                alert('Failed to delete address: ' + data.msg);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while deleting the address.');
+        button.addEventListener('click', function () {
+            const addressId = this.getAttribute('data-address-id');
+
+            fetch(`/delete-address/${addressId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'  // Set the X-Requested-With header
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Address deleted successfully.');
+                        location.reload();  // Refresh to update the addresses list
+                    } else {
+                        alert('Failed to delete address: ' + data.msg);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while deleting the address.');
+                });
         });
     });
-});
 </script>
 
 <script>
     // Select all wishlist buttons
     document.querySelectorAll('.wishlist-button').forEach(button => {
-      button.addEventListener('click', async (event) => {
-        event.preventDefault(); // Prevent default link behavior
-  
-        const productId = button.getAttribute('data-product-id'); // Get product ID
-  
-        try {
-          // Send AJAX request to the server
-          const response = await fetch('/add-to-wishlist', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ productId }),
-          });
-  
-          const data = await response.json(); // Parse the JSON response
-          if (response.ok) {
-            // Success feedback (e.g., change the icon or show a toast)
-            alert(data.message || 'Product added to wishlist');
-            button.querySelector('i').classList.add('added'); // Add a class for styling
-          } else {
-            // Handle errors
-            alert(data.error || 'Failed to add to wishlist');
-          }
-        } catch (err) {
-          console.error(err);
-          alert('An error occurred. Please try again.');
-        }
-      });
+        button.addEventListener('click', async (event) => {
+            event.preventDefault(); // Prevent default link behavior
+
+            const productId = button.getAttribute('data-product-id'); // Get product ID
+
+            try {
+                // Send AJAX request to the server
+                const response = await fetch('/add-to-wishlist', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ productId }),
+                });
+
+                const data = await response.json(); // Parse the JSON response
+                if (response.ok) {
+                    // Success feedback (e.g., change the icon or show a toast)
+                    alert(data.message || 'Product added to wishlist');
+                    button.querySelector('i').classList.add('added'); // Add a class for styling
+                } else {
+                    // Handle errors
+                    alert(data.error || 'Failed to add to wishlist');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('An error occurred. Please try again.');
+            }
+        });
     });
-  </script>
+</script>
 
 <script>
     document.querySelectorAll('.remove-from-wishlist').forEach((button) => {
-      button.addEventListener('click', async (event) => {
-        event.preventDefault();
-  
-        const productId = button.getAttribute('data-product-id');
-  
-        try {
-          const response = await fetch('/remove-from-wishlist', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ productId }),
-          });
-  
-          const data = await response.json();
-          if (response.ok) {
-            alert(data.message);
-            // Remove the row from the table
-            button.closest('tr').remove();
-          } else {
-            alert(data.error || 'Failed to remove product');
-          }
-        } catch (err) {
-          console.error(err);
-          alert('An error occurred. Please try again.');
-        }
-      });
+        button.addEventListener('click', async (event) => {
+            event.preventDefault();
+
+            const productId = button.getAttribute('data-product-id');
+
+            try {
+                const response = await fetch('/remove-from-wishlist', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ productId }),
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    alert(data.message);
+                    // Remove the row from the table
+                    button.closest('tr').remove();
+                } else {
+                    alert(data.error || 'Failed to remove product');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('An error occurred. Please try again.');
+            }
+        });
     });
-  </script>
+</script>
 
-  <script>function changeQuantity(itemId, change, currentQuantity, maxStock) {
-    const newQuantity = currentQuantity + change;
+<script>function changeQuantity(itemId, change, currentQuantity, maxStock) {
+        const newQuantity = currentQuantity + change;
 
-    if (change > 0 && newQuantity > maxStock) {
-        alert(`Only ${maxStock} items are available in stock.`);
-        return;
-    }
-
-    fetch('/update-cart-item', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ itemId, change }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            window.location.reload(); // reload
-        } else {
-            alert(data.message || "Failed to update quantity.");
+        if (change > 0 && newQuantity > maxStock) {
+            alert(`Only ${maxStock} items are available in stock.`);
+            return;
         }
-    })
-    .catch(error => console.error('Error:', error));
-}
+
+        fetch('/update-cart-item', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ itemId, change }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload(); // reload
+                } else {
+                    alert(data.message || "Failed to update quantity.");
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
 
 
 </script>
@@ -651,7 +651,7 @@
                     icon: 'success',
                     title: 'Coupon Applied!',
                     text: `Discount Applied: ₹${data.discount}. New Total: ₹${data.newTotal}`,
-                }).then(()=>{
+                }).then(() => {
                     location.reload();
                 });
             } else {
@@ -711,96 +711,122 @@
 </script>
 
 
-    <script>
-        async function placeOrder() {
-            try {
-                // Prevent default form submission
-                console.log('placeorder script');
+<script>
+    async function placeOrder() {
+        try {
+            const selectedAddress = document.querySelector('input[name="address"]:checked').value;
+            const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
 
-                const selectedAddress = document.querySelector('input[name="address"]:checked').value;
-                const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
-
-                // Send the selected address and payment method to the backend
-                const response = await fetch('/place-order', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        selectedAddress,
-                        paymentMethod,
-                    }),
-                });
-
-                const data = await response.json();
-
-                if (!data.success) {
-                    alert(data.message || 'Order placement failed.');
-                    return;
-                }
-
-                if (paymentMethod === 'Razorpay') {
-                    // Trigger Razorpay interface
-                    initiateRazorpayPayment(data);
-                } else {
-                    // Redirect for non-Razorpay payments
-                    window.location.href = data.redirectUrl;
-                    // window.location.href = `/order-confirmation?orderId=${data.orderId}`;
-                }
-            } catch (error) {
-                console.error('Error placing order:', error);
-                alert('Something went wrong. Please try again.');
-            }
-        }
-
-        function initiateRazorpayPayment(data) {
-            const options = {
-                key: data.key,
-                amount: data.amount,
-                currency: data.currency,
-                name: data.name,
-                description: data.description,
-                order_id: data.razorpayOrderId,
-                handler: function (response) {
-                    verifyPayment(response, data.orderId);
-                },
-                theme: { color: "#fc4f4f" },
-            };
-
-            const rzp = new Razorpay(options);
-            rzp.on('payment.failed', function (response) {
-                alert('Payment failed. Please try again.');
+            const response = await fetch('/place-order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ selectedAddress, paymentMethod }),
             });
-            rzp.open();
-        }
 
-        async function verifyPayment(paymentDetails, orderId) {
-            try {
-                const response = await fetch('/verify-payment', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        paymentDetails,
-                        orderId,
-                    }),
-                });
+            const data = await response.json();
 
-                const data = await response.json();
-                if (data.success) {
-                    window.location.href = `/order-confirmation?orderId=${orderId}`;
-                } else {
-                    alert(data.message || 'Payment verification failed.');
-                }
-            } catch (error) {
-                console.error('Error verifying payment:', error);
-                alert('Something went wrong during payment verification.');
+            if (!data.success) {
+                alert(data.message || 'Order placement failed.');
+                return;
             }
+
+            if (paymentMethod === 'Razorpay') {
+                initiateRazorpayPayment(data);
+            } else {
+                window.location.href = data.redirectUrl;
+            }
+        } catch (error) {
+            console.error('Error placing order:', error);
+            alert('Something went wrong. Please try again.');
         }
-    </script>
-  
-  
+    }
+
+    function initiateRazorpayPayment(data) {
+        const options = {
+            key: data.key,
+            amount: data.amount,
+            currency: data.currency,
+            name: data.name,
+            description: data.description,
+            order_id: data.razorpayOrderId,
+            handler: function (response) {
+                verifyPayment(response, data.orderId);
+            },
+            theme: { color: "#fc4f4f" },
+            modal: {
+                escape: false, // Prevent closing the modal with the Esc key
+                ondismiss: async function () {
+                    // Handle modal close event
+                    await handlePaymentClosure(data.orderId);
+                },
+            },
+        };
+
+        const rzp = new Razorpay(options);
+
+        rzp.on('payment.failed', async function (response) {
+            // Inform the server about the payment failure
+            await notifyPaymentFailure(data.orderId);
+
+            // Alert the user and redirect
+            alert('Payment failed. You will be redirected to view your order.');
+            window.location.href = `/view-order?orderId=${data.orderId}`;
+        });
+
+        rzp.open();
+    }
+
+    async function handlePaymentClosure(orderId) {
+        try {
+            // Notify the server about the payment failure
+            await notifyPaymentFailure(orderId);
+
+            // Alert the user and redirect
+            alert('You closed the payment window. You will be redirected to view your order.');
+            window.location.href = `/view-order?orderId=${orderId}`;
+        } catch (error) {
+            console.error('Error handling payment closure:', error);
+            alert('Something went wrong. Please check your order status.');
+        }
+    }
+
+
+
+    async function verifyPayment(paymentDetails, orderId) {
+        try {
+            const response = await fetch('/verify-payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ paymentDetails, orderId }),
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                window.location.href = `/order-confirmation?orderId=${orderId}`;
+            } else {
+                alert(data.message || 'Payment verification failed.');
+            }
+        } catch (error) {
+            console.error('Error verifying payment:', error);
+            alert('Something went wrong during payment verification.');
+        }
+    }
+
+    async function notifyPaymentFailure(orderId) {
+        try {
+            await fetch('/notify-payment-failure', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ orderId }),
+            });
+        } catch (error) {
+            console.error('Error notifying payment failure:', error);
+        }
+    }
+</script>
+
+
+
 </body>
 
 

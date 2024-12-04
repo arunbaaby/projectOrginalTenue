@@ -70,23 +70,25 @@ const addToCart = async(req,res)=>{
 }
 
 
-const loadCart = async(req,res)=>{
+const loadCart = async (req, res) => {
     try {
         const userId = req.user.id;
         const cart = await Cart.findOne({ user: userId }).populate('items.product');
 
         if (!cart) {
-            return res.render('cart', { items: [] }); //render empty cart if user have no cart
+            return res.render('cart', { items: [] }); // Render empty cart if user has no cart
         }
 
-        console.log('cartinte akathe :'+userId);
-        res.render('cart', { items: cart.items });
-        
+        // Filter out items with null or undefined products
+        const validItems = cart.items.filter(item => item.product);
+
+        res.render('cart', { items: validItems });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error', error });
     }
-}
+};
+
 
 const deleteCartItem = async(req,res)=>{
     try {

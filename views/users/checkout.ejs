@@ -726,14 +726,15 @@
                             <h3>Your order</h3>
 
                             <!-- Moved the product image here, below the heading -->
-                            <% if(items[0].product.images.length> 0) { %>
+                            <% if (items[0] && items[0].product && items[0].product.images && items[0].product.images.length > 0) { %>
                                 <img src="/admin/productImages/<%= items[0].product.images[0] %>"
-                                    alt="<%= items[0].product.name %>" height="90px" width="90px"
-                                    style="display: block; margin: 15px auto;">
-                                <% } else { %>
-                                    <img src="defaultImage.jpg" alt="No Image" height="90px" width="90px"
-                                        style="display: block; margin: 15px auto;">
-                                    <% } %>
+                                     alt="<%= items[0].product.name %>" height="90px" width="90px"
+                                     style="display: block; margin: 15px auto;">
+                            <% } else { %>
+                                <img src="defaultImage.jpg" alt="No Image" height="90px" width="90px"
+                                     style="display: block; margin: 15px auto;">
+                            <% } %>
+                            
 
                                         <div class="your-order-wrap gray-bg-4">
                                             <div class="your-order-info-wrap">

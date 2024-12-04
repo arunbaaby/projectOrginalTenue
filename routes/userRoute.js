@@ -113,6 +113,9 @@ user_route.post('/return-order-item',isLoggedIn,orderController.returnOrderItem)
 //verify payment
 user_route.post('/verify-payment',isLoggedIn,orderController.verifyPayment);
 
+//notify payment failure to update payment status
+user_route.post('/notify-payment-failure',isLoggedIn,orderController.notifyPaymentFailure);
+
 //apply coupon
 user_route.post('/apply-coupon',isLoggedIn,couponController.applyCoupon);
 user_route.post('/remove-coupon',isLoggedIn,couponController.removeCoupon);
