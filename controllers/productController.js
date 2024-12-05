@@ -1,3 +1,6 @@
+const path = require('path');
+const fs = require('fs');
+
 //prouctController.js
 const Category = require('../models/categoryModel');
 const Product = require('../models/productModel');
@@ -111,6 +114,29 @@ const deleteProduct = async (req, res) => {
     }
 }
 
+const deleteProductImage = async (req, res) => {
+    const { id, delete: image } = req.query;
+
+    if (!id || !image) {
+        return res.status(400).send('Invalid request parameters.');
+    }
+    try {
+        const imagePath = path.join(__dirname, 'public', 'productImages', image);
+        if (fs.existsSync(imagePath)) {
+            fs.unlinkSync(imagePath);
+        }
+
+        await Product.findByIdAndUpdate(id, {
+            $pull: { images: image },
+        });
+
+        res.sendStatus(200);
+    } catch (error) {
+        console.error(`Error deleting product img : ${error.message}`);
+        res.status(500).send('Internal Server Error');
+    }
+}
+
 const restoreProduct = async (req, res) => {
     try {
         const id = req.query.id;
@@ -154,11 +180,11 @@ const updateProduct = async (req, res) => {
 
         const id = req.query.id;
 
-        let imagePaths = [];
-        if (req.files && req.files.length > 0) {
-            imagePaths = req.files.map(file => file.filename);
-        }
-        console.log(imagePaths);
+        // let imagePaths = [];
+        // if (req.files && req.files.length > 0) {
+        //     imagePaths = req.files.map(file => file.filename);
+        // }
+        // console.log(imagePaths);
 
         const existingProduct = await Product.findById(id);
         if (!existingProduct) {
@@ -168,6 +194,14 @@ const updateProduct = async (req, res) => {
         const duplicateProduct = await Product.findOne({ name: name, _id: { $ne: id } });
         if (duplicateProduct) {
             return res.status(400).send('Product name already exists');
+        }
+
+        // Handle uploaded images
+        let imagePaths = existingProduct.images; // Start with existing images
+        if (req.files && req.files.length > 0) {
+            // Add newly uploaded images
+            const newImagePaths = req.files.map(file => file.filename);
+            imagePaths = [...imagePaths, ...newImagePaths];
         }
 
         // If sizes are not provided, retain existing sizes or set default sizes
@@ -210,7 +244,7 @@ const allProductsLoad = async (req, res) => {
             cart = await Cart.findOne({ user: userId }).populate('items.product');
         }
 
-        
+
         let subtotal = 0;
         if (cart) {
             cart.items = cart.items.filter(item => item.product); // Keep only items with valid products
@@ -219,7 +253,7 @@ const allProductsLoad = async (req, res) => {
                 return acc + (productPrice * item.quantity);
             }, 0);
         }
-        
+
 
         // Sorting 
         let sortOption = req.query.sort;
@@ -290,7 +324,7 @@ const allProductsLoad = async (req, res) => {
                     is_active: true,
                     name: { $regex: query, $options: 'i' },
                     price: { $gte: priceMin, $lte: priceMax },
-                    ...(brand && { brand: brand }) 
+                    ...(brand && { brand: brand })
                 }
             },
             {
@@ -342,7 +376,7 @@ const allProductsLoad = async (req, res) => {
             sortOption,
             brand, // Pass the selected brand to the template if needed
             cart,
-            subtotal: subtotal.toFixed(2) 
+            subtotal: subtotal.toFixed(2)
         });
     } catch (error) {
         console.error(`Error loading allProducts: ${error.message}`);
@@ -360,7 +394,7 @@ const productDetailsLoad = async (req, res) => {
         const id = req.query.id;
         const product = await Product.findById(id);
 
-        if(!product){
+        if (!product) {
             console.warn(`Product with id ${id} not found.`);
             return res.redirect('/404');
         }
@@ -396,5 +430,6 @@ module.exports = {
     editProductLoad,
     updateProduct,
     allProductsLoad,
-    productDetailsLoad
+    productDetailsLoad,
+    deleteProductImage
 }

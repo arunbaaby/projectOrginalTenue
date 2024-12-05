@@ -61,6 +61,7 @@ admin_route.get('/delete-product',productController.deleteProduct);
 admin_route.get('/restore-product',productController.restoreProduct);
 admin_route.get('/edit-product',productController.editProductLoad);
 admin_route.post('/edit-product', upload.array('images', 3), productController.updateProduct);
+admin_route.delete('/delete-product-img',productController.deleteProductImage);
 
 //order
 admin_route.get('/order',adminController.loadOrderAdmin);

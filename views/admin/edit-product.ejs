@@ -1,142 +1,153 @@
-
 <%- include ('../layouts/admin/adminHeader') %>
-        <section class="content-main">
-            <div class="row">
-                <div class="col-9">
-                    <div class="content-header">
-                        <h2 class="content-title">Edit Product</h2>
-                    </div>
-                    <div id="mainError"></div>
+    <section class="content-main">
+        <div class="row">
+            <div class="col-9">
+                <div class="content-header">
+                    <h2 class="content-title">Edit Product</h2>
                 </div>
-                <div class="col-lg-6">
-                    <div class="card mb-4">
-                        <div class="card-header">
-                        </div>
-                        <div class="card-body">
-                            <form action="" method="post" enctype="multipart/form-data"
-                                onsubmit="return validateForm()">
-                                <div class="mb-4">
-                                    <label for="product_name" class="form-label">Name</label>
-                                    <input type="text" class="form-control" name="name" id="product_name"
-                                        value="<%= productData.name %>">
-                                    <p id="nameError" class="text-danger"></p>
-                                </div>
-                                <div class="mb-4">
-                                    <label for="product_description" class="form-label">Description</label>
-                                    <textarea class="form-control" name="description" id="product_description"
-                                        rows="4"><%= productData.description %></textarea>
-                                    <p id="descriptionError" class="text-danger"></p>
-                                </div>
-                                <div class="mb-4">
-                                    <label for="brand_name" class="form-label">Brand</label>
-                                    <input type="text" class="form-control" name="brand" id="brand_name"
-                                        value="<%= productData.brand %>">
-                                    <p id="brandError" class="text-danger"></p>
-                                </div>
-                                <div class="mb-4">
-                                    <label for="gender_name" class="form-label">Gender</label>
-                                    <select class="form-control" name="gender" id="gender_name">
-                                        <option value="men" <% if (productData.gender === 'men') { %>selected<% } %>>Men</option>
-                                        <option value="women" <% if (productData.gender === 'women') { %>selected<% } %>>Women</option>
-                                        <option value="unisex" <% if (productData.gender === 'unisex') { %>selected<% } %>>Unisex</option>
-                                    </select>
-                                    <p id="genderError" class="text-danger"></p>
-                                </div>
-                                
-                                <!-- <div class="mb-4">
+                <div id="mainError"></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                    </div>
+                    <div class="card-body">
+                        <form action="" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label">Name</label>
+                                <input type="text" class="form-control" name="name" id="product_name"
+                                    value="<%= productData.name %>">
+                                <p id="nameError" class="text-danger"></p>
+                            </div>
+                            <div class="mb-4">
+                                <label for="product_description" class="form-label">Description</label>
+                                <textarea class="form-control" name="description" id="product_description"
+                                    rows="4"><%= productData.description %></textarea>
+                                <p id="descriptionError" class="text-danger"></p>
+                            </div>
+                            <div class="mb-4">
+                                <label for="brand_name" class="form-label">Brand</label>
+                                <input type="text" class="form-control" name="brand" id="brand_name"
+                                    value="<%= productData.brand %>">
+                                <p id="brandError" class="text-danger"></p>
+                            </div>
+                            <div class="mb-4">
+                                <label for="gender_name" class="form-label">Gender</label>
+                                <select class="form-control" name="gender" id="gender_name">
+                                    <option value="men" <% if (productData.gender==='men' ) { %>selected<% } %>>Men
+                                    </option>
+                                    <option value="women" <% if (productData.gender==='women' ) { %>selected<% } %>
+                                            >Women</option>
+                                    <option value="unisex" <% if (productData.gender==='unisex' ) { %>selected<% } %>
+                                            >Unisex</option>
+                                </select>
+                                <p id="genderError" class="text-danger"></p>
+                            </div>
+
+                            <!-- <div class="mb-4">
                                     <label for="gender_name" class="form-label">Gender</label>
                                     <input type="text" class="form-control" name="gender" id="gender_name"
                                         value="<%= productData.gender %>">
                                     <p id="genderError" class="text-danger"></p>
                                 </div> -->
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        <div class="mb-4">
-                                            <label for="regular_price" class="form-label">Price</label>
-                                            <input type="text" class="form-control" name="price" id="regular_price"
-                                                value="<%= productData.price %>">
-                                            <p id="priceError" class="text-danger"></p>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="mb-4">
-                                            <label for="discount_price" class="form-label">Discount Price</label>
-                                            <input type="text" class="form-control" name="discountPrice"
-                                                id="discount_price" value="<%= productData.discountPrice %>">
-                                            <p id="discountPriceError" class="text-danger"></p>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="mb-4">
-                                            <label for="stock_count" class="form-label">Count of Stock</label>
-                                            <input type="number" class="form-control" name="stock" id="stock_count"
-                                                value="<%= productData.stock %>" required>
-                                            <p id="stockError" class="text-danger"></p>
-                                        </div>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="mb-4">
+                                        <label for="regular_price" class="form-label">Price</label>
+                                        <input type="text" class="form-control" name="price" id="regular_price"
+                                            value="<%= productData.price %>">
+                                        <p id="priceError" class="text-danger"></p>
                                     </div>
                                 </div>
-                                <!-- Category Section -->
-                                <div class="mb-4">
-                                    <% if(categoryData.length > 0) {
-                                        for(let i = 0; i < categoryData.length; i++) { %>
-                                            <label class="mb-2 form-check form-check-inline" style="width: 45%;">
-                                                <% if (productData.category && productData.category.name === categoryData[i].name) { %>
-                                                    <input class="form-check-input" checked value="<%= categoryData[i]._id %>" name="category" type="radio">
-                                                    <span class="form-check-label"> <%= categoryData[i].name %> </span>
+                                <div class="col-lg-4">
+                                    <div class="mb-4">
+                                        <label for="discount_price" class="form-label">Discount Price</label>
+                                        <input type="text" class="form-control" name="discountPrice" id="discount_price"
+                                            value="<%= productData.discountPrice %>">
+                                        <p id="discountPriceError" class="text-danger"></p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-4">
+                                        <label for="stock_count" class="form-label">Count of Stock</label>
+                                        <input type="number" class="form-control" name="stock" id="stock_count"
+                                            value="<%= productData.stock %>" required>
+                                        <p id="stockError" class="text-danger"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Category Section -->
+                            <div class="mb-4">
+                                <% if(categoryData.length> 0) {
+                                    for(let i = 0; i < categoryData.length; i++) { %>
+                                        <label class="mb-2 form-check form-check-inline" style="width: 45%;">
+                                            <% if (productData.category &&
+                                                productData.category.name===categoryData[i].name) { %>
+                                                <input class="form-check-input" checked
+                                                    value="<%= categoryData[i]._id %>" name="category" type="radio">
+                                                <span class="form-check-label">
+                                                    <%= categoryData[i].name %>
+                                                </span>
                                                 <% } else { %>
-                                                    <input class="form-check-input" value="<%= categoryData[i]._id %>" name="category" id="category_<%= i %>" type="radio">
+                                                    <input class="form-check-input" value="<%= categoryData[i]._id %>"
+                                                        name="category" id="category_<%= i %>" type="radio">
                                                     <span class="form-check-label">
                                                         <%= categoryData[i].name %>
                                                     </span>
-                                                <% } %>
-                                            </label>
-                                    <% }} %>
-                                    <div id="categoryError" class="text-danger"></div>
-                                    <!-- Placeholder for category error -->
-                                </div>                                
-                                <!-- Media Section for Images -->
-                                <div class="mb-4">
-                                    <label for="product_images" class="form-label">Images</label>
-                                    <%productData.images.forEach(image => { %>
-                                        <div class="image-container">
-                                        <img src="productImages/<%= image %>" alt="" height="70px" width="70px">
-                                        <a href="/admin/edit-product?id=<%=productData._id%>&delete=<%= image %>" class="close-icon" ><span aria-hidden="true">&times;</span></a>
-                                    </div>
-                              <% }) %>
-                                    <input type="file" class="form-control" name="images" id="product_images" multiple>
-                                    <small class="form-text text-muted">You can select multiple images(3 only).</small>
-                                    <p id="imagesError" class="text-danger"></p>
+                                                    <% } %>
+                                        </label>
+                                        <% }} %>
+                                            <div id="categoryError" class="text-danger"></div>
+                                            <!-- Placeholder for category error -->
+                            </div>
+                            <!-- Media Section for Images -->
+                            <div class="mb-4">
+                                <label for="product_images" class="form-label">Images</label>
+                                <div id="images-container">
+                                    <% productData.images.forEach(image=> { %>
+                                        <div class="image-container" data-image="<%= image %>">
+                                            <img src="productImages/<%= image %>" alt="" height="70px" width="70px">
+                                            <a href="#" class="close-icon text-danger" data-image="<%= image %>">
+                                                <span aria-hidden="true">&times;</span>
+                                            </a>
+                                        </div>
+                                        <% }) %>
                                 </div>
-                                <div class="mb-4">
-                                    <button type="submit" class="btn btn-primary">Update Product</button>
-                                </div>
-                            </form>
+                                <input type="file" class="form-control" name="images" id="product_images" multiple>
+                                <small class="form-text text-muted">You can select multiple images(3 only).</small>
+                                <p id="imagesError" class="text-danger"></p>
+                            </div>
 
-                            <script>
-                                
-                            </script>
+                            <div class="mb-4">
+                                <button type="submit" class="btn btn-primary">Update Product</button>
+                            </div>
+                        </form>
 
-                        </div>
-                    </div> <!-- card end// -->
-                    <div class="card mb-4">
-                    </div> <!-- card end// -->
-                </div>
-            </div>
-        </section> <!-- content-main end// -->
-        <footer class="main-footer font-xs">
-            <div class="row pb-30 pt-15">
-                <div class="col-sm-6">
-                    <script>
-                    document.write(new Date().getFullYear())
-                    </script> ©, Evara - HTML Ecommerce Template .
-                </div>
-                <div class="col-sm-6">
-                    <div class="text-sm-end">
-                        All rights reserved
+                        <script>
+
+                        </script>
+
                     </div>
+                </div> <!-- card end// -->
+                <div class="card mb-4">
+                </div> <!-- card end// -->
+            </div>
+        </div>
+    </section> <!-- content-main end// -->
+    <footer class="main-footer font-xs">
+        <div class="row pb-30 pt-15">
+            <div class="col-sm-6">
+                <script>
+                    document.write(new Date().getFullYear())
+                </script> ©, Evara - HTML Ecommerce Template .
+            </div>
+            <div class="col-sm-6">
+                <div class="text-sm-end">
+                    All rights reserved
                 </div>
             </div>
-        </footer>
+        </div>
+    </footer>
     </main>
     <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
@@ -147,135 +158,156 @@
     <script src="assets/js/main.js" type="text/javascript"></script>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-    // const nameInput = document.getElementById('product_name');
-    const descriptionInput = document.getElementById('product_description');
-    const priceInput = document.getElementById('regular_price');
-    const brandInput =document.getElementById('brand_name');
-    const genderInput = document.getElementById('gender_name');
-    const discountPriceInput = document.getElementById('discount_price');
-    const stockInput = document.getElementById('stock_count');
-    const imagesInput = document.getElementById('product_images');
+        document.addEventListener('DOMContentLoaded', function () {
+            // const nameInput = document.getElementById('product_name');
+            const descriptionInput = document.getElementById('product_description');
+            const priceInput = document.getElementById('regular_price');
+            const brandInput = document.getElementById('brand_name');
+            const genderInput = document.getElementById('gender_name');
+            const discountPriceInput = document.getElementById('discount_price');
+            const stockInput = document.getElementById('stock_count');
+            const imagesInput = document.getElementById('product_images');
 
-    // nameInput.addEventListener('blur', () => validateInput('product_name', /^([A-Za-z0-9.,]+\s?)+$/, 'nameError', 'Product Name'));
+            // nameInput.addEventListener('blur', () => validateInput('product_name', /^([A-Za-z0-9.,]+\s?)+$/, 'nameError', 'Product Name'));
 
-    brandInput.addEventListener('blur', () => validateInput('brand_name', /^([A-Za-z0-9.,]+\s?)+$/, 'brandError', 'Brand Name'));
+            brandInput.addEventListener('blur', () => validateInput('brand_name', /^([A-Za-z0-9.,]+\s?)+$/, 'brandError', 'Brand Name'));
 
-    genderInput.addEventListener('blur', () => validateInput('gender_name', /^([A-Za-z0-9.,]+\s?)+$/, 'genderError', 'Gender Name'));
+            genderInput.addEventListener('blur', () => validateInput('gender_name', /^([A-Za-z0-9.,]+\s?)+$/, 'genderError', 'Gender Name'));
 
-    descriptionInput.addEventListener('blur', () => validateInput('product_description', /^\s*[A-Z][\s\S]{13,}$/, 'descriptionError', 'Description'));
-   
-    priceInput.addEventListener('blur', () => validateInput('regular_price', /^\d+(\.\d{1,2})?$/, 'priceError', 'Price'));
-    discountPriceInput.addEventListener('blur', () => validateInput('discount_price', /^\d+(\.\d{1,2})?$/, 'discountPriceError', 'Discount Price'));
-    stockInput.addEventListener('blur', () => validateInput('stock_count', /^(100|[0-9]{1,2})$/, 'stockError', 'Stock'));
+            descriptionInput.addEventListener('blur', () => validateInput('product_description', /^\s*[A-Z][\s\S]{13,}$/, 'descriptionError', 'Description'));
 
-    imagesInput.addEventListener('change', function(e) {
-        validateImages(e, 'imagesError');
-    });
+            priceInput.addEventListener('blur', () => validateInput('regular_price', /^\d+(\.\d{1,2})?$/, 'priceError', 'Price'));
+            discountPriceInput.addEventListener('blur', () => validateInput('discount_price', /^\d+(\.\d{1,2})?$/, 'discountPriceError', 'Discount Price'));
+            stockInput.addEventListener('blur', () => validateInput('stock_count', /^(100|[0-9]{1,2})$/, 'stockError', 'Stock'));
 
-    document.querySelector('form').addEventListener('submit', function(event) {
-            if (!validateForm()) {
-                event.preventDefault();
-                document.getElementById('mainError').innerText = 'Cannot submit form. Please fix errors.';
-            }
+            imagesInput.addEventListener('change', function (e) {
+                validateImages(e, 'imagesError');
+            });
+
+            document.querySelector('form').addEventListener('submit', function (event) {
+                if (!validateForm()) {
+                    event.preventDefault();
+                    document.getElementById('mainError').innerText = 'Cannot submit form. Please fix errors.';
+                }
+            });
         });
-});
 
-function validateForm() {
-    
-    // const isValidName = validateInput('product_name', /^([A-Za-z0-9.,]+\s?)+$/, 'nameError', 'Product Name');
-    const isValidbrandName = validateInput('brand_name', /^([A-Za-z0-9.,]+\s?)+$/, 'brandError', 'Brand Name');
-    const isValidgenderName = validateInput('gender_name', /^([A-Za-z0-9.,]+\s?)+$/, 'genderError', 'Gender Name');
-    const isValidDescription = validateInput('product_description', /^\s*[A-Z][\s\S]{13,}$/, 'descriptionError', 'Description');
-    const isValidPrice = validateInput('regular_price', /^\d+(\.\d{1,2})?$/, 'priceError', 'Price');
-    const isValidDiscountPrice = validateInput('discount_price', /^\d+(\.\d{1,2})?$/, 'discountPriceError', 'Discount Price');
-    const isValidStock = validateInput('stock_count', /^(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-9]{2}|300)$/, 'stockError', 'Stock');
-    const isValidCategory = validateCategory(); 
+        function validateForm() {
 
-    if (!isValidName || !isValidDescription || !isValidPrice || !isValidDiscountPrice || !isValidStock || !isValidCategory||!isValidbrandName||!isValidgenderName) {
-        document.getElementById('mainError').innerText = 'Cannot submit form. Please fix errors.';
-        return false;
-    }
-    return true;
-}
+            // const isValidName = validateInput('product_name', /^([A-Za-z0-9.,]+\s?)+$/, 'nameError', 'Product Name');
+            const isValidbrandName = validateInput('brand_name', /^([A-Za-z0-9.,]+\s?)+$/, 'brandError', 'Brand Name');
+            const isValidgenderName = validateInput('gender_name', /^([A-Za-z0-9.,]+\s?)+$/, 'genderError', 'Gender Name');
+            const isValidDescription = validateInput('product_description', /^\s*[A-Z][\s\S]{13,}$/, 'descriptionError', 'Description');
+            const isValidPrice = validateInput('regular_price', /^\d+(\.\d{1,2})?$/, 'priceError', 'Price');
+            const isValidDiscountPrice = validateInput('discount_price', /^\d+(\.\d{1,2})?$/, 'discountPriceError', 'Discount Price');
+            const isValidStock = validateInput('stock_count', /^(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-9]{2}|300)$/, 'stockError', 'Stock');
+            const isValidCategory = validateCategory();
 
-function validateInput(inputId, pattern, errorId, errorMessage) {
-    const inputValue = document.getElementById(inputId).value.trim();
-    const errorElement = document.getElementById(errorId);
-
-    if (inputValue === '') {
-        errorElement.innerText = errorMessage + ' is required.';
-        return false;
-    } else if (!pattern.test(inputValue)) {
-        errorElement.innerText = 'Please enter a valid ' + errorMessage.toLowerCase() + '.';
-        return false;
-    } else {
-        errorElement.innerText = '';
-        return true;
-    }
-}
-
-function validateImages(e, errorId) {
-    var fileInput = e.target;
-    var maxFiles = 3;
-    var validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp']; 
-
-    if (fileInput.files.length > maxFiles) {
-        alert(`You can only upload a maximum of ${maxFiles} files.`);
-        fileInput.value = '';
-        document.getElementById(errorId).textContent = `You can only upload a maximum of ${maxFiles} files.`;
-        return; 
-    }
-
-    for (var i = 0; i < fileInput.files.length; i++) {
-        var file = fileInput.files[i];
-        var extension = file.name.split('.').pop().toLowerCase();
-        if (!validExtensions.includes(extension)) {
-            alert('Please upload only image files (jpg, jpeg, png, gif, webp).');
-            fileInput.value = '';
-            document.getElementById(errorId).textContent = 'Please upload only image files (jpg, jpeg, png, gif, webp).';
-            return; 
+            if (!isValidName || !isValidDescription || !isValidPrice || !isValidDiscountPrice || !isValidStock || !isValidCategory || !isValidbrandName || !isValidgenderName) {
+                document.getElementById('mainError').innerText = 'Cannot submit form. Please fix errors.';
+                return false;
+            }
+            return true;
         }
-    }
 
-    document.getElementById(errorId).textContent = '';
-}
+        function validateInput(inputId, pattern, errorId, errorMessage) {
+            const inputValue = document.getElementById(inputId).value.trim();
+            const errorElement = document.getElementById(errorId);
 
-function validateCategory() {
-    const categoryInputs = document.querySelectorAll('input[name="category"]:checked');
-    const categoryError = document.getElementById('categoryError');
+            if (inputValue === '') {
+                errorElement.innerText = errorMessage + ' is required.';
+                return false;
+            } else if (!pattern.test(inputValue)) {
+                errorElement.innerText = 'Please enter a valid ' + errorMessage.toLowerCase() + '.';
+                return false;
+            } else {
+                errorElement.innerText = '';
+                return true;
+            }
+        }
 
-    if (categoryInputs.length === 0) {
-        categoryError.innerText = 'Please select at least one category.';
-        return false;
-    } else {
-        categoryError.innerText = '';
-        return true;
-    }
-}
+        function validateImages(e, errorId) {
+            var fileInput = e.target;
+            var maxFiles = 3;
+            var validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+            if (fileInput.files.length > maxFiles) {
+                alert(`You can only upload a maximum of ${maxFiles} files.`);
+                fileInput.value = '';
+                document.getElementById(errorId).textContent = `You can only upload a maximum of ${maxFiles} files.`;
+                return;
+            }
+
+            for (var i = 0; i < fileInput.files.length; i++) {
+                var file = fileInput.files[i];
+                var extension = file.name.split('.').pop().toLowerCase();
+                if (!validExtensions.includes(extension)) {
+                    alert('Please upload only image files (jpg, jpeg, png, gif, webp).');
+                    fileInput.value = '';
+                    document.getElementById(errorId).textContent = 'Please upload only image files (jpg, jpeg, png, gif, webp).';
+                    return;
+                }
+            }
+
+            document.getElementById(errorId).textContent = '';
+        }
+
+        function validateCategory() {
+            const categoryInputs = document.querySelectorAll('input[name="category"]:checked');
+            const categoryError = document.getElementById('categoryError');
+
+            if (categoryInputs.length === 0) {
+                categoryError.innerText = 'Please select at least one category.';
+                return false;
+            } else {
+                categoryError.innerText = '';
+                return true;
+            }
+        }
 
     </script>
     <script>
-        function deleteImage(productId, imageId, element) {
-            console.log('fetch delete image');
-            
-            if (confirm('Are you sure you want to delete this image?')) {
-                fetch(`/product/delete-image?productId=${productId}&image=${imageId}`, { 
-                    method: 'DELETE',
-                })
-                .then(response => {
-                    if(response.ok) {
-                        const parentDiv = element.closest('.image-container');
-                        parentDiv.remove();
-                    } else {
-                        alert('Failed to delete the image');
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-            }
-        }
-        </script>
-        
-</body>
+        document.addEventListener('DOMContentLoaded', () => {
+            const imagesContainer = document.getElementById('images-container');
 
-</html>
+            imagesContainer.addEventListener('click', async (event) => {
+                if (event.target.closest('.close-icon')) {
+                    event.preventDefault(); // Prevent default anchor behavior
+
+                    const link = event.target.closest('.close-icon');
+                    const image = link.getAttribute('data-image');
+                    const productId = '<%= productData._id %>'; // Pass the product ID dynamically
+
+                    // Confirm before deleting
+                    if (!confirm('Are you sure you want to delete this image?')) return;
+
+                    try {
+                        // Send delete request via fetch
+                        const response = await fetch(`/admin/delete-product-img?id=${productId}&delete=${image}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        });
+
+                        if (response.ok) {
+                            // Remove image container on success
+                            const imageContainer = document.querySelector(`.image-container[data-image="${image}"]`);
+                            if (imageContainer) imageContainer.remove();
+                        } else {
+                            const errorText = await response.text();
+                            alert(`Failed to delete image: ${errorText}`);
+                        }
+                    } catch (error) {
+                        console.error('Error deleting image:', error);
+                        alert('An error occurred while deleting the image. Please try again.');
+                    }
+                }
+            });
+        });
+
+    </script>
+
+    </body>
+
+    </html>
