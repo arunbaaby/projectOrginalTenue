@@ -232,7 +232,12 @@ const updateProduct = async (req, res) => {
 
 const allProductsLoad = async (req, res) => {
     try {
-        const query = String(req.query.q || '');
+        const query = req.query.q || '';
+        const sortOption = req.query.sort || 'default';
+        const priceMin = parseInt(req.query.priceMin) || 0;
+        const priceMax = parseInt(req.query.priceMax) || Infinity;
+        const brand = req.query.brand || null;
+
         const currentPage = parseInt(req.query.page) || 1;
         const itemsPerPage = 16;
 
@@ -240,23 +245,20 @@ const allProductsLoad = async (req, res) => {
         let cart = null;
 
         if (userId) {
-            // Load cart only if user is logged in
+            // load cart only if user logged in
             cart = await Cart.findOne({ user: userId }).populate('items.product');
         }
 
 
         let subtotal = 0;
         if (cart) {
-            cart.items = cart.items.filter(item => item.product); // Keep only items with valid products
+            cart.items = cart.items.filter(item => item.product); 
             subtotal = cart.items.reduce((acc, item) => {
                 const productPrice = item.product.discountPrice ?? item.product.price ?? 0;
                 return acc + (productPrice * item.quantity);
             }, 0);
         }
 
-
-        // Sorting 
-        let sortOption = req.query.sort;
         let sortCriteria;
 
         switch (sortOption) {
@@ -274,23 +276,23 @@ const allProductsLoad = async (req, res) => {
                 break;
         }
 
-        // Price filter
-        const priceMin = parseInt(req.query.priceMin) || 0;
-        const priceMax = parseInt(req.query.priceMax) || Infinity;
+        // // Price filter
+        // const priceMin = parseInt(req.query.priceMin) || 0;
+        // const priceMax = parseInt(req.query.priceMax) || Infinity;
 
-        // Brand filter case insetive 
-        const brand = req.query.brand ? new RegExp(`^${req.query.brand}$`, 'i') : null;
+        // // Brand filter case insetive 
+        // const brand = req.query.brand ? new RegExp(`^${req.query.brand}`, 'i') : null;
 
+        const matchStage = {
+            is_active: true,
+            name: { $regex: query, $options: 'i' },
+            price: { $gte: priceMin, $lte: priceMax },
+            ...(brand && { brand: { $regex: `^${brand}$`, $options: 'i' } }) // Dynamically construct regex here
+        };
+        
 
         const pipeline = [
-            {
-                $match: {
-                    is_active: true,
-                    name: { $regex: query, $options: 'i' },
-                    price: { $gte: priceMin, $lte: priceMax },
-                    ...(brand && { brand: { $regex: brand } }) // regex =case-insensitive brand filtering
-                }
-            },
+            { $match: matchStage },
             {
                 $lookup: {
                     from: 'categories',
@@ -299,34 +301,17 @@ const allProductsLoad = async (req, res) => {
                     as: 'category'
                 }
             },
-            {
-                $unwind: '$category'
-            },
-            {
-                $match: {
-                    'category.is_active': true
-                }
-            },
-            ...(sortCriteria ? [{ $sort: sortCriteria }] : []),
-            {
-                $skip: (currentPage - 1) * itemsPerPage
-            },
-            {
-                $limit: itemsPerPage
-            }
+            { $unwind: '$category' },
+            { $match: { 'category.is_active': true } }, // Ensure the category is active
+            ...(sortCriteria ? [{ $sort: sortCriteria }] : []), // Apply sorting if specified
+            { $skip: (currentPage - 1) * itemsPerPage }, // Pagination offset
+            { $limit: itemsPerPage }
         ];
 
         const productsResult = await Product.aggregate(pipeline);
 
         const totalItemsResult = await Product.aggregate([
-            {
-                $match: {
-                    is_active: true,
-                    name: { $regex: query, $options: 'i' },
-                    price: { $gte: priceMin, $lte: priceMax },
-                    ...(brand && { brand: brand })
-                }
-            },
+            { $match: matchStage }, 
             {
                 $lookup: {
                     from: 'categories',
@@ -335,23 +320,14 @@ const allProductsLoad = async (req, res) => {
                     as: 'category'
                 }
             },
-            {
-                $unwind: '$category'
-            },
-            {
-                $match: {
-                    'category.is_active': true
-                }
-            },
-            {
-                $count: 'totalItems'
-            }
+            { $unwind: '$category' },
+            { $match: { 'category.is_active': true } },
+            { $count: 'totalItems' }
         ]);
 
         const totalItems = totalItemsResult.length > 0 ? totalItemsResult[0].totalItems : 0;
         const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-        // Related products based on the first product's category
         let relatedProducts = [];
         if (productsResult.length > 0) {
             const mainProductCategory = productsResult[0].category._id;
@@ -372,12 +348,15 @@ const allProductsLoad = async (req, res) => {
             relatedProducts,
             currentPage,
             totalPages,
-            query,
-            sortOption,
-            brand, // Pass the selected brand to the template if needed
+            query, 
+            sortOption, 
+            brand, 
+            priceMin, 
+            priceMax,
             cart,
             subtotal: subtotal.toFixed(2)
         });
+
     } catch (error) {
         console.error(`Error loading allProducts: ${error.message}`);
         res.status(500).send('Internal Server Error');
