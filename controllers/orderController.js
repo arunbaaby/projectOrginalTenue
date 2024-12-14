@@ -98,15 +98,14 @@ const placeOrder = async (req, res) => {
         console.log(selectedAddress);
         // console.log('Payment method '+paymentMethod);
 
-
-
-        // Check if the cart is empty
         const cart = await Cart.findOne({ user: userId }).populate('items.product');
         if (!cart || !cart.items.length) {
             return res.status(400).json({ success: false, message: 'No items in the cart to place order' });
         }
 
-        // Find the user's address document and then the specific address within it
+        // remove null: when product deleted fromt DB
+        cart.items = cart.items.filter(item => item.product);
+
         const userAddresses = await Address.findOne({ user: userId });
         if (!userAddresses) {
             return res.status(400).json({ success: false, message: 'User addresses not found' });
@@ -124,7 +123,6 @@ const placeOrder = async (req, res) => {
 
         // console.log(orderNumber);
 
-        // Process order items and other details
         const orderItems = cart.items.map(item => ({
             product: item.product._id,
             quantity: item.quantity,
@@ -143,11 +141,9 @@ const placeOrder = async (req, res) => {
 
         const orderNumber = await generateUniqueOrderNumber();
 
-        // Check and update stock for each product
         for (const item of cart.items) {
             const product = item.product;
 
-            // Check if there’s enough stock for the order quantity
             if (product.stock < item.quantity) {
                 return res.status(400).json({
                     success: false,
@@ -222,11 +218,11 @@ const placeOrder = async (req, res) => {
     }
 };
 
-const notifyPaymentFailure = async(req,res)=>{
+//to update the payment status after payment failure
+const notifyPaymentFailure = async (req, res) => {
     try {
         const { orderId } = req.body;
 
-        // Update the payment status to Failed
         await Order.updateOne(
             { _id: orderId },
             { paymentStatus: 'Failed' }
@@ -300,7 +296,7 @@ const loadMyOrders = async (req, res) => {
         let orders = await Order.find({ user: userId }).populate('items.product');
 
         // Filter out orders with any null products: when product deleted from the db
-        orders = orders.filter(order => 
+        orders = orders.filter(order =>
             order.items.every(item => item.product !== null)
         );
 

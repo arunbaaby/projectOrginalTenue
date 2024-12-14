@@ -50,6 +50,17 @@ const productSchema = new mongoose.Schema({
             message: 'Discount price ({VALUE}) should be less than or equal to the price'
         }
     },
+    baseDiscountPrice: {
+        type: Number,
+        default: 0,
+        min: 0,
+        validate: {
+            validator: function (value) {
+                return value <= this.price;
+            },
+            message: 'Base discount price ({VALUE}) should be less than or equal to the price'
+        }
+    },
     stock: {
         type: Number,
         required: true,

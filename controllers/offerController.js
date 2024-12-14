@@ -159,7 +159,8 @@ const editProductOffer = async (req, res) => {
             res.redirect('/admin/product-offer');
         } else {
             console.error("Product offer not updated.");
-            res.redirect(`/admin/edit-product-offer?id=${offerId}`);
+            res.redirect('/admin/product-offer');
+            // res.redirect(`/admin/edit-product-offer?id=${offerId}`);
         }
     } catch (error) {
         console.error('Error updating product offer:', error.message);

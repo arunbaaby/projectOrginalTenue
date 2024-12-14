@@ -6,6 +6,8 @@ const Category = require('../models/categoryModel');
 const Product = require('../models/productModel');
 const Cart = require('../models/cartModel');
 
+const {calculateAndApplyOffer} = require('../helpers/offerHelper');
+
 //all products for the admin side
 const productLoad = async (req, res) => {
     try {
@@ -81,6 +83,7 @@ const addProduct = async (req, res) => {
             gender,
             price,
             discountPrice,
+            baseDiscountPrice: discountPrice,
             stock,
             category,
             sizes: defaultSizes,  // Include sizes
@@ -309,6 +312,12 @@ const allProductsLoad = async (req, res) => {
         ];
 
         const productsResult = await Product.aggregate(pipeline);
+
+        // Apply offers for each product
+        for (const product of productsResult) {
+            await calculateAndApplyOffer(product._id, product.category._id);
+        }
+
 
         const totalItemsResult = await Product.aggregate([
             { $match: matchStage }, 

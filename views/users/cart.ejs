@@ -335,7 +335,7 @@
                                                     </td>
                                                     
                                                     <td class="product-name"><a href="#"><%= item.product.name %></a></td>
-                                                    <td class="product-price"><span class="amount">$<%= item.product.discountPrice %></span></td>
+                                                    <td class="product-price"><span class="amount">₹<%= item.product.discountPrice %></span></td>
                                                     <td class="cart-quality">
                                                         <!-- <div class="product-details-quality quality-width-cart">
                                                             <div class="cart-plus-minus">
@@ -370,7 +370,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="cart-shiping-update-wrapper">
+                                <!-- <div class="cart-shiping-update-wrapper">
                                     <div class="discount-code">
                                         <input type="text" name="name" placeholder="Coupon code">
                                         <button class="coupon-btn" type="submit">Apply coupon</button>
@@ -379,7 +379,7 @@
                                         <a href="#">Clear Cart</a>
                                         <a href="#">Update cart</a>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                             <div class="col-lg-4">
                                 <div class="grand-total-wrap">
@@ -389,16 +389,20 @@
                                             <% 
                                                 let subtotal = 0;
                                                 let total = 0;
-                                    
-                                                // Calculate subtotal and total
+                                                let totalDiscount = 0;
+                                        
+                                                // Calculate subtotal, total, and totalDiscount
                                                 items.forEach(item => {
-                                                    subtotal += item.product.price * item.quantity; // Assuming price is the original price
-                                                    total += item.product.discountPrice * item.quantity; // Assuming discountPrice is the discounted price
+                                                    subtotal += item.product.price * item.quantity; // Original price total
+                                                    total += item.product.discountPrice * item.quantity; // Discounted price total
+                                                    totalDiscount += (item.product.price - item.product.discountPrice) * item.quantity; // Total discount applied
                                                 });
                                             %>
-                                            <li>Subtotal <span>$<%= subtotal %></span></li>
-                                            <li>Total <span>$<%= total %></span></li>
+                                            <li>Subtotal <span>₹<%= subtotal.toFixed(2) %></span></li>
+                                            <li style="color: green;">Discount <span>₹<%= totalDiscount.toFixed(2) %></span></li>
+                                            <li>Total <span>₹<%= total.toFixed(2) %></span></li>
                                         </ul>
+                                        
                                     </div>
                                     
                                     <div class="grand-btn">

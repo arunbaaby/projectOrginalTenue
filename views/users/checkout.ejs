@@ -749,7 +749,7 @@
                                                             <% items.forEach(item=> { %>
                                                                 <li style="display: flex; align-items: center;">
                                                                     <%= item.product.name %> X <%= item.quantity %>
-                                                                            <span style="margin-left: auto;">$<%=
+                                                                            <span style="margin-left: auto;">₹<%=
                                                                                     (item.product.discountPrice *
                                                                                     item.quantity).toFixed(2) %></span>
                                                                 </li>
@@ -758,14 +758,14 @@
                                                                     <% }); %>
                                                     </ul>
                                                 </div>
-                                                <div class="your-order-info order-subtotal">
+                                                <!-- <div class="your-order-info order-subtotal">
                                                     <ul>
-                                                        <li>Subtotal <span>$<%= subtotal.toFixed(2) %></span></li>
+                                                        <li>Subtotal <span>₹<%= subtotal.toFixed(2) %></span></li>
                                                     </ul>
-                                                </div>
+                                                </div> -->
                                                 <div class="your-order-info order-delivery">
                                                     <ul>
-                                                        <li>Delivery Charges <span>$<%= deliveryCharges.toFixed(2) %>
+                                                        <li>Delivery Charges <span>₹<%= deliveryCharges.toFixed(2) %>
                                                             </span></li>
                                                     </ul>
                                                 </div>

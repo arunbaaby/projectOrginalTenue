@@ -10,6 +10,9 @@ const { validationResult } = require('express-validator');
 const mailer = require('../helpers/mailer');
 const { oneMinuteExpiry, threeMinuteExpiry } = require('../helpers/otpValidate');
 
+//product feature
+const { getNewArrivals, getNewCategoriesWithLatestProducts, getFeaturedProducts, getProductsWithMostDiscount, getMostSoldProducts } = require('../helpers/productFeatureHelper');
+
 const { generateAccessToken } = require('../utils/generateAccessToken');
 
 const jwt = require('jsonwebtoken');
@@ -409,7 +412,13 @@ const loginUser = async (req, res) => {
 
 const loadUserHome = async (req, res) => {
     try {
-        res.render('userHome');
+        const newArrivals = await getNewArrivals();
+        const newCategoryProduct = await getNewCategoriesWithLatestProducts();
+        const featuredProducts = await getFeaturedProducts();
+        const mostDiscountProduct = await getProductsWithMostDiscount();
+        const mostSoldProducts = await getMostSoldProducts();
+
+        res.render('userHome', { newArrivals, newCategoryProduct, featuredProducts, mostDiscountProduct, mostDiscountProduct, mostSoldProducts });
     } catch (error) {
         console.log(error);
 
