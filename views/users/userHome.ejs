@@ -17,34 +17,39 @@
             <div class="cart-content">
                 <h3>Shopping Cart</h3>
                 <ul>
-                    <li class="single-product-cart">
-                        <div class="cart-img">
-                            <a href="#"><img src="assets/images/cart/cart-1.jpg" alt=""></a>
-                        </div>
-                        <div class="cart-title">
-                            <h4><a href="#">Bejewelled velvet sandals</a></h4>
-                            <span> 1 × $49.00 </span>
-                        </div>
-                        <div class="cart-delete">
-                            <a href="#">×</a>
-                        </div>
-                    </li>
-                    <li class="single-product-cart">
-                        <div class="cart-img">
-                            <a href="#"><img src="assets/images/cart/cart-2.jpg" alt=""></a>
-                        </div>
-                        <div class="cart-title">
-                            <h4><a href="#">Contrast faux fur jacket</a></h4>
-                            <span> 1 × $49.00 </span>
-                        </div>
-                        <div class="cart-delete">
-                            <a href="#">×</a>
-                        </div>
-                    </li>
+                    <% if (cart && cart.items.length> 0) { %>
+                        <% cart.items.forEach(item=> { %>
+                            <li class="single-product-cart">
+                                <div class="cart-img">
+                                    <a href="#">
+                                        <img src="/admin/productImages/<%= item.product.images && item.product.images[0] %>"
+                                            alt="<%= item.product.name %>" height="90px" width="90px">
+                                    </a>
+                                </div>
+                                <div class="cart-title">
+                                    <h4><a href="#">
+                                            <%= item.product.name %>
+                                        </a></h4>
+                                    <span>
+                                        <%= item.quantity %> × $<%= item.product.discountPrice || item.product.price %>
+                                    </span>
+                                </div>
+                                <div class="cart-delete">
+                                    <a href="#">×</a>
+                                </div>
+                            </li>
+                            <% }) %>
+                                <% } else { %>
+                                    <li>Your cart is empty</li>
+                                    <% } %>
                 </ul>
+
+
+
                 <div class="cart-total">
-                    <h4>Subtotal: <span>$170.00</span></h4>
+                    <h4>Subtotal: <span>₹<%= subtotal %></span></h4>
                 </div>
+                
                 <div class="cart-checkout-btn">
                     <a class="btn-hover cart-btn-style" href="/cart">view cart</a>
                     <a class="no-mrg btn-hover cart-btn-style" href="/order">checkout</a>

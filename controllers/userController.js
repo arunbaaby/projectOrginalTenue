@@ -1,6 +1,7 @@
 //userController.js
 const User = require('../models/userModel');
 const Otp = require('../models/otpModel');
+const Cart = require('../models/cartModel');
 const bcrypt = require('bcrypt');
 const otpgenerator = require('otp-generator');
 const crypto = require('crypto');
@@ -412,13 +413,29 @@ const loginUser = async (req, res) => {
 
 const loadUserHome = async (req, res) => {
     try {
+        const userId = req.user.id;
+
         const newArrivals = await getNewArrivals();
         const newCategoryProduct = await getNewCategoriesWithLatestProducts();
         const featuredProducts = await getFeaturedProducts();
         const mostDiscountProduct = await getProductsWithMostDiscount();
         const mostSoldProducts = await getMostSoldProducts();
 
-        res.render('userHome', { newArrivals, newCategoryProduct, featuredProducts, mostDiscountProduct, mostDiscountProduct, mostSoldProducts });
+        let cart = null;
+        if (userId) {
+            cart = await Cart.findOne({ user: userId }).populate('items.product');
+        }
+
+        let subtotal = 0;
+        if (cart) {
+            cart.items = cart.items.filter(item => item.product);
+            subtotal = cart.items.reduce((acc, item) => {
+                const productPrice = item.product.discountPrice ?? item.product.price ?? 0;
+                return acc + (productPrice * item.quantity);
+            }, 0);
+        }
+
+        res.render('userHome', { newArrivals, newCategoryProduct, featuredProducts, mostDiscountProduct, mostDiscountProduct, mostSoldProducts, cart, subtotal});
     } catch (error) {
         console.log(error);
 
