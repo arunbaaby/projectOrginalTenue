@@ -380,7 +380,23 @@ const allProductsLoad = async (req, res) => {
 const productDetailsLoad = async (req, res) => {
     try {
         const id = req.query.id;
+        const userId = req.user.id;
         const product = await Product.findById(id);
+        let cart = null;
+
+        if (userId) {
+            // load cart only if user logged in
+            cart = await Cart.findOne({ user: userId }).populate('items.product');
+        }
+
+        let subtotal = 0;
+        if (cart) {
+            cart.items = cart.items.filter(item => item.product); 
+            subtotal = cart.items.reduce((acc, item) => {
+                const productPrice = item.product.discountPrice ?? item.product.price ?? 0;
+                return acc + (productPrice * item.quantity);
+            }, 0);
+        }
 
         if (!product) {
             console.warn(`Product with id ${id} not found.`);
@@ -402,7 +418,7 @@ const productDetailsLoad = async (req, res) => {
                 _id: { $ne: product._id }//avoid the same product(main product);
             }).limit(5);
         }
-        res.render('product-details', { product, relatedProducts, products });
+        res.render('product-details', { product, relatedProducts, products, cart, subtotal });
     } catch (error) {
         console.error(`Error loading productDetails: ${error.message}`);
         res.status(500).send('Internal Server Error');
