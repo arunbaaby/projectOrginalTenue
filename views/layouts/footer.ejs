@@ -869,6 +869,16 @@
             passwordError.textContent = "";
         }
 
+        // Confirm Password validation
+        const confirmPassword = document.getElementById("confirmPassword").value.trim();
+        const confirmPasswordError = document.getElementById("confirmPasswordError");
+        if (confirmPassword !== password) {
+            confirmPasswordError.textContent = "Passwords do not match.";
+            valid = false;
+        } else {
+            confirmPasswordError.textContent = "";
+        }
+
         // form submission prevernted
         if (!valid) {
             e.preventDefault();

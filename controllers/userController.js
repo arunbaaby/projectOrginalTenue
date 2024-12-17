@@ -70,12 +70,21 @@ const userRegister = async (req, res) => {
             });
         }
 
-        const { name, email, mobile, password } = req.body;
+        const { name, email, mobile, password, confirmPassword } = req.body;
 
         const isExist = await User.findOne({ email });
         if (isExist) {
             return res.status(400).render('auth', {
                 registerErrors: [{ msg: 'Email already exists' }],  // Custom error for login
+                loginErrors: [],                                           // No registration errors
+                success: false,
+                msg: ''
+            });
+        }
+
+        if(confirmPassword!==password){
+            return res.status(400).render('auth', {
+                registerErrors: [{ msg: 'Passwords do not match' }],  // Custom error for login
                 loginErrors: [],                                           // No registration errors
                 success: false,
                 msg: ''
