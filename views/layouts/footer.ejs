@@ -825,7 +825,85 @@
     }
 </script>
 
+<script>
+    document.getElementById("registerForm").addEventListener("submit", function (e) {
+        let valid = true;
 
+        const name = document.getElementById("name").value.trim();
+        const nameError = document.getElementById("nameError");
+        if (name === "") {
+            nameError.textContent = "Name is required.";
+            valid = false;
+        } else {
+            nameError.textContent = "";
+        }
+
+        const email = document.getElementById("email").value.trim();
+        const emailError = document.getElementById("emailError");
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            emailError.textContent = "Enter a valid email address.";
+            valid = false;
+        } else {
+            emailError.textContent = "";
+        }
+
+        const mobile = document.getElementById("mobile").value.trim();
+        const mobileError = document.getElementById("mobileError");
+        const mobileRegex = /^[0-9]{10}$/;
+        if (!mobileRegex.test(mobile)) {
+            mobileError.textContent = "Enter a valid 10-digit mobile number.";
+            valid = false;
+        } else {
+            mobileError.textContent = "";
+        }
+
+        const password = document.getElementById("password").value.trim();
+        const passwordError = document.getElementById("passwordError");
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+        if (!passwordRegex.test(password)) {
+            passwordError.textContent =
+                "Password must be at least 6 characters, include 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.";
+            valid = false;
+        } else {
+            passwordError.textContent = "";
+        }
+
+        // form submission prevernted
+        if (!valid) {
+            e.preventDefault();
+        }
+    });
+</script>
+
+<script>
+    document.getElementById("loginForm").addEventListener("submit", function (e) {
+        let valid = true;
+
+        const email = document.getElementById("loginEmail").value.trim();
+        const emailError = document.getElementById("loginEmailError");
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            emailError.textContent = "Enter a valid email address.";
+            valid = false;
+        } else {
+            emailError.textContent = "";
+        }
+
+        const password = document.getElementById("loginPassword").value.trim();
+        const passwordError = document.getElementById("loginPasswordError");
+        if (password === "") {
+            passwordError.textContent = "Password is required.";
+            valid = false;
+        } else {
+            passwordError.textContent = "";
+        }
+
+        if (!valid) {
+            e.preventDefault();
+        }
+    });
+</script>
 
 </body>
 
