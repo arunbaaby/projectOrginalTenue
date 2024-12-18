@@ -144,6 +144,27 @@
             color: red;
             font-size: 18px;
         }
+
+        #verify-btn {
+            background-color: #ff4d4f;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #verify-btn:hover {
+            background-color: #ed3538;
+        }
+
+        #verify-btn:active {
+            background-color: #ff4d4f;
+            transform: scale(0.98);
+        }
     </style>
 </head>
 
@@ -161,8 +182,9 @@
             <input type="hidden" name="user_id" value="<%= user_id %>">
             <div class="otp-input">
                 <input type="text" id="otp" name="otp" required>
+                <div id="otp-error" style="color: red; font-size: 0.9em; display: none; margin-top: 5px;"></div>
             </div>
-            <button type="submit">Verify</button>
+            <button type="submit" id="verify-btn">Verify</button>
         </form>
 
         <!-- Resend OTP Section -->
@@ -187,6 +209,7 @@
 
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         let timer = 60;
         let countdown; // Declare countdown globally for control
@@ -253,9 +276,15 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        window.location.href = '/auth?message=User registration successful';
+                        swal.fire('User registration successful').then(() => {
+                            window.location.href = '/home';
+                        });
                     } else {
-                        alert(data.error || 'Wrong OTP entered. Please try again.');
+                        swal.fire({
+                            title: 'Error',
+                            text: data.error || 'Wrong OTP entered. Please try again.',
+                            icon: 'error',
+                        });
                     }
                 })
                 .catch(error => console.error('Error:', error));
@@ -275,14 +304,31 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // startTimer(); // Restart timer
-                        alert('A new OTP has been sent to your email.');
-                        startTimer(); // Restart timer
+                        swal.fire('A new OTP has been sent to your email.').then(() => {
+                            startTimer();
+                        });
                     } else {
-                        alert(data.error || 'Unable to resend OTP. Please try again later.');
+                        swal.fire(data.error || 'Unable to resend OTP. Please try again later.');
                     }
                 })
                 .catch(error => console.error('Error:', error));
+        });
+    </script>
+
+    <script>
+        document.getElementById('otp-form').addEventListener('submit', function (e) {
+            const otpInput = document.getElementById('otp').value.trim();
+            const otpError = document.getElementById('otp-error');
+
+            // Check if OTP is a 6-digit number
+            const otpRegex = /^\d{6}$/;
+            if (!otpRegex.test(otpInput)) {
+                e.preventDefault(); // Prevent form submission
+                otpError.textContent = 'Please enter a valid 6-digit OTP.';
+                otpError.style.display = 'block';
+            } else {
+                otpError.style.display = 'none'; // Hide the error message if valid
+            }
         });
     </script>
 

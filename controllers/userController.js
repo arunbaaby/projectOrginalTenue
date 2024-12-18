@@ -182,8 +182,21 @@ const verifyOtp = async (req, res) => {
             is_verified: 1,
         });
 
-        await user.save();
+        const userData = await user.save();
         delete pendingUsers[user_id];
+
+        const accessToken = generateAccessToken(userData._id); // Pass `userData._id`
+
+
+        console.log('Generated token:', accessToken);
+
+        res.cookie('jwt', accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 2 * 60 * 60 * 1000, // 2 hours
+        });
+
+        // return res.redirect('/home');
 
         return res.status(200).json({ success: true, message: 'User registration successful' });
     } catch (error) {
