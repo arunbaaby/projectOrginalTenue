@@ -714,8 +714,24 @@
 <script>
     async function placeOrder() {
         try {
-            const selectedAddress = document.querySelector('input[name="address"]:checked').value;
-            const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+            const selectedAddressInput = document.querySelector('input[name="address"]:checked');
+            if (!selectedAddressInput) {
+                console.log('No address selected');
+                Swal.fire('Please select an address.');
+                return;
+            }
+            //adding .value later will not give TypeError if no value is selected
+            const selectedAddress = selectedAddressInput.value;
+
+            // Check if payment method exists
+            const paymentMethodInput = document.querySelector('input[name="paymentMethod"]:checked');
+            if (!paymentMethodInput) {
+                console.log('No payment method selected');
+                Swal.fire('Please select a payment method.');
+                return;
+            }
+
+            const paymentMethod = paymentMethodInput.value;
 
             const response = await fetch('/place-order', {
                 method: 'POST',
@@ -726,7 +742,7 @@
             const data = await response.json();
 
             if (!data.success) {
-                alert(data.message || 'Order placement failed.');
+                Swal.fire(data.message || 'Order placement failed.');
                 return;
             }
 
@@ -737,7 +753,7 @@
             }
         } catch (error) {
             console.error('Error placing order:', error);
-            alert('Something went wrong. Please try again.');
+            Swal.fire('Something went wrong. Please try again.');
         }
     }
 
@@ -754,9 +770,8 @@
             },
             theme: { color: "#fc4f4f" },
             modal: {
-                escape: false, // Prevent closing the modal with the Esc key
+                escape: false, // prevent closing the modal with Esc key
                 ondismiss: async function () {
-                    // Handle modal close event
                     await handlePaymentClosure(data.orderId);
                 },
             },
@@ -765,12 +780,12 @@
         const rzp = new Razorpay(options);
 
         rzp.on('payment.failed', async function (response) {
-            // Inform the server about the payment failure
             await notifyPaymentFailure(data.orderId);
 
-            // Alert the user and redirect
-            alert('Payment failed. You will be redirected to view your order.');
-            window.location.href = `/view-order?orderId=${data.orderId}`;
+            Swal.fire('Payment failed. You will be redirected to view your order.').then(()=>{
+                window.location.href = `/view-order?orderId=${data.orderId}`;
+            });
+            
         });
 
         rzp.open();
@@ -782,8 +797,14 @@
             await notifyPaymentFailure(orderId);
 
             // Alert the user and redirect
-            alert('You closed the payment window. You will be redirected to view your order.');
-            window.location.href = `/view-order?orderId=${orderId}`;
+            Swal.fire({
+                icon: 'info',
+                title: 'Payment Window Closed',
+                text: 'You closed the payment window. You will be redirected to view your order.',
+                confirmButtonText: 'OK',
+            }).then(() => {
+                window.location.href = `/view-order?orderId=${orderId}`;
+            });
         } catch (error) {
             console.error('Error handling payment closure:', error);
             alert('Something went wrong. Please check your order status.');

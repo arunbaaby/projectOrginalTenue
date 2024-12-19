@@ -93,6 +93,10 @@ const placeOrder = async (req, res) => {
         const userId = req.user.id;
         const { selectedAddress, paymentMethod } = req.body;
 
+        if (!selectedAddress) {
+            return res.status(400).json({ success: false, message: 'No Address selected' });
+        }
+
         // console.log(userId);
 
         console.log(selectedAddress);
