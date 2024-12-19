@@ -8,6 +8,8 @@ const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 
+const {generateAccessToken} = require('../utils/generateAccessToken');
+
 const loadLogin = async (req, res) => {
     try {
         res.render('adminLogin', { errors: [], msg: '' });
@@ -66,6 +68,7 @@ const adminLogin = async (req, res) => {
 
         // Generate JWT token
         const accessToken = await generateAccessToken({ id: userData._id });
+        console.log('admin login token :', accessToken);
 
         // Set JWT token in cookie
         res.cookie('jwt', accessToken, {
@@ -74,7 +77,6 @@ const adminLogin = async (req, res) => {
             maxAge: 2 * 60 * 60 * 1000,
         });
 
-        console.log('Login successful:', email);
         return res.redirect('/admin/home');
     } catch (error) {
         console.log('Login error:', error.message);
@@ -86,15 +88,34 @@ const adminLogin = async (req, res) => {
     }
 };
 
+const adminLogout = async(req,res)=>{
+    try {
+        // Clear the JWT cookie
+        res.clearCookie('jwt', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Strict'
+        });
 
-
-
-
-
-const generateAccessToken = async (user) => {
-    const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '2h' });
-    return token;
+        res.redirect('/admin/login');
+    } catch (error) {
+        console.error('Logout Error Admin :', error.message);
+        return res.status(400).json({
+            success: false,
+            msg: error.message
+        });
+    }
 }
+
+
+
+
+
+
+// const generateAccessToken = async (user) => {
+//     const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '2h' });
+//     return token;
+// }
 
 
 const loadHome = async (req, res) => {
@@ -237,6 +258,7 @@ const loadAdminOrderDetails = async(req,res)=>{
 module.exports = {
     loadLogin,
     adminLogin,
+    adminLogout,
     loadHome,
     userList,
     blockUser,
