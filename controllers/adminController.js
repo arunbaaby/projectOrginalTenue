@@ -67,11 +67,11 @@ const adminLogin = async (req, res) => {
         }
 
         // Generate JWT token
-        const accessToken = await generateAccessToken({ id: userData._id });
+        const accessToken = generateAccessToken(userData._id);
         console.log('admin login token :', accessToken);
 
         // Set JWT token in cookie
-        res.cookie('jwt', accessToken, {
+        res.cookie('adminJwt', accessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             maxAge: 2 * 60 * 60 * 1000,
@@ -90,8 +90,8 @@ const adminLogin = async (req, res) => {
 
 const adminLogout = async(req,res)=>{
     try {
-        // Clear the JWT cookie
-        res.clearCookie('jwt', {
+        // token save in the cookie in the name adminJwt
+        res.clearCookie('adminJwt', {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'Strict'

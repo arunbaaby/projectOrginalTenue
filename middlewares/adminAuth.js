@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const isLoggedIn = async (req, res, next) => {
     console.log("isLoggedInAdmin middleware triggered"); 
     try {
-        const token = req.cookies.jwt || req.headers.authorization?.split(' ')[1];
+        const token = req.cookies.adminJwt || req.headers.authorization?.split(' ')[1];
 
         if (!token) {
             console.log("No token found, redirecting to login.");
@@ -30,7 +30,7 @@ const isLoggedIn = async (req, res, next) => {
                 });
             }
 
-            console.log(`Decoded user ID: ${JSON.stringify(decoded.id)}`);  
+            console.log(`Decoded admin ID: ${decoded.id}`);  
             if (!decoded.id) {
                 console.log("No user ID found in the decoded token.");
                 return res.status(403).render('adminLogin', {
@@ -60,7 +60,7 @@ const isLoggedOut = async (req, res, next) => {
     try {
         console.log('isLoggedOut Admin working');
         
-        if (req.cookies.jwt) {
+        if (req.cookies.adminJwt) {
             console.log('isLoggedOut token');
             
             if (req.path === "/admin/login") {
