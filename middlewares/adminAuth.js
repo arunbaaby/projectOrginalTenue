@@ -30,7 +30,7 @@ const isLoggedIn = async (req, res, next) => {
                 });
             }
 
-            // console.log(`Decoded user ID: ${JSON.stringify(decoded.id)}`);  
+            console.log(`Decoded user ID: ${JSON.stringify(decoded.id)}`);  
             if (!decoded.id) {
                 console.log("No user ID found in the decoded token.");
                 return res.status(403).render('adminLogin', {
