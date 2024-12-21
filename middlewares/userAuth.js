@@ -1,47 +1,35 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 
-// Middleware to check if user is logged in
 const isLoggedIn = async (req, res, next) => {
-    console.log("isLoggedIn middleware triggered"); // Check if middleware is called
+    console.log("isLoggedIn middleware triggered");
     try {
         const token = req.cookies.jwt || req.headers.authorization?.split(' ')[1];
 
         if (!token) {
             console.log("No token found, redirecting to login.");
-            return res.status(401).render('auth', {
-                success: false,
-                msg: 'Access denied. Please login first.',
-            });
+            return res.redirect('/auth?error=access-denied');
         }
 
-        // Verify JWT
+        // Verify JWT; second argument is the Token 
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
             if (err) {
                 if (err.name === 'TokenExpiredError') {
                     console.log("Token expired");
-                    return res.status(403).render('auth', {
-                        success: false,
-                        msg: 'Session expired. Please login again.',
-                    });
+                    return res.redirect('/auth?error=session-expired');
                 }
                 console.log("Invalid token");
-                return res.status(403).render('auth', {
-                    success: false,
-                    msg: 'Invalid token. Please login again.',
-                });
+                return res.redirect('/auth?error=invalid-token');
             }
 
             console.log(`Decoded user ID: ${decoded.id}`);
             if (!decoded.id) {
                 console.log("No user ID found in the decoded token.");
-                return res.status(403).render('auth', {
-                    success: false,
-                    msg: 'Invalid token. Please login again.',
-                });
+                return res.redirect('/auth?error=invalid-token');
             }
 
-            const blockedUser = await User.findOne({ _id: decoded.id, is_blocked: 1 });
+            // Check if the user is blocked
+            const blockedUser = await User.findOne({ _id: decoded.id, is_blocked: true });
             if (blockedUser) {
                 console.log(`User with ID ${decoded.id} has been blocked. Logging out.`);
                 res.clearCookie('jwt', {
@@ -49,21 +37,83 @@ const isLoggedIn = async (req, res, next) => {
                     secure: process.env.NODE_ENV === 'production',
                     sameSite: 'Strict'
                 });
-                return res.redirect('/auth');
+                return res.redirect('/auth?error=user-blocked');
             }
-            console.log('dfshasjgka');
-            
+
+            // Attach the user data to the request object
             req.user = decoded;
             next();
         });
     } catch (error) {
         console.error('JWT Authentication Error:', error.message);
-        return res.status(500).render('auth', {
-            success: false,
-            msg: 'An internal error occurred. Please try again later.',
-        });
+        return res.redirect('/auth?error=internal-error');
     }
 };
+
+
+// Middleware to check if user is logged in
+// const isLoggedIn = async (req, res, next) => {
+//     console.log("isLoggedIn middleware triggered"); // Check if middleware is called
+//     try {
+//         const token = req.cookies.jwt || req.headers.authorization?.split(' ')[1];
+
+//         if (!token) {
+//             console.log("No token found, redirecting to login.");
+//             return res.status(401).render('auth', {
+//                 success: false,
+//                 msg: 'Access denied. Please login first.',
+//             });
+//         }
+
+//         // Verify JWT
+//         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
+//             if (err) {
+//                 if (err.name === 'TokenExpiredError') {
+//                     console.log("Token expired");
+//                     return res.status(403).render('auth', {
+//                         success: false,
+//                         msg: 'Session expired. Please login again.',
+//                     });
+//                 }
+//                 console.log("Invalid token");
+//                 return res.status(403).render('auth', {
+//                     success: false,
+//                     msg: 'Invalid token. Please login again.',
+//                 });
+//             }
+
+//             console.log(`Decoded user ID: ${decoded.id}`);
+//             if (!decoded.id) {
+//                 console.log("No user ID found in the decoded token.");
+//                 return res.status(403).render('auth', {
+//                     success: false,
+//                     msg: 'Invalid token. Please login again.',
+//                 });
+//             }
+
+//             const blockedUser = await User.findOne({ _id: decoded.id, is_blocked: 1 });
+//             if (blockedUser) {
+//                 console.log(`User with ID ${decoded.id} has been blocked. Logging out.`);
+//                 res.clearCookie('jwt', {
+//                     httpOnly: true,
+//                     secure: process.env.NODE_ENV === 'production',
+//                     sameSite: 'Strict'
+//                 });
+//                 return res.redirect('/auth');
+//             }
+//             console.log('dfshasjgka');
+            
+//             req.user = decoded;
+//             next();
+//         });
+//     } catch (error) {
+//         console.error('JWT Authentication Error:', error.message);
+//         return res.status(500).render('auth', {
+//             success: false,
+//             msg: 'An internal error occurred. Please try again later.',
+//         });
+//     }
+// };
 
 
 // const blockeUser = await User.find({ is_blocked: 1 }); WHY THIS IS WRONG line no.30

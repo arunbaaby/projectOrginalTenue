@@ -782,10 +782,9 @@
         rzp.on('payment.failed', async function (response) {
             await notifyPaymentFailure(data.orderId);
 
-            Swal.fire('Payment failed. You will be redirected to view your order.').then(()=>{
-                window.location.href = `/view-order?orderId=${data.orderId}`;
-            });
-            
+            alert('Payment failed. You will be redirected to view your order.')
+            window.location.href = `/view-order?orderId=${data.orderId}`;
+
         });
 
         rzp.open();

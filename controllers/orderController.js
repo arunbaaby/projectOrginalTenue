@@ -174,16 +174,19 @@ const placeOrder = async (req, res) => {
         });
 
         if (paymentMethod === 'Razorpay') {
-            // Create Razorpay order
-            const razorpayOrder = await razorpay.orders.create({
-                amount: total * 100, // Amount in paise
-                currency: 'INR',
-                receipt: newOrder._id.toString(),
-                // notes: { userId, orderId: newOrder._id.toString() },
-            });
-
-            newOrder.razorpayOrderId = razorpayOrder.id;
+            try {
+                const razorpayOrder = await razorpay.orders.create({
+                    amount: total * 100,
+                    currency: 'INR',
+                    receipt: newOrder._id.toString(),
+                });
+                newOrder.razorpayOrderId = razorpayOrder.id;
+            } catch (err) {
+                console.error('Error creating Razorpay order:', err);
+                return res.status(500).json({ success: false, message: 'Error creating Razorpay order. Please check internet connection' });
+            }
         }
+        
 
         await newOrder.save();
 

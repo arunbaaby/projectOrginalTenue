@@ -212,6 +212,7 @@ const loadOrderAdmin = async (req, res) => {
         //if the orders are empty we can avoid these queries
         if (totalOrders > 0) {
             orders = await Order.find(filter)
+                .sort({ _id: -1 })
                 .skip(skip)
                 .limit(limit)
                 .populate({ path: 'user', select: 'name' })

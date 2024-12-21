@@ -2,54 +2,89 @@ const jwt = require('jsonwebtoken');
 // const User = require('../models/userModel');
 
 const isLoggedIn = async (req, res, next) => {
-    console.log("isLoggedInAdmin middleware triggered"); 
+    console.log("isLoggedInAdmin middleware triggered");
     try {
         const token = req.cookies.adminJwt || req.headers.authorization?.split(' ')[1];
 
         if (!token) {
             console.log("No token found, redirecting to login.");
-            return res.status(401).render('adminLogin', {
-                success: false,
-                msg: 'Access denied. Please login first.',
-            });
+            return res.redirect('/admin/login?error=access-denied');
         }
 
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
             if (err) {
                 if (err.name === 'TokenExpiredError') {
                     console.log("Token expired");
-                    return res.status(403).render('adminLogin', {
-                        success: false,
-                        msg: 'Session expired. Please login again.',
-                    });
+                    return res.redirect('/admin/login?error=session-expired');
                 }
                 console.log("Invalid token");
-                return res.status(403).render('adminLogin', {
-                    success: false,
-                    msg: 'Invalid token. Please login again.',
-                });
+                return res.redirect('/admin/login?error=invalid-token');
             }
 
-            console.log(`Decoded admin ID: ${decoded.id}`);  
+            console.log(`Decoded admin ID: ${decoded.id}`);
             if (!decoded.id) {
                 console.log("No user ID found in the decoded token.");
-                return res.status(403).render('adminLogin', {
-                    success: false,
-                    msg: 'Invalid token. Please login again.',
-                });
+                return res.redirect('/admin/login?error=invalid-token');
             }
-            
+
             req.user = decoded;
             next();
         });
     } catch (error) {
         console.error('JWT Authentication Error:', error.message);
-        return res.status(500).render('adminHome', {
-            success: false,
-            msg: 'An internal error occurred. Please try again later.',
-        });
+        return res.redirect('/admin/login?error=internal-error');
     }
 };
+
+// const isLoggedIn = async (req, res, next) => {
+//     console.log("isLoggedInAdmin middleware triggered"); 
+//     try {
+//         const token = req.cookies.adminJwt || req.headers.authorization?.split(' ')[1];
+
+//         if (!token) {
+//             console.log("No token found, redirecting to login.");
+//             return res.status(401).render('adminLogin', {
+//                 success: false,
+//                 msg: 'Access denied. Please login first.',
+//             });
+//         }
+
+//         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
+//             if (err) {
+//                 if (err.name === 'TokenExpiredError') {
+//                     console.log("Token expired");
+//                     return res.status(403).render('adminLogin', {
+//                         success: false,
+//                         msg: 'Session expired. Please login again.',
+//                     });
+//                 }
+//                 console.log("Invalid token");
+//                 return res.status(403).render('adminLogin', {
+//                     success: false,
+//                     msg: 'Invalid token. Please login again.',
+//                 });
+//             }
+
+//             console.log(`Decoded admin ID: ${decoded.id}`);  
+//             if (!decoded.id) {
+//                 console.log("No user ID found in the decoded token.");
+//                 return res.status(403).render('adminLogin', {
+//                     success: false,
+//                     msg: 'Invalid token. Please login again.',
+//                 });
+//             }
+            
+//             req.user = decoded;
+//             next();
+//         });
+//     } catch (error) {
+//         console.error('JWT Authentication Error:', error.message);
+//         return res.status(500).render('adminHome', {
+//             success: false,
+//             msg: 'An internal error occurred. Please try again later.',
+//         });
+//     }
+// };
 
 
 // const blockeUser = await User.find({ is_blocked: 1 }); WHY THIS IS WRONG line no.30
