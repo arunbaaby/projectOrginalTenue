@@ -15,32 +15,19 @@
                     <div class="col-md-3">
                         <div>
                             <form id="categoryForm" method="post">
-                                <% if(typeof message !=='undefined' ){ %>
-                                    <script>
-                                        document.addEventListener('DOMContentLoaded', function () {
-                                            Swal.fire({
-                                                icon: 'success',
-                                                title: 'Status Message',
-                                                text: '<%= message %>'
-                                            });
-                                        });
-                                    </script>
-                                    <% } %>
-                                        <div class="mb-4">
-                                            <label for="product_name" class="form-label">Name</label>
-                                            <input type="text" placeholder="Type here" class="form-control" name="name"
-                                                id="product_name" />
-                                            <p id="nameError" class="text-danger"></p>
-                                        </div>
-                                        <div class="mb-4">
-                                            <label class="form-label">Description</label>
-                                            <textarea placeholder="Type here" name="description" id="description"
-                                                class="form-control"></textarea>
-                                            <p id="descriptionError" class="text-danger"></p>
-                                        </div>
-                                        <div class="d-grid">
-                                            <button type="submit" class="btn btn-primary">Create category</button>
-                                        </div>
+                                <div class="mb-4">
+                                    <label for="product_name" class="form-label">Name</label>
+                                    <input type="text" placeholder="Type here" class="form-control" name="name" id="product_name" />
+                                    <p id="nameError" class="text-danger"></p>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Description</label>
+                                    <textarea placeholder="Type here" name="description" id="description" class="form-control"></textarea>
+                                    <p id="descriptionError" class="text-danger"></p>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">Create category</button>
+                                </div>
                             </form>
                         </div>
 

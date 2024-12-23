@@ -433,6 +433,42 @@
         return regex.test(name);
     }
 </script>
+<script>
+    document.getElementById("categoryForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const name = document.getElementById("product_name").value.trim();
+        const description = document.getElementById("description").value.trim();
+
+        const nameError = document.getElementById("nameError");
+        const descriptionError = document.getElementById("descriptionError");
+
+        nameError.textContent = "";
+        descriptionError.textContent = "";
+
+        let isValid = true;
+
+        if (name === "") {
+            nameError.textContent = "Name is required.";
+            isValid = false;
+        } else if (name.length < 3) {
+            nameError.textContent = "Name must be at least 3 characters long.";
+            isValid = false;
+        }
+
+        if (description === "") {
+            descriptionError.textContent = "Description is required.";
+            isValid = false;
+        } else if (description.length < 10) {
+            descriptionError.textContent = "Description must be at least 10 characters long.";
+            isValid = false;
+        }
+
+        if (isValid) {
+            this.submit();
+        }
+    });
+</script>
 </body>
 
 </html>
