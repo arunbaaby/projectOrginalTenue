@@ -129,7 +129,14 @@ const loadHome = async (req, res) => {
 
 const userList = async(req,res)=>{
     try {
-        const userData = await User.find({is_admin:0});
+        const query = String(req.query.q || '');
+
+        const filter = {
+            name: { $regex: query, $options: 'i' },
+            is_admin:{$eq:0}
+        };
+        
+        const userData = await User.find(filter);
         res.render('userList',{users:userData});
     } catch (error) {
         console.log(error);
