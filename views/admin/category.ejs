@@ -9,6 +9,28 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-lg-9"> <!-- Adjusted to take up 9 columns -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <form action="/admin/category" method="GET">
+                            <div class="input-group">
+                                <input type="search" class="form-control" placeholder="Enter category name" name="q">
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-lg btn-secondary"
+                                        style="height: 45px;">Search</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="col-lg-3">
+                <div class="p-3">
+                    <a href="/admin/add-product" class="btn btn-primary btn-block">Add</a>
+                </div>
+            </div> -->
+        </div>
         <div class="card">
             <div class="card-body">
                 <div class="row">
@@ -17,12 +39,14 @@
                             <form id="categoryForm" method="post">
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Name</label>
-                                    <input type="text" placeholder="Type here" class="form-control" name="name" id="product_name" />
+                                    <input type="text" placeholder="Type here" class="form-control" name="name"
+                                        id="product_name" />
                                     <p id="nameError" class="text-danger"></p>
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label">Description</label>
-                                    <textarea placeholder="Type here" name="description" id="description" class="form-control"></textarea>
+                                    <textarea placeholder="Type here" name="description" id="description"
+                                        class="form-control"></textarea>
                                     <p id="descriptionError" class="text-danger"></p>
                                 </div>
                                 <div class="d-grid">
@@ -47,8 +71,8 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <% if(category.length> 0) {
-                                                    for(let i = 0; i < category.length; i++) { %>
+                                                <% if (category.length> 0) {
+                                                    for (let i = 0; i < category.length; i++) { %>
                                                         <tr>
                                                             <td width="15%">
                                                                 <%= category[i].name %>
@@ -56,25 +80,19 @@
                                                             <td width="50%">
                                                                 <%= category[i].description %>
                                                             </td>
-
                                                             <td>
-                                                                <% if(category[i].is_active) { %>
+                                                                <% if (category[i].is_active) { %>
                                                                     <span style="color: green;">Active</span>
                                                                     <% } else { %>
                                                                         <span style="color: red;">Inactive</span>
                                                                         <% } %>
                                                             </td>
-
                                                             <td>
                                                                 <a href="/admin/<%= category[i].is_active ? 'delete-category' : 'restore-category' %>?id=<%= category[i]._id %>"
                                                                     class="btn btn-primary">
                                                                     <%= category[i].is_active ? 'Disable' : 'Enable' %>
                                                                 </a>
-
-
-
                                                                 <br><br>
-                                                                <!-- Edit Button -->
                                                                 <a href="/admin/edit-category?id=<%= category[i]._id %>"
                                                                     class="btn btn-primary">Edit</a>
                                                             </td>

@@ -165,9 +165,19 @@ const unblockUser = async (req, res) => {
 
 const loadCategory = async(req,res)=>{
     try {
-        const category = await Category.find({});
+        const query = String(req.query.q || '');
+        const currentPage = parseInt(req.query.page) || 1;
+
+        const filter = {
+            name: { $regex: query, $options: 'i' }
+        }
+
+        const category = await Category.find(filter);
+        
         return res.status(200).render('category', {
             category,
+            query,
+            currentPage,
             success: true,
             msg: ''
         });
