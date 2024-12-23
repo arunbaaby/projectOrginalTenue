@@ -403,6 +403,10 @@ const productDetailsLoad = async (req, res) => {
             return res.redirect('/404');
         }
 
+        if (!product.is_active) {
+            return res.redirect('/unlisted-product');
+        }
+
 
         //category field in each product should have all the category documents and info
         const products = await Product.find({ is_active: true }).populate('category')

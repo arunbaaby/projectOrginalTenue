@@ -123,6 +123,7 @@ user_route.post('/remove-coupon',isLoggedIn,couponController.removeCoupon);
 
 //404
 user_route.get('/404',isLoggedIn,userController.load404);
+user_route.get('/unlisted-product',isLoggedIn,userController.loadUnlistedProduct);
 
 
 

@@ -521,6 +521,15 @@ const load404 = async (req, res) => {
     }
 }
 
+const loadUnlistedProduct = async(req,res)=>{
+    try {
+        res.render('unlisted-product');
+    } catch (error) {
+        console.error("Error resetting password:", error);
+        return res.render("reset-password", { token, serverError: true });
+    }
+}
+
 
 
 
@@ -540,5 +549,6 @@ module.exports = {
     forgotPasswordLink,
     resetPassword,
     newPasswordUpdate,
-    load404
+    load404,
+    loadUnlistedProduct
 }
