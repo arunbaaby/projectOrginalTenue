@@ -4663,4 +4663,113 @@ body.dark .dropdown-menu .dropdown-item.text-danger {
   margin-right: 10px;
 }
 
+/* General Styling for Item List */
+.itemlist {
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  background-color: #fff;
+}
+
+/* Column: Image & Name */
+.col-name {
+  display: flex;
+  align-items: center;
+}
+
+.col-name .info h6 {
+  white-space: nowrap; /* Prevent text wrapping */
+  overflow: hidden; /* Hide overflowing text */
+  text-overflow: ellipsis; /* Add ellipsis (...) for overflow */
+  max-width: 200px; /* Set a max width to limit long names */
+  font-size: 1rem;
+  margin: 0;
+}
+
+.col-name .itemside {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.col-name .itemside .left img {
+  max-width: 50px;
+  max-height: 50px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+/* Column: Action Buttons */
+.col-action {
+  text-align: right;
+  flex-shrink: 0; /* Prevent shrinking */
+  white-space: nowrap; /* Prevent wrapping of buttons */
+}
+
+.col-action .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  gap: 4px;
+  white-space: nowrap;
+  border-radius: 5px;
+}
+
+.col-action .btn i {
+  font-size: 1rem; /* Adjust icon size */
+}
+
+/* Status Badge */
+.col-status .badge {
+  font-size: 0.9rem;
+  padding: 5px 10px;
+  border-radius: 20px;
+}
+
+.col-status .badge.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.col-status .badge.alert-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Pricing and Stock Columns */
+.col-price,
+.col-quantity,
+.col-status,
+.col-date {
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/* General Row Styling */
+.row.align-items-center {
+  display: flex;
+  align-items: center;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .col-name .info h6 {
+      max-width: 150px;
+  }
+
+  .col-action {
+      text-align: left;
+      margin-top: 10px;
+  }
+
+  .itemlist {
+      padding: 10px;
+  }
+}
+
 /*# sourceMappingURL=main.css.map */
