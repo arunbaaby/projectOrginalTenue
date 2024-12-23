@@ -79,13 +79,21 @@ const updateCategory = async (req, res) => {
         // Check if the category exists by ID
         const existingCategory = await Category.findById(id);
         if (!existingCategory) {
-            return res.status(404).send('Category not found');
+            return res.status(400).render('edit-category', {
+                category:existingCategory,
+                success: false,
+                msg: 'Category donot exist'
+            });
         }
 
         // Check if another category with the same name already exists
         const duplicateCategory = await Category.findOne({ name: name, _id: { $ne: id } });
         if (duplicateCategory) {
-            return res.status(400).send('Category name already exists');
+            return res.status(400).render('edit-category', {
+                category:existingCategory,
+                success: false,
+                msg: 'Category already exists'
+            });
         }
 
         // Update the category with the new name and description
