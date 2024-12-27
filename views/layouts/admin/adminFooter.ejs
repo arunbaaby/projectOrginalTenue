@@ -469,6 +469,67 @@
         }
     });
 </script>
+
+<!--category offer validation-->
+<script>
+    // JavaScript Validation
+    document.getElementById('catOfferForm').addEventListener('submit', function(event) {
+        let valid = true;
+    
+        // Reset error messages
+        document.getElementById('catOfferName-error').textContent = '';
+        document.getElementById('catStartingDate-error').textContent = '';
+        document.getElementById('catEndingDate-error').textContent = '';
+        document.getElementById('category-error').textContent = '';
+        document.getElementById('catDiscount-error').textContent = '';
+    
+        // Validate Offer Name
+        const name = document.getElementById('name').value.trim();
+        if (!name) {
+            valid = false;
+            document.getElementById('catOfferName-error').textContent = 'Offer name is required.';
+        }
+    
+        // Validate Starting Date
+        const startingDate = document.getElementById('catStartingDate').value.trim();
+        if (!startingDate) {
+            valid = false;
+            document.getElementById('catStartingDate-error').textContent = 'Starting date is required.';
+        }
+    
+        // Validate Ending Date
+        const endingDate = document.getElementById('catEndingDate').value.trim();
+        if (!endingDate) {
+            valid = false;
+            document.getElementById('catEndingDate-error').textContent = 'Ending date is required.';
+        } else if (new Date(endingDate) < new Date(startingDate)) {
+            valid = false;
+            document.getElementById('catEndingDate-error').textContent = 'Ending date cannot be before the starting date.';
+        }
+    
+        // Validate Category
+        const category = document.getElementById('category').value.trim();
+        if (!category) {
+            valid = false;
+            document.getElementById('category-error').textContent = 'Category is required.';
+        }
+    
+        // Validate Category Discount
+        const categoryDiscount = document.getElementById('categoryDiscount').value.trim();
+        if (!categoryDiscount) {
+            valid = false;
+            document.getElementById('catDiscount-error').textContent = 'Category discount is required.';
+        } else if (isNaN(categoryDiscount) || parseFloat(categoryDiscount) <= 0) {
+            valid = false;
+            document.getElementById('catDiscount-error').textContent = 'Please enter a valid discount value.';
+        }
+    
+        // If validation fails, prevent form submission
+        if (!valid) {
+            event.preventDefault();
+        }
+    });
+    </script>
 </body>
 
 </html>

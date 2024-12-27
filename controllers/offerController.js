@@ -3,6 +3,8 @@ const Category = require('../models/categoryModel');
 const ProductOffer = require('../models/productOfferModel');
 const CategoryOffer = require('../models/categoryOfferModel');
 
+const { validationResult } = require('express-validator');
+
 
 //product offer 
 const loadProductOffer = async (req, res) => {
@@ -118,11 +120,11 @@ const restoreProductOffer = async (req, res) => {
 
 const loadEditProductOffer = async (req, res) => {
     try {
-        const offerId = req.query.id; 
+        const offerId = req.query.id;
         const productId = req.query.prodId;
 
         const productOfferData = await ProductOffer.findById(offerId)
-            .populate('productOffer.product') 
+            .populate('productOffer.product')
             .lean();
 
         const productData = await Product.find({}, { name: 1 }).lean();
@@ -214,7 +216,25 @@ const loadAddCategoryOffer = async (req, res) => {
 
 const addCategoryOffer = async (req, res) => {
     try {
+
+        // Extract validation errors
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            // If validation fails, send error messages
+            return res.status(400).render('add-category-offer', {
+                success: false,
+                msg: 'Validation failed',
+                errors: errors.array(), // Pass validation errors to the frontend
+                oldData: req.body // Pass old input data for pre-filling the form
+            });
+        }
+
         const { name, startingDate, endingDate, category, categoryDiscount } = req.body;
+
+        if (!name || !startingDate || !endingDate || !category || !categoryDiscount) {
+            const categoryData = await Category.find({}, { name: 1 }).lean();
+            return res.render('add-category-offer', { message: 'All fields are required.', categoryData });
+        }
 
         let discount = parseFloat(categoryDiscount);
 
@@ -269,10 +289,10 @@ const restoreCategoryOffer = async (req, res) => {
 
 const loadEditCategoryOffer = async (req, res) => {
     try {
-        const offerId = req.query.id; 
-        const offerDetails = await CategoryOffer.findById(offerId).populate('categoryOffer.category').lean(); 
+        const offerId = req.query.id;
+        const offerDetails = await CategoryOffer.findById(offerId).populate('categoryOffer.category').lean();
 
-        const categoryData = await Category.find({}, { name: 1 }).lean(); 
+        const categoryData = await Category.find({}, { name: 1 }).lean();
 
         res.render('edit-category-offer', { offerDetails, categoryData });
     } catch (error) {
@@ -291,23 +311,23 @@ const editCategoryOffer = async (req, res) => {
         const endDate = new Date(endingDate);
 
         const updateOffer = await CategoryOffer.updateOne(
-            { _id: offerId },  
+            { _id: offerId },
             {
                 $set: {
-                    name,  
+                    name,
                     startingDate: startDate,
                     endingDate: endDate,
                     "categoryOffer.discount": categoryDiscount,
-                    "categoryOffer.category": category 
+                    "categoryOffer.category": category
                 }
             }
         );
 
         if (updateOffer.modifiedCount === 1) {
-            res.redirect('/admin/category-offer');  
+            res.redirect('/admin/category-offer');
         } else {
             console.log("Offer was not updated");
-            res.redirect("/admin/category-offer");  
+            res.redirect("/admin/category-offer");
         }
     } catch (error) {
         console.error('Error editing category offer:', error.message);
