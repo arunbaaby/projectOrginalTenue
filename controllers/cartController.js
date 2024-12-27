@@ -19,6 +19,10 @@ const addToCart = async(req,res)=>{
             return res.status(404).json({ message: 'Product not found' });
         }
 
+        if(product.is_active === false){
+           return res.redirect('/unlisted-product');// if we don't return the fucnction exec won't stop
+        }
+
         if(!size){
             return res.redirect(req.get('referer')); // redirects to the previous page and that is the product detials page 
         }
