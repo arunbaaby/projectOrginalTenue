@@ -11,7 +11,7 @@ const addToCart = async(req,res)=>{
         console.log(`quatity: ${quantity}`);
         console.log(size);
 
-        const product = await Product.findById(productId);
+        const product = await Product.findById(productId).populate('category');
         console.log(product);
         
 
@@ -19,8 +19,8 @@ const addToCart = async(req,res)=>{
             return res.status(404).json({ message: 'Product not found' });
         }
 
-        if(product.is_active === false){
-           return res.redirect('/unlisted-product');// if we don't return the fucnction exec won't stop
+        if (!product.is_active || (product.category && !product.category.is_active)) {
+            return res.redirect('/unlisted-product');
         }
 
         if(!size){

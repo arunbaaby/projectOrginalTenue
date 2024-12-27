@@ -381,7 +381,7 @@ const productDetailsLoad = async (req, res) => {
     try {
         const id = req.query.id;
         const userId = req.user.id;
-        const product = await Product.findById(id);
+        const product = await Product.findById(id).populate('category');
         let cart = null;
 
         if (userId) {
@@ -403,7 +403,7 @@ const productDetailsLoad = async (req, res) => {
             return res.redirect('/404');
         }
 
-        if (!product.is_active) {
+        if (!product.is_active || (product.category && !product.category.is_active)) {
             return res.redirect('/unlisted-product');
         }
 
