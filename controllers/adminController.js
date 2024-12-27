@@ -56,7 +56,7 @@ const adminLogin = async (req, res) => {
             });
         }
 
-        const passwordMatch = await bcrypt.compare(password, userData.password);
+        const passwordMatch = bcrypt.compare(password, userData.password);
         if (!passwordMatch) {
             console.log('Password mismatch');
             return res.status(400).render('adminLogin', {
@@ -179,7 +179,7 @@ const loadCategory = async(req,res)=>{
             name: { $regex: query, $options: 'i' }
         }
 
-        const category = await Category.find(filter);
+        const category = await Category.find(filter).sort({_id:-1});
         
         return res.status(200).render('category', {
             category,

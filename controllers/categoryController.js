@@ -2,7 +2,7 @@ const Category = require('../models/categoryModel');
 
 const createCategory = async (req, res) => {
     try {
-        const name = req.body.name && req.body.name.trim();
+        const name = req.body.name && req.body.name.trim().toLowerCase();
         const description = req.body.description && req.body.description.trim();
 
         // if user clicks the create button without entering the data
@@ -16,7 +16,7 @@ const createCategory = async (req, res) => {
         }
 
         // Check if the category already exists
-        const existingCat = await Category.findOne({ name: name.toLowerCase() });
+        const existingCat = await Category.findOne({ name: new RegExp(`^${name}$`, 'i') });
 
         if (existingCat) {
             const categoryDetails = await Category.find();

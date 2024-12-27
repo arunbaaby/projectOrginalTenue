@@ -49,9 +49,15 @@
                                         class="form-control"></textarea>
                                     <p id="descriptionError" class="text-danger"></p>
                                 </div>
-                                <div class="d-grid">
-                                    <button type="submit" class="btn btn-primary">Create category</button>
-                                </div>
+                                <!-- Message Display -->
+                                <% if (msg) { %>
+                                    <div class="mb-4">
+                                        <p class="text-danger"><%= msg %></p>
+                                    </div>
+                                    <% } %>
+                                        <div class="d-grid">
+                                            <button type="submit" class="btn btn-primary">Create category</button>
+                                        </div>
                             </form>
                         </div>
 
