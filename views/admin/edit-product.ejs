@@ -308,6 +308,54 @@
 
     </script>
 
+    <script>document.getElementById('product_images').addEventListener('change', function (event) {
+        const files = event.target.files; // Get the selected files
+        const imagesContainer = document.getElementById('images-container');
+    
+        // Validation: Check the total count of existing and newly added images
+        const existingImages = document.querySelectorAll('#images-container .image-container').length;
+        if (existingImages + files.length > 3) {
+            document.getElementById('imagesError').innerText = "You can only upload up to 3 images in total.";
+            return;
+        } else {
+            document.getElementById('imagesError').innerText = ""; // Clear any error message
+        }
+    
+        Array.from(files).forEach(file => {
+            if (!file.type.startsWith('image/')) {
+                document.getElementById('imagesError').innerText = "Only image files are allowed.";
+                return;
+            }
+    
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const imageContainer = document.createElement('div');
+                imageContainer.className = 'image-container';
+    
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.alt = file.name;
+                img.height = 70;
+                img.width = 70;
+    
+                const closeIcon = document.createElement('a');
+                closeIcon.href = '#';
+                closeIcon.className = 'close-icon text-danger';
+                closeIcon.innerHTML = '<span aria-hidden="true">&times;</span>';
+                closeIcon.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    imageContainer.remove();
+                });
+    
+                imageContainer.appendChild(img);
+                imageContainer.appendChild(closeIcon);
+                imagesContainer.appendChild(imageContainer);
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+    </script>
+
     </body>
 
     </html>
