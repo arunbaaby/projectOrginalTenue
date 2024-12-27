@@ -199,15 +199,15 @@ const updateProduct = async (req, res) => {
             return res.status(400).send('Product name already exists');
         }
 
-        // Handle uploaded images
-        let imagePaths = existingProduct.images; // Start with existing images
+        // new images and existing images stored in array
+        let imagePaths = existingProduct.images; 
         if (req.files && req.files.length > 0) {
-            // Add newly uploaded images
+            // newly uploaded images
             const newImagePaths = req.files.map(file => file.filename);
             imagePaths = [...imagePaths, ...newImagePaths];
         }
 
-        // If sizes are not provided, retain existing sizes or set default sizes
+        // set default sizes
         const updatedSizes = sizes && sizes.length > 0 ? sizes : existingProduct.sizes.length > 0 ? existingProduct.sizes : ['S', 'M', 'L', 'XL', 'XXL'];
 
         await Product.findByIdAndUpdate(id, {
@@ -220,7 +220,7 @@ const updateProduct = async (req, res) => {
                 discountPrice: discountPrice,
                 category: category,
                 stock: stock,
-                sizes: updatedSizes, // Include sizes in update
+                sizes: updatedSizes, 
                 images: imagePaths
             }
         });
