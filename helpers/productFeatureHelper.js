@@ -45,7 +45,7 @@ const getNewCategoriesWithLatestProducts = async () => {
 //based on pro with most stock
 const getFeaturedProducts = async () => {
     try {
-        const featuredProducts = await Product.find()
+        const featuredProducts = await Product.find({is_active: true})
             .sort({ stock: -1 }) 
             .limit(10)           
 
@@ -58,7 +58,7 @@ const getFeaturedProducts = async () => {
 
 const getProductsWithMostDiscount = async () => {
     try {
-        const productsWithMostDiscount = await Product.find()
+        const productsWithMostDiscount = await Product.find({is_active: true})
             .sort({ 
                 discountPrice: 1 
             })
@@ -86,9 +86,12 @@ const getMostSoldProducts = async () => {
             { $limit: 10 },
             {
                 $lookup: {
-                    from: "products", // details from product model
-                    localField: "_id",
-                    foreignField: "_id",
+                    from: "products", // Lookup details from the products collection
+                    let: { productId: "$_id" },
+                    pipeline: [
+                        { $match: { $expr: { $eq: ["$_id", "$$productId"] } } },
+                        { $match: { is_active: true } } // Ensure product is active
+                    ],
                     as: "productDetails"
                 }
             },
