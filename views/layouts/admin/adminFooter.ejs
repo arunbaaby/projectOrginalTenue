@@ -2,7 +2,7 @@
     <div class="row pb-30 pt-15">
         <div class="col-sm-6">
             <script>
-            document.write(new Date().getFullYear())
+                document.write(new Date().getFullYear())
             </script> ©, Evara - HTML Ecommerce Template .
         </div>
         <div class="col-sm-6">
@@ -203,7 +203,7 @@
             return;
         }
 
-        addCoupon(); 
+        addCoupon();
     }
 
     function addCoupon() {
@@ -213,7 +213,7 @@
 
         if (maxUsers === '') {
             maxUsersError.innerText = "Maximum users allowed is required";
-            return; 
+            return;
         }
 
         const description = document.getElementById('description').value;
@@ -275,66 +275,66 @@
 </script>
 
 <script>
-    document.getElementById("dateFilter").addEventListener("submit", function(event) {
+    document.getElementById("dateFilter").addEventListener("submit", function (event) {
         event.preventDefault();
         if (validateAndSubmit()) {
             this.submit();
         }
-      });
+    });
 
-      function validateAndSubmit() {
+    function validateAndSubmit() {
         if (validateForm()) {
             return true;
         } else {
             return false;
         }
-      }
+    }
 
 
-      function validateForm() {
+    function validateForm() {
         resetErrorMessage();
-      console.log("Its start to working");
+        console.log("Its start to working");
         let isValid = true;
-        
+
         const startingDate = document.getElementById("startdate").value.trim();
         const endingDate = document.getElementById("enddate").value.trim();
 
-        if(startingDate === ""){
-            displayErrorMessage("startingDate-error","Enter Starting date");
+        if (startingDate === "") {
+            displayErrorMessage("startingDate-error", "Enter Starting date");
             isValid = false
         }
-        
-        if(endingDate === ""){
-            displayErrorMessage("endingDate-error","Enter Ending date");
+
+        if (endingDate === "") {
+            displayErrorMessage("endingDate-error", "Enter Ending date");
             isValid = false;
-        }else if(endingDate < startingDate){
-            displayErrorMessage("endingDate-error","Should greater than starting date");
+        } else if (endingDate < startingDate) {
+            displayErrorMessage("endingDate-error", "Should greater than starting date");
             isValid = false
         }
-      
+
         return isValid;
-      }
-      function displayErrorMessage(elementId, message) {
+    }
+    function displayErrorMessage(elementId, message) {
         var errorElement = document.getElementById(elementId);
         errorElement.innerText = message;
         errorElement.style.display = "block";
         errorElement.style.color = "red";
-      }
-      
-      function resetErrorMessage() {
+    }
+
+    function resetErrorMessage() {
         var errorElements = document.querySelectorAll(".error-message");
-        errorElements.forEach(function(element) {
+        errorElements.forEach(function (element) {
             element.innerText = "";
             element.style.display = "none";
         });
-      }
+    }
 
 </script>
 
 <script>
     function downloadPdf() {
         console.log('pdf download');
-        
+
         const salesReport = document.getElementById("salesTable");
         const opt = {
             margin: 1,
@@ -348,7 +348,7 @@
 
     function downloadExcel() {
         console.log('excel download');
-        
+
         const salesReport = document.getElementById("salesTable");
         const ws = XLSX.utils.table_to_sheet(salesReport);
         const wb = XLSX.utils.book_new();
@@ -358,18 +358,18 @@
 </script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
         document.getElementById('startdate').setAttribute('max', today);
 
         const form = document.getElementById('dateFilter');
-        
-        form.addEventListener('submit', function(event) {
+
+        form.addEventListener('submit', function (event) {
             event.preventDefault();
 
             const startDate = document.getElementById('startdate').value.trim();
             const endDate = document.getElementById('enddate').value.trim();
-            
+
             clearErrors();
 
             let isValid = true;
@@ -414,12 +414,12 @@
 
     function clearErrors() {
         const errorDivs = document.querySelectorAll('.error-message');
-        errorDivs.forEach(function(errorDiv) {
+        errorDivs.forEach(function (errorDiv) {
             errorDiv.textContent = '';
             errorDiv.style.display = 'none';
         });
     }
-</script>   
+</script>
 <script>
     document.getElementById("categoryForm").addEventListener("submit", function (e) {
         e.preventDefault();
@@ -460,30 +460,30 @@
 <!--category offer validation-->
 <script>
     // JavaScript Validation
-    document.getElementById('catOfferForm').addEventListener('submit', function(event) {
+    document.getElementById('catOfferForm').addEventListener('submit', function (event) {
         let valid = true;
-    
+
         // Reset error messages
         document.getElementById('catOfferName-error').textContent = '';
         document.getElementById('catStartingDate-error').textContent = '';
         document.getElementById('catEndingDate-error').textContent = '';
         document.getElementById('category-error').textContent = '';
         document.getElementById('catDiscount-error').textContent = '';
-    
+
         // Validate Offer Name
         const name = document.getElementById('name').value.trim();
         if (!name) {
             valid = false;
             document.getElementById('catOfferName-error').textContent = 'Offer name is required.';
         }
-    
+
         // Validate Starting Date
         const startingDate = document.getElementById('catStartingDate').value.trim();
         if (!startingDate) {
             valid = false;
             document.getElementById('catStartingDate-error').textContent = 'Starting date is required.';
         }
-    
+
         // Validate Ending Date
         const endingDate = document.getElementById('catEndingDate').value.trim();
         if (!endingDate) {
@@ -493,14 +493,14 @@
             valid = false;
             document.getElementById('catEndingDate-error').textContent = 'Ending date cannot be before the starting date.';
         }
-    
+
         // Validate Category
         const category = document.getElementById('category').value.trim();
         if (!category) {
             valid = false;
             document.getElementById('category-error').textContent = 'Category is required.';
         }
-    
+
         // Validate Category Discount
         const categoryDiscount = document.getElementById('categoryDiscount').value.trim();
         if (!categoryDiscount) {
@@ -510,13 +510,98 @@
             valid = false;
             document.getElementById('catDiscount-error').textContent = 'Please enter a valid discount value.';
         }
-    
+
         // If validation fails, prevent form submission
         if (!valid) {
             event.preventDefault();
         }
     });
-    </script>
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('prdOfferForm');
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const name = document.getElementById('name').value.trim();
+            const startingDate = document.getElementById('prdStartingDate').value.trim();
+            const endingDate = document.getElementById('prdEndingDate').value.trim();
+            const product = document.getElementById('products').value.trim();
+            const productDiscount = document.getElementById('productDiscount').value.trim();
+
+            clearErrors();
+
+            let isValid = true;
+
+            // Validate Offer Name
+            if (!name) {
+                showError('prdOfferName-error', 'Offer Name is required');
+                isValid = false;
+            } else if (!/^[a-zA-Z\s]+$/.test(name)) {
+                showError('prdOfferName-error', 'Offer Name must contain only letters and spaces');
+                isValid = false;
+            }
+
+            // Validate Starting Date
+            const today = new Date().toISOString().split('T')[0];
+            if (!startingDate) {
+                showError('prdStartingDate-error', 'Starting Date is required');
+                isValid = false;
+            } else if (startingDate > today) {
+                showError('prdStartingDate-error', 'Starting Date cannot be in the future');
+                isValid = false;
+            }
+
+            // Validate Ending Date
+            if (!endingDate) {
+                showError('prdEndingDate-error', 'Ending Date is required');
+                isValid = false;
+            } else if (startingDate && startingDate > endingDate) {
+                showError('prdStartingDate-error', 'Starting Date cannot be after Ending Date');
+                showError('prdEndingDate-error', 'Ending Date cannot be before Starting Date');
+                isValid = false;
+            }
+
+            // Validate Product Selection
+            if (!product) {
+                showError('error4', 'Please select a product');
+                isValid = false;
+            }
+
+            // Validate Product Discount
+            if (!productDiscount) {
+                showError('prdDiscount-error', 'Product Discount is required');
+                isValid = false;
+            } else if (isNaN(productDiscount)) {
+                showError('prdDiscount-error', 'Product Discount must be a number');
+                isValid = false;
+            } else if (productDiscount < 0 || productDiscount > 100) {
+                showError('prdDiscount-error', 'Product Discount must be between 0 and 100');
+                isValid = false;
+            }
+
+            if (isValid) {
+                form.submit(); // Submit the form if valid
+            }
+        });
+
+        function showError(id, message) {
+            const errorDiv = document.getElementById(id);
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function clearErrors() {
+            const errorDivs = document.querySelectorAll('.error-message');
+            errorDivs.forEach(function (errorDiv) {
+                errorDiv.textContent = '';
+                errorDiv.style.display = 'none';
+            });
+        }
+    });
+</script>
 </body>
 
 </html>

@@ -26,27 +26,24 @@
                             </div>
                             <div class="mb-4">
                                 <label class="form-label">Product</label>
-                                <select class="form-select" name="products">
+                                <select class="form-select" name="products" id="products">
                                     <% if(locals.productData) { %>
                                         <% for(let i = 0; i < productData.length; i++) { %>
-                                                <option value="<%= productData[i]._id %>"><%= productData[i].name %></option>
+                                            <option value="<%= productData[i]._id %>"><%= productData[i].name %></option>
                                         <% } %>
                                     <% } %>
                                 </select>
                                 <p><span id="error4" style="display: none;" class="mt-15 err text-danger"></span></p>
                             </div>
-                            
                             <div class="mb-4">
                                 <label class="form-label">Product Discount%</label>
                                 <input placeholder="Type here" name="productDiscount" class="form-control" id="productDiscount">
                                 <div id="prdDiscount-error" class="error-message"></div>
                             </div>
                             <div class="d-flex justify-content-between align-items-center">
-                                <!-- Display General Message -->
                                 <% if (typeof message !== 'undefined' && message.length > 0) { %>
                                     <p class="text-danger mb-0"><%= message %></p>
                                 <% } %>
-                                <!-- Submit button -->
                                 <button type="submit" class="btn ms-auto d-block btn-md rounded font-sm hover-up">Add Offer</button>
                             </div>
                         </form>
