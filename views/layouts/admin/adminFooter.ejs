@@ -359,47 +359,45 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('prdOfferForm');
+        const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+        document.getElementById('startdate').setAttribute('max', today);
 
+        const form = document.getElementById('dateFilter');
+        
         form.addEventListener('submit', function(event) {
-            event.preventDefault(); 
-            
-            const name = document.getElementById('name').value.trim();
-            const startingDate = document.getElementById('prdStartingDate').value.trim();
-            const endingDate = document.getElementById('prdEndingDate').value.trim();
-            const productDiscount = document.getElementById('productDiscount').value.trim();
+            event.preventDefault();
 
+            const startDate = document.getElementById('startdate').value.trim();
+            const endDate = document.getElementById('enddate').value.trim();
+            
             clearErrors();
 
             let isValid = true;
 
-            if (name === '') {
-                showError('prdOfferName-error', 'Name is required');
+            // Validate Starting Date
+            if (startDate === '') {
+                showError('startingDate-error', 'Starting Date is required');
                 isValid = false;
-            } else if (!isValidName(name)) {
-                showError('prdOfferName-error', 'Name should only contain letters and spaces');
-                isValid = false;
+            } else {
+                const start = new Date(startDate);
+                if (start > new Date()) {
+                    showError('startingDate-error', 'Starting Date cannot be in the future');
+                    isValid = false;
+                }
             }
 
-            if (startingDate === '') {
-                showError('prdStartingDate-error', 'Starting Date is required');
+            // Validate Ending Date
+            if (endDate === '') {
+                showError('endingDate-error', 'Ending Date is required');
                 isValid = false;
-            }
-
-            if (endingDate === '') {
-                showError('prdEndingDate-error', 'Ending Date is required');
-                isValid = false;
-            }
-
-            if (productDiscount === '') {
-                showError('prdDiscount-error', 'Product Discount is required');
-                isValid = false;
-            } else if (isNaN(productDiscount)) {
-                showError('prdDiscount-error', 'Product Discount must be a number');
-                isValid = false;
-            } else if (productDiscount < 0 || productDiscount > 40) {
-                showError('prdDiscount-error', 'Product Discount must be between 0 and 40');
-                isValid = false;
+            } else {
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+                if (startDate && start > end) {
+                    showError('startingDate-error', 'Starting Date cannot be after Ending Date');
+                    showError('endingDate-error', 'Ending Date cannot be before Starting Date');
+                    isValid = false;
+                }
             }
 
             if (isValid) {
@@ -414,12 +412,6 @@
         errorDiv.style.display = 'block';
     }
 
-    function clearError(id) {
-        const errorDiv = document.getElementById(id);
-        errorDiv.textContent = '';
-        errorDiv.style.display = 'none';
-    }
-
     function clearErrors() {
         const errorDivs = document.querySelectorAll('.error-message');
         errorDivs.forEach(function(errorDiv) {
@@ -427,12 +419,7 @@
             errorDiv.style.display = 'none';
         });
     }
-
-    function isValidName(name) {
-        const regex = /^[a-zA-Z\s]+$/;
-        return regex.test(name);
-    }
-</script>
+</script>   
 <script>
     document.getElementById("categoryForm").addEventListener("submit", function (e) {
         e.preventDefault();
