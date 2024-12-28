@@ -41,7 +41,14 @@
                                 <input placeholder="Type here" name="productDiscount" class="form-control" id="productDiscount">
                                 <div id="prdDiscount-error" class="error-message"></div>
                             </div>
-                            <button type="submit" class="btn ms-auto d-block btn-md rounded font-sm hover-up">Add Offer</button>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <!-- Display General Message -->
+                                <% if (typeof message !== 'undefined' && message.length > 0) { %>
+                                    <p class="text-danger mb-0"><%= message %></p>
+                                <% } %>
+                                <!-- Submit button -->
+                                <button type="submit" class="btn ms-auto d-block btn-md rounded font-sm hover-up">Add Offer</button>
+                            </div>
                         </form>
                         
                     </div>

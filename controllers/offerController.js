@@ -63,6 +63,11 @@ const addProductOffer = async (req, res) => {
     try {
         const { name, startingDate, endingDate, products, productDiscount } = req.body;
 
+        if (!name || !startingDate || !endingDate || !products || !productDiscount) {
+            const productData = await Product.find({}, { name: 1 }).lean();
+            return res.render('add-product-offer', { message: 'All fields are required.', productData });
+        }
+
         let discount = parseFloat(productDiscount);
 
         if (isNaN(discount)) {
