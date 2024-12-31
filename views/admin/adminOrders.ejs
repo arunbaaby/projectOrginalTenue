@@ -2,25 +2,50 @@
     <section class="content-main">
         <h1>ORDER LIST</h1>
         <div class="row">
-            <div class="col-lg-9"> <!-- Adjusted to take up 9 columns -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <form id="searchForm" action="/admin/order?q=<%= query %>&page=<%= currentPage %>" method="GET">
-                            <div class="input-group">
-                                <input type="search" class="form-control"
-                                    placeholder="Search by username, OrderID or order status" name="q">
-                                <!-- Include hidden input field for current page -->
-                                <input type="hidden" name="page" value="<%= currentPage %>">
-                                <div class="input-group-append">
-                                    <button type="submit" class="btn btn-lg btn-secondary"
-                                        style="height: 45px;">Search</button>
+            <div class="row"> <!-- Add a row class to wrap both sections -->
+                <div class="col-lg-6"> <!-- Adjust column size to fit the same row -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <form id="searchForm" action="/admin/order?q=<%= query %>&page=<%= currentPage %>"
+                                method="GET">
+                                <div class="input-group">
+                                    <input type="search" class="form-control"
+                                        placeholder="Search by username, OrderID or order status" name="q">
+                                    <!-- Include hidden input field for current page -->
+                                    <input type="hidden" name="page" value="<%= currentPage %>">
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-lg btn-secondary"
+                                            style="height: 45px;">Search</button>
+                                    </div>
                                 </div>
-                            </div>
-                        </form>
-
+                            </form>
+                        </div>
                     </div>
                 </div>
+                <div class="col-lg-6 col-md-6"> <!-- Adjust column size to fit the same row -->
+                    <form id="dateFilter" action="/admin/order" method="GET">
+                        <div class="row">
+                            <div class="col-md-4 col-4 text-center">
+                                <p>Starting Date</p>
+                                <input type="date" id="startdate" name="startingDate" class="form-control"
+                                    value="<%= startingDate %>">
+                                <div id="startingDate-error" class="error-message"></div>
+                            </div>
+                            <div class="col-md-4 col-4 text-center">
+                                <p>Ending Date</p>
+                                <input type="date" id="enddate" name="endingDate" class="form-control"
+                                    value="<%= endingDate %>">
+                                <div id="endingDate-error" class="error-message"></div>
+                            </div>
+                            <div class="col-md-4 col-4 text-center align-self-end">
+                                <p>&nbsp;</p>
+                                <button type="submit" class="btn btn-secondary mb-2">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
+
             <div class="card mb-1">
                 <header class="card-header">
                     <!-- Card header -->

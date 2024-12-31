@@ -8,7 +8,7 @@ const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 
-const {generateAccessToken} = require('../utils/generateAccessToken');
+const { generateAccessToken } = require('../utils/generateAccessToken');
 
 const loadLogin = async (req, res) => {
     try {
@@ -29,7 +29,7 @@ const adminLogin = async (req, res) => {
             return res.status(400).render('adminLogin', {
                 success: false,
                 msg: 'Validation errors',
-                errors: errors.array() 
+                errors: errors.array()
             });
         }
 
@@ -88,7 +88,7 @@ const adminLogin = async (req, res) => {
     }
 };
 
-const adminLogout = async(req,res)=>{
+const adminLogout = async (req, res) => {
     try {
         // token save in the cookie in the name adminJwt
         res.clearCookie('adminJwt', {
@@ -127,20 +127,20 @@ const loadHome = async (req, res) => {
     }
 }
 
-const userList = async(req,res)=>{
+const userList = async (req, res) => {
     try {
         const query = String(req.query.q || '');
 
         const filter = {
             name: { $regex: query, $options: 'i' },
-            is_admin:{$eq:0}
+            is_admin: { $eq: 0 }
         };
-        
+
         const userData = await User.find(filter);
-        res.render('userList',{users:userData});
+        res.render('userList', { users: userData });
     } catch (error) {
         console.log(error);
-        
+
     }
 }
 
@@ -170,7 +170,7 @@ const unblockUser = async (req, res) => {
     }
 };
 
-const loadCategory = async(req,res)=>{
+const loadCategory = async (req, res) => {
     try {
         const query = String(req.query.q || '');
         const currentPage = parseInt(req.query.page) || 1;
@@ -179,8 +179,8 @@ const loadCategory = async(req,res)=>{
             name: { $regex: query, $options: 'i' }
         }
 
-        const category = await Category.find(filter).sort({_id:-1});
-        
+        const category = await Category.find(filter).sort({ _id: -1 });
+
         return res.status(200).render('category', {
             category,
             query,
@@ -201,11 +201,12 @@ const loadOrderAdmin = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         let query = req.query.q || 'All';
-        const limit = 18; // Max number of items per page
+        const limit = 18;
         const currentPage = Math.max(page, 1);
 
         let filter = {};
 
+        // search query
         if (query && query.toLowerCase() !== 'all') {
             const users = await User.find({ name: { $regex: new RegExp(query, 'i') } });
             const userIDs = users.map(user => user._id);
@@ -215,10 +216,25 @@ const loadOrderAdmin = async (req, res) => {
             } else if (['Delivered', 'Pending', 'Processing', 'Shipped', 'Cancelled', 'Returned'].includes(query)) {
                 filter.items = { $elemMatch: { status: query } };
             } else {
-                // Search by order number
                 filter.orderNumber = query;
             }
         }
+
+        const { startingDate, endingDate } = req.query;
+        if (startingDate || endingDate) {
+            filter.createdAt = {};
+            if (startingDate) {
+                const start = new Date(startingDate);
+                start.setUTCHours(0, 0, 0, 0);
+                filter.createdAt.$gte = start;
+            }
+            if (endingDate) {
+                const end = new Date(endingDate);
+                end.setUTCHours(23, 59, 59, 999); 
+                filter.createdAt.$lte = end;
+            }
+        }
+
 
         const totalOrders = await Order.countDocuments(filter);
         const totalPages = totalOrders > 0 ? Math.ceil(totalOrders / limit) : 1;
@@ -226,7 +242,6 @@ const loadOrderAdmin = async (req, res) => {
 
         let orders = [];
 
-        //if the orders are empty we can avoid these queries
         if (totalOrders > 0) {
             orders = await Order.find(filter)
                 .sort({ _id: -1 })
@@ -234,8 +249,7 @@ const loadOrderAdmin = async (req, res) => {
                 .limit(limit)
                 .populate({ path: 'user', select: 'name' })
                 .lean();
-            
-            // Filter out orders with a null user field becuase the if the user data is deleted form the DB
+
             orders = orders.filter(order => order.user !== null);
         }
 
@@ -244,6 +258,8 @@ const loadOrderAdmin = async (req, res) => {
             currentPage,
             totalPages,
             query,
+            startingDate: startingDate || '',
+            endingDate: endingDate || '',
         });
     } catch (error) {
         console.error("Error:", error.message);
@@ -252,20 +268,21 @@ const loadOrderAdmin = async (req, res) => {
 };
 
 
-const loadAdminOrderDetails = async(req,res)=>{
+
+const loadAdminOrderDetails = async (req, res) => {
     try {
         const orderId = req.query.id;
 
         const order = await Order.findById(orderId)
-        .populate('user')
-        .populate('items.product') // Populate product details
-        .exec();
+            .populate('user')
+            .populate('items.product') // Populate product details
+            .exec();
 
-    if (!order) {
-        return res.status(404).send('Order not found');
-    }
+        if (!order) {
+            return res.status(404).send('Order not found');
+        }
 
-    res.render('adminOrderDetails', { order });
+        res.render('adminOrderDetails', { order });
     } catch (error) {
         console.error("Error:", error.message);
         res.status(500).send('Internal Server Error');
