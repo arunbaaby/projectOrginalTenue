@@ -11,42 +11,65 @@ const {calculateAndApplyOffer} = require('../helpers/offerHelper');
 //all products for the admin side
 const productLoad = async (req, res) => {
     try {
-
         const query = String(req.query.q || '');
         const currentPage = parseInt(req.query.page) || 1;
         const itemsPerPage = 10;
 
+        const sortOption = req.query.sort || 'default';
+        const categoryFilter = req.query.category || '';
+
         const filter = {
-            name: { $regex: query, $options: 'i' }
+            name: { $regex: query, $options: 'i' },
+        };
+
+        if (categoryFilter) {
+            filter.category = categoryFilter;
+        }
+
+        let sortCriteria = {};
+        switch (sortOption) {
+            case 'latest':
+                sortCriteria = { createdAt: -1 };
+                break;
+            case 'priceAsc':
+                sortCriteria = { price: 1 };
+                break;
+            case 'priceDesc':
+                sortCriteria = { price: -1 };
+                break;
+            default:
+                break;
         }
 
         const totalItems = await Product.countDocuments(filter);
 
-        //total pages
         const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-        //category field in each product should have all the category documents and info
-        const products = await Product.find(filter).populate('category').
-            skip((currentPage - 1) * itemsPerPage).
-            limit(itemsPerPage);
-        //provide all the data to the viewProducts page
-        if (products) {
-            res.render('viewProducts', {
-                product: products,
-                query,
-                currentPage,
-                itemsPerPage,
-                totalItems,
-                totalPages
-            });
-        }
+        const products = await Product.find(filter)
+            .populate('category')
+            .sort(sortCriteria)
+            .skip((currentPage - 1) * itemsPerPage)
+            .limit(itemsPerPage);
 
+        const categories = await Category.find({ is_active: true });
 
+        res.render('viewProducts', {
+            product: products,
+            categories,
+            query,
+            currentPage,
+            itemsPerPage,
+            totalItems,
+            totalPages,
+            sortOption,
+            categoryFilter,
+        });
     } catch (error) {
         console.error(`Error fetching products: ${error.message}`);
         res.status(500).send('Internal Server Error');
     }
-}
+};
+
 
 const addProductsLoad = async (req, res) => {
     try {

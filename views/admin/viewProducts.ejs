@@ -5,13 +5,24 @@
             <div class="col-lg-9"> <!-- Adjusted to take up 9 columns -->
                 <div class="card mb-4">
                     <div class="card-header">
-                        <form action="/admin/product?q=<%= query %>&page=<%= currentPage %>" method="GET">
+                        <form action="/admin/product" method="GET">
                             <div class="input-group">
-                                <input type="search" class="form-control" placeholder="Enter product name or brand name"
-                                    name="q">
+                                <input type="search" class="form-control" placeholder="Enter product name or brand name" name="q">
+                                <select name="sort" class="form-control ml-2">
+                                    <option value="default">Default</option>
+                                    <option value="latest">Latest</option>
+                                    <option value="priceAsc">Price: Low to High</option>
+                                    <option value="priceDesc">Price: High to Low</option>
+                                </select>
+                                <select name="category" class="form-control ml-2">
+                                    <option value="">All Categories</option>
+                                    <!-- Dynamically populate categories -->
+                                    <% categories.forEach(category => { %>
+                                        <option value="<%= category._id %>"><%= category.name %></option>
+                                    <% }); %>
+                                </select>
                                 <div class="input-group-append">
-                                    <button type="submit" class="btn btn-lg btn-secondary"
-                                        style="height: 45px;">Search</button>
+                                    <button type="submit" class="btn btn-lg btn-secondary" style="height: 45px;">Search</button>
                                 </div>
                             </div>
                         </form>
