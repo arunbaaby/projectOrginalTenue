@@ -49,11 +49,13 @@ admin_route.post('/unblock-user/:user_id',isLoggedIn, adminController.unblockUse
 
 // category management
 admin_route.get('/category',isLoggedIn,adminController.loadCategory);
-admin_route.post('/category',isLoggedIn,categoryController.createCategory);
+// admin_route.post('/category',isLoggedIn,categoryController.createCategory);
 admin_route.get('/edit-category',isLoggedIn,categoryController.editCategoryLoad);
 admin_route.post('/edit-category',isLoggedIn,categoryController.updateCategory);
 admin_route.get('/delete-category',isLoggedIn,categoryController.deleteCategory);
 admin_route.get('/restore-category',isLoggedIn,categoryController.restoreCategory);
+admin_route.get('/add-category',isLoggedIn,categoryController.loadAddCategory);
+admin_route.post('/add-category',isLoggedIn,categoryController.createCategory);
 
 //product management
 admin_route.get('/product',isLoggedIn,productController.productLoad);

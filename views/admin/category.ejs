@@ -1,139 +1,98 @@
 <%- include ('../layouts/admin/adminHeader') %>
-    <section class="content-main">
-        <div class="content-header">
-            <div>
-                <h2 class="content-title card-title">CATEGORIES LIST</h2>
-            </div>
-            <div>
-                <!-- <input type="text" placeholder="Search Categories" class="form-control bg-white"> -->
-            </div>
-        </div>
+<section class="content-main">
+    <div class="content-header mb-4 d-flex justify-content-between align-items-center">
+        <h2 class="content-title card-title">Categories List</h2>
+    </div>
 
-        <div class="row">
-            <div class="col-lg-9"> <!-- Adjusted to take up 9 columns -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <form action="/admin/category" method="GET">
-                            <div class="input-group">
-                                <input type="search" class="form-control" placeholder="Enter category name" name="q">
-                                <div class="input-group-append">
-                                    <button type="submit" class="btn btn-lg btn-secondary"
-                                        style="height: 45px;">Search</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+    <div class="row">
+        <div class="col-lg-9 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <form action="/admin/category" method="GET">
+                        <div class="input-group">
+                            <input type="search" class="form-control" placeholder="Enter category name" name="q">
+                            <button type="submit" class="btn btn-secondary">Search</button>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <!-- <div class="col-lg-3">
-                <div class="p-3">
-                    <a href="/admin/add-product" class="btn btn-primary btn-block">Add</a>
-                </div>
-            </div> -->
         </div>
-        <div class="card">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-3">
-                        <div>
-                            <form id="categoryForm" method="post">
-                                <div class="mb-4">
-                                    <label for="product_name" class="form-label">Name</label>
-                                    <input type="text" placeholder="Type here" class="form-control" name="name"
-                                        id="product_name" />
-                                    <p id="nameError" class="text-danger"></p>
-                                </div>
-                                <div class="mb-4">
-                                    <label class="form-label">Description</label>
-                                    <textarea placeholder="Type here" name="description" id="description"
-                                        class="form-control"></textarea>
-                                    <p id="descriptionError" class="text-danger"></p>
-                                </div>
-                                <!-- Message Display -->
-                                <% if (msg) { %>
-                                    <div class="mb-4">
-                                        <p class="text-danger"><%= msg %></p>
-                                    </div>
-                                    <% } %>
-                                        <div class="d-grid">
-                                            <button type="submit" class="btn btn-primary">Create category</button>
+        <div class="col-lg-3 mt-30 ml-9">
+            <a href="/admin/add-category" class="btn btn-primary">Add Category</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (category.length > 0) { %>
+                            <% for (let i = 0; i < category.length; i++) { %>
+                                <tr>
+                                    <td class="text-truncate" style="max-width: 150px;">
+                                        <%= category[i].name %>
+                                    </td>
+                                    <td class="text-truncate" style="max-width: 400px;">
+                                        <%= category[i].description %>
+                                    </td>
+                                    <td>
+                                        <% if (category[i].is_active) { %>
+                                            <span class="status-active">Active</span>
+                                        <% } else { %>
+                                            <span class="status-inactive">Inactive</span>
+                                        <% } %>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <a href="/admin/<%= category[i].is_active ? 'delete-category' : 'restore-category' %>?id=<%= category[i]._id %>"
+                                               class="btn btn-primary">
+                                               <%= category[i].is_active ? 'Disable' : 'Enable' %>
+                                            </a>
+                                            <a href="/admin/edit-category?id=<%= category[i]._id %>" class="btn btn-secondary">
+                                               Edit
+                                            </a>
                                         </div>
-                            </form>
-                        </div>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="4" class="text-center">Category Not Found</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-                    </div>
-                    <div class="col-md-9">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <table class="table table-striped table-hover">
-                                            <thead class="table-dark">
-                                                <tr>
-                                                    <th>Name</th>
-                                                    <th>Description</th>
-                                                    <th>Status</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <% if (category.length> 0) {
-                                                    for (let i = 0; i < category.length; i++) { %>
-                                                        <tr>
-                                                            <td width="15%">
-                                                                <%= category[i].name %>
-                                                            </td>
-                                                            <td width="50%">
-                                                                <%= category[i].description %>
-                                                            </td>
-                                                            <td>
-                                                                <% if (category[i].is_active) { %>
-                                                                    <span style="color: green;">Active</span>
-                                                                    <% } else { %>
-                                                                        <span style="color: red;">Inactive</span>
-                                                                        <% } %>
-                                                            </td>
-                                                            <td>
-                                                                <a href="/admin/<%= category[i].is_active ? 'delete-category' : 'restore-category' %>?id=<%= category[i]._id %>"
-                                                                    class="btn btn-primary">
-                                                                    <%= category[i].is_active ? 'Disable' : 'Enable' %>
-                                                                </a>
-                                                                <br><br>
-                                                                <a href="/admin/edit-category?id=<%= category[i]._id %>"
-                                                                    class="btn btn-primary">Edit</a>
-                                                            </td>
-                                                        </tr>
-                                                        <% } } else { %>
-                                                            <tr>
-                                                                <td colspan="4">Category Not Found</td>
-                                                            </tr>
-                                                            <% } %>
-                                            </tbody>
-                                        </table>
-                        </div>
-                    </div>
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalLabel">Confirm Action</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to <span id="actionText"></span> this category?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmActionBtn">Yes</button>
                 </div>
             </div>
         </div>
-
-        <!-- Confirmation Modal -->
-        <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="confirmationModalLabel">Confirm Action</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        Are you sure you want to <span id="actionText"></span> this category?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" id="confirmActionBtn">Yes</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <%- include ('../layouts/admin/adminFooter') %>
+    </div>
+</section>
+<%- include ('../layouts/admin/adminFooter') %>

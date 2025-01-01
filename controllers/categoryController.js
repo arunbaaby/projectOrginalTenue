@@ -33,7 +33,7 @@ const createCategory = async (req, res) => {
 
         // Retrieve updated category list and render with success message
         const categoryDetails = await Category.find();
-        return res.status(200).render('category', {
+        return res.status(200).render('add-category', {
             category: categoryDetails,
             success: true,
             msg: 'Category added successfully'
@@ -131,11 +131,20 @@ const restoreCategory = async(req,res)=>{
     }
 } 
 
+const loadAddCategory = async(req,res)=>{
+    try {
+        res.render('add-category');
+    } catch (error) {
+        console.error(`Error loading add category: ${error.message}`);
+        res.status(500).send('Internal Server Error');
+    }
+}
 
 module.exports = {
     createCategory,
     editCategoryLoad,
     updateCategory,
     deleteCategory,
-    restoreCategory
+    restoreCategory,
+    loadAddCategory
 }
