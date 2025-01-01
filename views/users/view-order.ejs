@@ -151,6 +151,29 @@
             /* Smooth transitions for hover effects */
         }
 
+        .retry-payment-btn {
+            color: #0066cc;
+            border: 2px solid white;
+            background-color: white;
+            text-decoration: none;
+            font-size: 14px;
+            position: absolute;
+            top: 72px;
+            /* Positioned right below the cancel/return button */
+            right: 24px;
+            /* Same right alignment as other buttons */
+            padding: 10px 20px;
+            /* Consistent button size */
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        /* On hover, change the background and text color */
+        .retry-payment-btn:hover {
+            border-color: #0066cc;
+        }
+
 
         .product-title {
             font-size: 14px;
@@ -300,19 +323,19 @@
 
 <body>
     <div class="header">
-        <a href="/my-orders" class="back-link">← Back to Orders</a>         
-        <button id="download-pdf" style="padding: 10px 20px; background-color: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer;">Download Invoice</button>
+        <a href="/my-orders" class="back-link">← Back to Orders</a>
+        <button id="download-pdf"
+            style="padding: 10px 20px; background-color: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer;">Download
+            Invoice</button>
     </div>
 
     <div class="main-container">
         <div class="left-section">
-
-
             <% orderDetails.items.forEach(item=> { %>
                 <div class="order-status">
                     <img src="/api/placeholder/22/22" alt="Confirmed icon" />
                     <h1 style="margin: 0; font-size: 18px; font-weight: 600;">
-                        <%=item.status %>
+                        <%= item.status %>
                     </h1>
                 </div>
                 <div class="product-container">
@@ -328,28 +351,16 @@
                                         <%= item.product.name %>
                                     </h2>
                                     <div class="product-size">Size: <%= item.size %>
-                                            <div class="product-quantity">Quantity: <%= item.quantity %>
-                                            </div>
-                                            <div class="product-price">
-                                                ₹<%= item.discountPriceAtPurchase * item.quantity %>
-                                            </div>
                                     </div>
-                                    <!-- <div class="delivery-estimate">Estimated Delivery: 13 Nov</div> -->
+                                    <div class="product-quantity">Quantity: <%= item.quantity %>
+                                    </div>
+                                    <div class="product-price">
+                                        ₹<%= item.discountPriceAtPurchase * item.quantity %>
+                                    </div>
                                 </div>
-                                <!-- Cancel button with SweetAlert confirmation -->
-                                <!-- <a href="javascript:void(0);"
-                                    onclick="confirmCancelItem('<%= item._id %>', '<%= orderDetails._id %>')"
-                                    class="cancel-link">Cancel Item</a> -->
 
-                                <!-- Cancel button with SweetAlert confirmation -->
-                                <!-- <button class="cancel-order-btn" data-item-id="<%= item._id %>"
-                                    data-order-id="<%= orderDetails._id %>">
-                                    Cancel Order Item
-                                </button> -->
-
-
-                                <% if (item.status==='Pending' || item.status==='Processing' || item.status==='Shipped' )
-                                    { %>
+                                <% if (item.status==='Pending' || item.status==='Processing' || item.status==='Shipped'
+                                    ) { %>
                                     <button class="cancel-order-btn" data-item-id="<%= item._id %>"
                                         data-order-id="<%= orderDetails._id %>">
                                         Cancel Order Item
@@ -361,13 +372,15 @@
                                         </button>
                                         <% } %>
 
-
-
-
+                                            <% if (orderDetails.paymentStatus==='Failed' ) { %>
+                                                <button class="retry-payment-btn"
+                                                    data-order-id="<%= orderDetails._id %>">
+                                                    Retry Payment
+                                                </button>
+                                                <% } %>
                 </div>
                 <% }) %>
         </div>
-
 
         <div class="right-section">
             <div class="order-info-box">
@@ -591,11 +604,11 @@
                 html2canvas: { scale: 2 },
                 jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
             };
-    
+
             html2pdf().from(element).set(options).save();
         });
     </script>
-    
+
 
 </body>
 
