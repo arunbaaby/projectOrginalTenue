@@ -110,6 +110,8 @@ user_route.get('/view-order',isLoggedIn,orderController.loadViewOrder);
 user_route.post('/cancel-order-item',isLoggedIn,orderController.cancelOrderItem);
 user_route.post('/return-order-item',isLoggedIn,orderController.returnOrderItem);
 
+user_route.get('/retry-payment/:orderId',isLoggedIn,orderController.retryPayment);
+
 //verify payment
 user_route.post('/verify-payment',isLoggedIn,orderController.verifyPayment);
 

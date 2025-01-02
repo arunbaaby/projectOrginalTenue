@@ -279,6 +279,47 @@ const verifyPayment = async (req, res) => {
     }
 };
 
+const retryPayment = async (req, res) => {
+    try {
+        const { orderId } = req.params;
+
+        const order = await Order.findById(orderId);
+        if (!order) {
+            return res.status(404).json({ success: false, message: "Order not found." });
+        }
+
+        if (order.paymentStatus !== "Failed") {
+            return res.status(400).json({ success: false, message: "Payment is not in a failed state." });
+        }
+
+        const razorpayOrder = await razorpay.orders.create({
+            amount: order.total * 100,
+            currency: "INR",
+            receipt: orderId,
+        });
+
+        // update new Razorpay order id
+        order.razorpayOrderId = razorpayOrder.id;
+        order.paymentStatus = "Pending"; 
+        await order.save();
+
+        res.status(200).json({
+            success: true,
+            paymentMethod: "Razorpay",
+            orderId: order._id,
+            razorpayOrderId: razorpayOrder.id,
+            amount: order.total * 100,
+            currency: "INR",
+            key: process.env.RAZORPAY_KEY_ID,
+            name: "Your Store Name",
+            description: "Retry Payment",
+        });
+    } catch (error) {
+        console.error("Error retrying payment:", error);
+        res.status(500).json({ success: false, message: "Internal server error." });
+    }
+};
+
 const loadOrderConfirmation = async (req, res) => {
     try {
         const orderId = req.query.orderId;
@@ -499,5 +540,6 @@ module.exports = {
     verifyPayment,
     changeOrderStatus,
     returnOrderItem,
-    notifyPaymentFailure
+    notifyPaymentFailure,
+    retryPayment
 }

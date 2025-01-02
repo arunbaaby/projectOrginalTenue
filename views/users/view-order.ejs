@@ -372,12 +372,12 @@
                                         </button>
                                         <% } %>
 
-                                            <% if (orderDetails.paymentStatus==='Failed' ) { %>
-                                                <button class="retry-payment-btn"
-                                                    data-order-id="<%= orderDetails._id %>">
-                                                    Retry Payment
-                                                </button>
-                                                <% } %>
+                                        <% if (orderDetails.paymentStatus === 'Failed') { %>
+                                            <button class="retry-payment-btn" data-order-id="<%= orderDetails._id %>">
+                                                Retry Payment
+                                            </button>
+                                        <% } %>
+                                        
                 </div>
                 <% }) %>
         </div>
@@ -505,6 +505,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
         document.querySelectorAll('.cancel-order-btn').forEach(button => {
             button.addEventListener('click', function () {
@@ -608,6 +609,105 @@
             html2pdf().from(element).set(options).save();
         });
     </script>
+
+<script>
+    document.addEventListener("click", async (event) => {
+        if (event.target.classList.contains("retry-payment-btn")) {
+            const orderId = event.target.dataset.orderId;
+            try {
+                const response = await fetch(`/retry-payment/${orderId}`, {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" },
+                });
+
+                const data = await response.json();
+
+                if (data.success && data.paymentMethod === "Razorpay") {
+                    initiateRazorpayPayment(data);
+                } else {
+                    Swal.fire(data.message || "Unable to retry payment.");
+                }
+            } catch (error) {
+                console.error("Error retrying payment:", error);
+                Swal.fire("Something went wrong. Please try again.");
+            }
+        }
+    });
+
+    function initiateRazorpayPayment(data) {
+        const options = {
+            key: data.key,
+            amount: data.amount,
+            currency: data.currency,
+            name: data.name,
+            description: data.description,
+            order_id: data.razorpayOrderId,
+            handler: function (response) {
+                verifyPayment(response, data.orderId);
+            },
+            theme: { color: "#fc4f4f" },
+            modal: {
+                escape: false,
+                ondismiss: async function () {
+                    await handlePaymentClosure(data.orderId);
+                },
+            },
+        };
+
+        const rzp = new Razorpay(options);
+
+        rzp.on('payment.failed', async function (response) {
+            await notifyPaymentFailure(data.orderId);
+
+            alert('Payment failed. You will be redirected to view your order.')
+            window.location.href = `/view-order?orderId=${data.orderId}`;
+
+        });
+
+        rzp.open();
+    }
+
+    async function verifyPayment(paymentDetails, orderId) {
+        try {
+            const response = await fetch('/verify-payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ paymentDetails, orderId }),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Payment Successful',
+                    text: 'Your payment has been verified successfully.',
+                    confirmButtonText: 'OK',
+                }).then(() => {
+                    window.location.reload();
+                });
+            } else {
+                Swal.fire(data.message || 'Payment verification failed.');
+            }
+        } catch (error) {
+            console.error('Error verifying payment:', error);
+            Swal.fire('Something went wrong during payment verification.');
+        }
+    }
+
+    async function notifyPaymentFailure(orderId) {
+        try {
+            await fetch('/notify-payment-failure', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ orderId }),
+            });
+        } catch (error) {
+            console.error('Error notifying payment failure:', error);
+        }
+    }
+</script>
+
 
 
 </body>
