@@ -667,6 +667,24 @@
         rzp.open();
     }
 
+    async function handlePaymentClosure(orderId) {
+        try {
+            await notifyPaymentFailure(orderId);
+
+            Swal.fire({
+                icon: 'info',
+                title: 'Payment Window Closed',
+                text: 'You closed the payment window',
+                confirmButtonText: 'OK',
+            }).then(() => {
+                window.location.href = `/view-order?orderId=${orderId}`;
+            });
+        } catch (error) {
+            console.error('Error handling payment closure:', error);
+            alert('Something went wrong. Please check your order status.');
+        }
+    }
+
     async function verifyPayment(paymentDetails, orderId) {
         try {
             const response = await fetch('/verify-payment', {
