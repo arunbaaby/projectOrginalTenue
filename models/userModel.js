@@ -1,5 +1,6 @@
 //userModel.js
 const mongoose = require('mongoose');
+const {generateReferralCode} = require('../helpers/offerHelper');
 
 //schema
 const userSchema = new mongoose.Schema({
@@ -45,8 +46,25 @@ const userSchema = new mongoose.Schema({
     is_blocked: {
         type: Number,
         default: 0 // 1 if blocked
-    }
+    },
+    referralCode: {
+        type: String,
+        unique: true
+    }, // Unique referral code
+    referredBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        default: null
+    },
 });
-//is verified  = 0 cronjob to clean db
+
+userSchema.pre('save', function (next) {
+    if (!this.referralCode) {
+        this.referralCode = generateReferralCode(this._id);
+    }
+    next();
+});
+
+//is verified  = 0 cronjob to clean db  
 
 module.exports = mongoose.model('User', userSchema);

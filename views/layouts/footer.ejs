@@ -626,6 +626,18 @@
     });
 </script>
 
+<script>
+    function copyCode(code) {
+        navigator.clipboard.writeText(code)
+            .then(() => {
+                Swal.fire('Code copied successfully');
+            })
+            .catch(err => {
+                Swal.fire('Failed to copy code:', err);
+            });
+    }
+</script>
+
 </body>
 
 

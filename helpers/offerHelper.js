@@ -3,6 +3,8 @@ const Category = require('../models/categoryModel');
 const ProductOffer = require('../models/productOfferModel');
 const CategoryOffer = require('../models/categoryOfferModel');
 
+const crypto = require('crypto');
+
 const calculateAndApplyOffer = async (productId, categoryId) => {
     try {
         const product = await Product.findById(productId).populate('category');
@@ -60,6 +62,12 @@ const calculateAndApplyOffer = async (productId, categoryId) => {
     }
 }
 
+const generateReferralCode = () => {
+    return crypto.randomBytes(4).toString('base64').replace(/[^a-zA-Z0-9]/g, '').slice(0, 6).toUpperCase();
+};
+
+
 module.exports = {
-    calculateAndApplyOffer
+    calculateAndApplyOffer,
+    generateReferralCode
 }
