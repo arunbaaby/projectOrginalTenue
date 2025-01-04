@@ -2,6 +2,8 @@ const Product = require('../models/productModel');
 const Category = require('../models/categoryModel');
 const ProductOffer = require('../models/productOfferModel');
 const CategoryOffer = require('../models/categoryOfferModel');
+const User = require('../models/userModel');
+const Wallet = require('../models/walletModel');
 
 const { validationResult } = require('express-validator');
 
@@ -340,6 +342,52 @@ const editCategoryOffer = async (req, res) => {
     }
 }
 
+const applyReferralCode = async (req, res) => {
+    try {
+        const { referralCode } = req.body;
+        const userId = req.user.id;
+
+        const referredByUser = await User.findOne({ referralCode });
+
+        if (!referredByUser) {
+            return res.status(400).json({ success: false, msg: 'Invalid referral code.' });
+        }
+
+        // Prevent self-referral
+        if (referredByUser._id.toString() === userId.toString()) {
+            return res.status(400).json({ success: false, msg: 'You cannot use your own referral code.' });
+        }
+
+        // if referral code is already applied
+        const referringUser = await User.findById(userId);
+        if (referringUser.referredBy) {
+            return res.status(400).json({ success: false, msg: 'Referral code already applied.' });
+        }
+
+         // apply referral
+         referringUser.referredBy = referredByUser._id;
+         await referringUser.save();
+ 
+         // Update wallets
+        const [refereeWallet, referredWallet] = await Promise.all([
+            Wallet.findOneAndUpdate(
+                { user: userId },
+                { $inc: { amount: 100 } },
+                { new: true, upsert: true } // create if not exists
+            ),
+            Wallet.findOneAndUpdate(
+                { user: referredByUser._id },
+                { $inc: { amount: 100 } },
+                { new: true, upsert: true } // create if not exists
+            )
+        ]);
+
+        return res.status(200).json({ success: true, msg: 'Referral code applied successfully.' });
+    } catch (error) {
+        console.error('Error applying referral code :', error.message);
+        return res.status(500).json({ success: false, msg: 'Server error.' });
+    }
+}
 
 module.exports = {
     loadProductOffer,
@@ -355,5 +403,6 @@ module.exports = {
     loadEditCategoryOffer,
     loadEditProductOffer,
     editCategoryOffer,
-    editProductOffer
+    editProductOffer,
+    applyReferralCode
 }

@@ -638,6 +638,49 @@
     }
 </script>
 
+<script>
+    document.getElementById('referralForm').addEventListener('submit', async function (e) {
+        e.preventDefault(); // Prevent form from submitting the traditional way
+
+        const referralCode = document.getElementById('referralCode').value;
+
+        try {
+            const response = await fetch('/apply-referral-code', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ referralCode }) // Send referralCode in request body
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                // Success alert
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: result.msg || 'Referral code applied successfully. Rupees 100 added to your wallet'
+                });
+            } else {
+                // Error alert
+                Swal.fire({
+                    icon: 'error',
+                    text: result.msg || 'Failed to apply referral code.'
+                });
+            }
+        } catch (error) {
+            // Catch network or unexpected errors
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An unexpected error occurred. Please try again later.'
+            });
+            console.error('Error:', error);
+        }
+    });
+</script>
+
 </body>
 
 

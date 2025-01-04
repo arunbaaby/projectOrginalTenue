@@ -38,6 +38,7 @@ const myAccountController = require('../controllers/myAccountController');
 const orderController = require('../controllers/orderController');
 const wishlistController = require('../controllers/wishlistController');
 const couponController = require('../controllers/couponController');
+const offerController = require('../controllers/offerController');
 
 const { log } = require('console');
 // Route for rendering combined login/register page
@@ -122,6 +123,8 @@ user_route.post('/notify-payment-failure',isLoggedIn,orderController.notifyPayme
 user_route.post('/apply-coupon',isLoggedIn,couponController.applyCoupon);
 user_route.post('/remove-coupon',isLoggedIn,couponController.removeCoupon);
 
+//referral code
+user_route.post('/apply-referral-code',isLoggedIn,offerController.applyReferralCode);
 
 //404
 user_route.get('/404',isLoggedIn,userController.load404);

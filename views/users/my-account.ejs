@@ -406,15 +406,30 @@
                                         </div>
                                     </div>
 
-                                    <div class="message">
-                                        <h2>It looks like your account is not eligible for referrals from friends.</h2>
-                                        <p>Any friend who invited you will be able to see your referral status.</p>
-                                        <p>You can still earn referral rewards by sharing your unique code.</p>
+                                    <div class="message" id="referral-container">
+                                        <h2 id="referral-title">Apply referral code</h2>
+                                        <form id="referralForm">
+                                            <input 
+                                                type="text" 
+                                                name="referralCode" 
+                                                id="referralCode" 
+                                                required 
+                                                placeholder="Enter referral code"
+                                            >
+                                            <button 
+                                                type="submit"
+                                                id="referral-button"
+                                            >
+                                                Apply code
+                                            </button>
+                                        </form>
                                     </div>
 
                                     <h3>Share your code</h3>
                                     <div class="code-container">
-                                        <span class="code"><%= user.referralCode %></span>
+                                        <span class="code">
+                                            <%= user.referralCode %>
+                                        </span>
                                         <button class="copy-button" onclick="copyCode('<%= user.referralCode %>')">
                                             <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                 stroke-width="2">
