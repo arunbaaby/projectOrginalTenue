@@ -151,6 +151,12 @@ const placeOrder = async (req, res) => {
         const couponDiscount = cart.couponDiscount || 0;
         const total = Math.max(0, itemsTotal + deliveryCharge - couponDiscount);
 
+        if (paymentMethod === 'Cash on Delivery' && total > 1000) {
+            return res.status(400).json({
+                success: false,
+                message: 'Cash on Delivery is not available for orders above ₹1000. Please select an alternative payment method.',
+            });
+        }
 
         const orderNumber = await generateUniqueOrderNumber();
 
