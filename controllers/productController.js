@@ -206,6 +206,9 @@ const updateProduct = async (req, res) => {
 
         const id = req.query.id;
 
+        if(price<discountPrice){
+            return res.status(400).json('Product price shouldnot be lesser than the discount price');
+        }
         // let imagePaths = [];
         // if (req.files && req.files.length > 0) {
         //     imagePaths = req.files.map(file => file.filename);

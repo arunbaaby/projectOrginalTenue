@@ -193,22 +193,38 @@
         });
 
         function validateForm() {
-
-            // const isValidName = validateInput('product_name', /^([A-Za-z0-9.,]+\s?)+$/, 'nameError', 'Product Name');
-            const isValidbrandName = validateInput('brand_name', /^([A-Za-z0-9.,]+\s?)+$/, 'brandError', 'Brand Name');
-            const isValidgenderName = validateInput('gender_name', /^([A-Za-z0-9.,]+\s?)+$/, 'genderError', 'Gender Name');
+            const isValidBrandName = validateInput('brand_name', /^([A-Za-z0-9.,]+\s?)+$/, 'brandError', 'Brand Name');
+            const isValidGenderName = validateInput('gender_name', /^([A-Za-z0-9.,]+\s?)+$/, 'genderError', 'Gender Name');
             const isValidDescription = validateInput('product_description', /^\s*[A-Z][\s\S]{13,}$/, 'descriptionError', 'Description');
             const isValidPrice = validateInput('regular_price', /^\d+(\.\d{1,2})?$/, 'priceError', 'Price');
             const isValidDiscountPrice = validateInput('discount_price', /^\d+(\.\d{1,2})?$/, 'discountPriceError', 'Discount Price');
             const isValidStock = validateInput('stock_count', /^(?:[0-9]|[1-9][0-9]|1[0-9]{2}|2[0-9]{2}|300)$/, 'stockError', 'Stock');
             const isValidCategory = validateCategory();
+            const isValidPriceVsDiscount = validatePriceAndDiscount();
 
-            if (!isValidName || !isValidDescription || !isValidPrice || !isValidDiscountPrice || !isValidStock || !isValidCategory || !isValidbrandName || !isValidgenderName) {
+            if (!isValidBrandName || !isValidGenderName || !isValidDescription || !isValidPrice ||
+                !isValidDiscountPrice || !isValidStock || !isValidCategory || !isValidPriceVsDiscount) {
                 document.getElementById('mainError').innerText = 'Cannot submit form. Please fix errors.';
                 return false;
             }
             return true;
         }
+
+        function validatePriceAndDiscount() {
+            const price = parseFloat(document.getElementById('regular_price').value.trim());
+            const discountPrice = parseFloat(document.getElementById('discount_price').value.trim());
+            const errorElement = document.getElementById('discountPriceError');
+
+            if (!isNaN(price) && !isNaN(discountPrice)) {
+                if (discountPrice > price) {
+                    errorElement.innerText = 'Discount price cannot be greater than the price.';
+                    return false;
+                }
+            }
+            errorElement.innerText = '';
+            return true;
+        }
+
 
         function validateInput(inputId, pattern, errorId, errorMessage) {
             const inputValue = document.getElementById(inputId).value.trim();
@@ -309,51 +325,51 @@
     </script>
 
     <script>document.getElementById('product_images').addEventListener('change', function (event) {
-        const files = event.target.files; // Get the selected files
-        const imagesContainer = document.getElementById('images-container');
-    
-        // Validation: Check the total count of existing and newly added images
-        const existingImages = document.querySelectorAll('#images-container .image-container').length;
-        if (existingImages + files.length > 3) {
-            document.getElementById('imagesError').innerText = "You can only upload up to 3 images in total.";
-            return;
-        } else {
-            document.getElementById('imagesError').innerText = ""; // Clear any error message
-        }
-    
-        Array.from(files).forEach(file => {
-            if (!file.type.startsWith('image/')) {
-                document.getElementById('imagesError').innerText = "Only image files are allowed.";
+            const files = event.target.files; // Get the selected files
+            const imagesContainer = document.getElementById('images-container');
+
+            // Validation: Check the total count of existing and newly added images
+            const existingImages = document.querySelectorAll('#images-container .image-container').length;
+            if (existingImages + files.length > 3) {
+                document.getElementById('imagesError').innerText = "You can only upload up to 3 images in total.";
                 return;
+            } else {
+                document.getElementById('imagesError').innerText = ""; // Clear any error message
             }
-    
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const imageContainer = document.createElement('div');
-                imageContainer.className = 'image-container';
-    
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                img.alt = file.name;
-                img.height = 70;
-                img.width = 70;
-    
-                const closeIcon = document.createElement('a');
-                closeIcon.href = '#';
-                closeIcon.className = 'close-icon text-danger';
-                closeIcon.innerHTML = '<span aria-hidden="true">&times;</span>';
-                closeIcon.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    imageContainer.remove();
-                });
-    
-                imageContainer.appendChild(img);
-                imageContainer.appendChild(closeIcon);
-                imagesContainer.appendChild(imageContainer);
-            };
-            reader.readAsDataURL(file);
+
+            Array.from(files).forEach(file => {
+                if (!file.type.startsWith('image/')) {
+                    document.getElementById('imagesError').innerText = "Only image files are allowed.";
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const imageContainer = document.createElement('div');
+                    imageContainer.className = 'image-container';
+
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.alt = file.name;
+                    img.height = 70;
+                    img.width = 70;
+
+                    const closeIcon = document.createElement('a');
+                    closeIcon.href = '#';
+                    closeIcon.className = 'close-icon text-danger';
+                    closeIcon.innerHTML = '<span aria-hidden="true">&times;</span>';
+                    closeIcon.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        imageContainer.remove();
+                    });
+
+                    imageContainer.appendChild(img);
+                    imageContainer.appendChild(closeIcon);
+                    imagesContainer.appendChild(imageContainer);
+                };
+                reader.readAsDataURL(file);
+            });
         });
-    });
     </script>
 
     </body>
