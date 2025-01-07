@@ -106,7 +106,7 @@ const addProduct = async (req, res) => {
             gender,
             price,
             discountPrice,
-            baseDiscountPrice: discountPrice,
+            // baseDiscountPrice: discountPrice,
             stock,
             category,
             sizes: defaultSizes,  // Include sizes

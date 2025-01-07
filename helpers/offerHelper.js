@@ -49,7 +49,7 @@ const calculateAndApplyOffer = async (productId, categoryId) => {
         const bestDiscount = Math.max(productDiscount, categoryDiscount);
         const discountedPrice = bestDiscount > 0
             ? product.price - (product.price * (bestDiscount / 100))
-            : product.baseDiscountPrice; // back to the basediscount
+            : product.discountPrice; // back to the basediscount
 
         product.discountPrice = Math.max(0, discountedPrice); //non-negative
         await product.save();
