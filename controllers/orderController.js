@@ -110,6 +110,15 @@ const placeOrder = async (req, res) => {
         // remove null: when product deleted fromt DB
         cart.items = cart.items.filter(item => item.product);
 
+        const inactiveProduct = cart.items.find(item => item.product.is_active === false);
+        if (inactiveProduct) {
+            return res.status(400).json({
+                success: false,
+                redirectUrl: '/unlisted-product',
+                message: `Product "${inactiveProduct.product.name}" is no longer available.`,
+            });
+        }
+
         const userAddresses = await Address.findOne({ user: userId });
         if (!userAddresses) {
             return res.status(400).json({ success: false, message: 'User addresses not found' });

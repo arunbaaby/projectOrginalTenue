@@ -433,7 +433,15 @@
             const data = await response.json();
 
             if (!data.success) {
-                Swal.fire(data.message || 'Order placement failed.');
+                Swal.fire({
+                    title: 'Error',
+                    text: data.message || 'Order placement failed.',
+                    icon: 'error',
+                }).then(() => {
+                    if (data.redirectUrl) {
+                        window.location.href = data.redirectUrl; // Redirect if `redirectUrl` is provided
+                    }
+                });
                 return;
             }
 
