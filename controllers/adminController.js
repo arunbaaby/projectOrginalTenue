@@ -10,6 +10,9 @@ const jwt = require('jsonwebtoken');
 
 const { generateAccessToken } = require('../utils/generateAccessToken');
 
+//helpers
+const {numOfOrders} = require('../helpers/dashBoardHelper');
+
 const loadLogin = async (req, res) => {
     try {
         res.render('adminLogin', { errors: [], msg: '' });
@@ -120,7 +123,8 @@ const adminLogout = async (req, res) => {
 
 const loadHome = async (req, res) => {
     try {
-        res.render('adminHome');
+        const orderCount = await numOfOrders();
+        res.render('adminHome',{orderCount});
     } catch (error) {
         console.log(error);
 
