@@ -40,9 +40,37 @@ const numOfCategories = async () => {
     }
 }
 
+const currentMonthRevenue = async () => {
+    try {
+        const now = new Date();
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0); 
+
+        const revenue = await Order.aggregate([
+            {
+                $match: {
+                    paymentStatus: 'Completed',
+                    createdAt: { $gte: startOfMonth, $lte: endOfMonth }
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    totalEarnings: { $sum: '$total' }
+                }
+            }
+        ]);
+
+        return revenue[0]?.totalEarnings || 0;
+    } catch (error) {
+        throw new Error('Error calculating current month revenue: ' + error.message);
+    }
+};
+
 module.exports = {
     numOfOrders,
     totalRevenue,
     numOfProducts,
-    numOfCategories
+    numOfCategories,
+    currentMonthRevenue
 }
