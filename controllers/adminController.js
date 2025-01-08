@@ -11,7 +11,7 @@ const jwt = require('jsonwebtoken');
 const { generateAccessToken } = require('../utils/generateAccessToken');
 
 //helpers
-const {numOfOrders} = require('../helpers/dashBoardHelper');
+const {numOfOrders,totalRevenue} = require('../helpers/dashBoardHelper');
 
 const loadLogin = async (req, res) => {
     try {
@@ -124,7 +124,8 @@ const adminLogout = async (req, res) => {
 const loadHome = async (req, res) => {
     try {
         const orderCount = await numOfOrders();
-        res.render('adminHome',{orderCount});
+        const revenue = await totalRevenue();
+        res.render('adminHome',{orderCount,revenue});
     } catch (error) {
         console.log(error);
 
