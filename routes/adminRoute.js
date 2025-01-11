@@ -39,7 +39,7 @@ admin_route.post('/login',isLoggedOut, adminController.adminLogin);
 admin_route.get('/logout',isLoggedIn,adminController.adminLogout);
 
 admin_route.get('/home',isLoggedIn,adminController.loadHome);
-
+admin_route.get('/best-selling',isLoggedIn,adminController.loadBestSelling);
 
 // customer management
 admin_route.get('/customers',isLoggedIn,adminController.userList);

@@ -1,0 +1,102 @@
+<%- include ('../layouts/admin/adminHeader') %>
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Best sellers</h2>
+                <p>best-selling products and product categories.</p>
+            </div>
+            <div>
+                <a href="/admin/home" class="btn btn-secondary">
+                    <i class="text-muted material-icons md-arrow_back"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+
+        <!-- Best Selling Products -->
+        <div class="card mb-4">
+            <header class="card-header">
+                <h4 class="card-title">Best Selling Products</h4>
+            </header>
+            <div class="card-body">
+                <div class="row">
+                    <% if (bestSellingProducts.length> 0) { %>
+                        <% bestSellingProducts.forEach(product=> { %>
+                            <div class="col-lg-3 col-md-4 mb-4">
+                                <div class="card">
+                                    <!-- Display Product Image -->
+                                    <img src="productImages/<%= product.image %>" class="card-img-top"
+                                        alt="<%= product.name %>"
+                                        style="width: 100%; height: 200px; object-fit: cover; object-position: top; border-radius: 8px;">
+
+
+                                    <div class="card-body">
+                                        <!-- Display Product Name -->
+                                        <h5 class="card-title">
+                                            <%= product.name %>
+                                        </h5>
+
+                                        <!-- Display Number of Orders -->
+                                        <p class="card-text">
+                                            <strong>Orders:</strong>
+                                            <%= product.count %>
+                                        </p>
+
+                                        <!-- Display Category Name -->
+                                        <p class="card-text">
+                                            <strong>Category:</strong>
+                                            <%= product.categoryName %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }) %>
+                                <% } else { %>
+                                    <div class="col-12">
+                                        <p class="text-center">No best-selling products found.</p>
+                                    </div>
+                                    <% } %>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Product Categories -->
+        <div class="card mb-4">
+            <header class="card-header">
+                <h4 class="card-title">Product Categories</h4>
+            </header>
+            <div class="card-body">
+                <div class="row">
+                    <% if (bestSellingCategories.length> 0) { %>
+                        <% bestSellingCategories.forEach(category=> { %>
+                            <div class="col-lg-3 col-md-4 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <!-- Display Category Name -->
+                                        <h5 class="card-title">
+                                            <%= category.categoryName %>
+                                        </h5>
+
+                                        <!-- Display Number of Orders -->
+                                        <p class="card-text">
+                                            <strong>Orders:</strong>
+                                            <%= category.count %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }) %>
+                                <% } else { %>
+                                    <!-- Fallback Message for No Categories -->
+                                    <div class="col-12">
+                                        <p class="text-center">No best-selling categories found.</p>
+                                    </div>
+                                    <% } %>
+                </div>
+
+
+            </div>
+        </div>
+
+    </section>
+    <%- include ('../layouts/admin/adminFooter') %>

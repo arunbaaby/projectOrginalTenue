@@ -12,6 +12,7 @@ const { generateAccessToken } = require('../utils/generateAccessToken');
 
 //helpers
 const { numOfOrders, totalRevenue, numOfProducts, numOfCategories, currentMonthRevenue, getDailySales, getWeeklySales, getMonthlySales, getYearlySales } = require('../helpers/dashBoardHelper');
+const { getTopSellingCategories, getTopSellingProducts } = require('../helpers/bestSellingHelper');
 
 const loadLogin = async (req, res) => {
     try {
@@ -134,15 +135,6 @@ const loadHome = async (req, res) => {
         const monthlySales = await getMonthlySales();
         const yearlySales = await getYearlySales();
 
-        console.log("Daily Sales Labels:", dailySales.labels);
-        console.log("Daily Sales Data:", dailySales.data);
-        console.log("Weekly Sales Labels:", weeklySales.labels);
-        console.log("Weekly Sales Data:", weeklySales.data);
-        console.log("Monthly Sales Labels:", monthlySales.labels);
-        console.log("Monthly Sales Data:", monthlySales.data);
-        console.log("Yearly Sales Labels:", yearlySales.labels);
-        console.log("Yearly Sales Data:", yearlySales.data);
-
         res.render('adminHome', {
             orderCount,
             revenue,
@@ -161,6 +153,21 @@ const loadHome = async (req, res) => {
     } catch (error) {
         console.log(error);
 
+    }
+}
+
+const loadBestSelling = async (req, res) => {
+    try {
+        const bestSellingProducts = await getTopSellingProducts();
+        const bestSellingCategories = await getTopSellingCategories();
+
+        res.render('best-selling', {
+            bestSellingProducts,
+            bestSellingCategories
+        });
+    } catch (error) {
+        console.error('Error loading best selling :', error.message);
+        return res.status(500).json({ success: false, msg: 'Server error.' });
     }
 }
 
@@ -337,5 +344,6 @@ module.exports = {
     unblockUser,
     loadCategory,
     loadOrderAdmin,
-    loadAdminOrderDetails
+    loadAdminOrderDetails,
+    loadBestSelling
 }
