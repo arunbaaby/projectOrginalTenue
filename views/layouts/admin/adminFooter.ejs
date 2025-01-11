@@ -21,11 +21,13 @@
 <script src="assets/js/vendors/chart.js"></script>
 <!-- Main Script -->
 <script src="assets/js/main.js" type="text/javascript"></script>
-<script src="assets/js/custom-chart.js" type="text/javascript"></script>
+<!-- <script src="assets/js/custom-chart.js" type="text/javascript"></script> -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <!-- Active Menu Script -->
 <script>
@@ -602,6 +604,64 @@
         }
     });
 </script>
+
+
+<script>
+    // Initialize chart variable
+    let myChart;
+
+    // Function to get hidden input data
+    function getChartData(type) {
+        const labels = JSON.parse(document.getElementById(`${type}Labels`).value);
+        const data = JSON.parse(document.getElementById(`${type}Data`).value);
+        return { labels, data };
+    }
+
+    // Function to create or update the chart
+    function renderChart(type) {
+        const chartData = getChartData(type);
+
+        const ctx = document.getElementById('myChart').getContext('2d');
+
+        // Destroy existing chart instance if it exists
+        if (myChart) {
+            myChart.destroy();
+        }
+
+        // Create a new chart
+        myChart = new Chart(ctx, {
+            type: 'line', // Use 'bar' if you want bar charts
+            data: {
+                labels: chartData.labels,
+                datasets: [{
+                    label: `${type.charAt(0).toUpperCase() + type.slice(1)} Sales`,
+                    data: chartData.data,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    // Add event listeners to buttons
+    document.getElementById('dailyBtn').addEventListener('click', () => renderChart('daily'));
+    document.getElementById('weeklyBtn').addEventListener('click', () => renderChart('weekly'));
+    document.getElementById('monthlyBtn').addEventListener('click', () => renderChart('monthly'));
+    document.getElementById('yearlyBtn').addEventListener('click', () => renderChart('yearly'));
+
+    // Default chart display (e.g., show daily data on page load)
+    renderChart('daily');
+</script>
+
 </body>
 
 </html>

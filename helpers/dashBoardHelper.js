@@ -67,10 +67,152 @@ const currentMonthRevenue = async () => {
     }
 };
 
+const getDailySales = async () => {
+    const today = new Date();
+    const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const sevenDaysAgo = new Date(startOfDay - 6 * 24 * 60 * 60 * 1000);
+
+    const dailySalesData = await Order.aggregate([
+        {
+            $match: {
+                paymentStatus: "Completed",
+                createdAt: { $gte: sevenDaysAgo }
+            }
+        },
+        {
+            $group: {
+                _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                totalSales: { $sum: "$total" }
+            }
+        },
+        { $sort: { _id: 1 } }
+    ]);
+
+    const dailyLabels = [];
+    const dailyData = [];
+    for (let i = 6; i >= 0; i--) {
+        const date = new Date(today - i * 24 * 60 * 60 * 1000);
+        const dateString = date.toISOString().split("T")[0];
+        dailyLabels.push(dateString);
+        const salesRecord = dailySalesData.find(record => record._id === dateString);
+        dailyData.push(salesRecord ? salesRecord.totalSales : 0);
+    }
+
+    return { labels: dailyLabels, data: dailyData };
+};
+
+const getWeeklySales = async () => {
+    const today = new Date();
+    const twelveWeeksAgo = new Date(today - 12 * 7 * 24 * 60 * 60 * 1000);
+
+    const weeklySalesData = await Order.aggregate([
+        {
+            $match: {
+                paymentStatus: "Completed",
+                createdAt: { $gte: twelveWeeksAgo }
+            }
+        },
+        {
+            $group: {
+                _id: { $isoWeek: "$createdAt" },
+                totalSales: { $sum: "$total" }
+            }
+        },
+        { $sort: { _id: 1 } }
+    ]);
+
+    const weeklyLabels = [];
+    const weeklyData = [];
+    for (let i = 12; i >= 0; i--) {
+        const weekDate = new Date(today - i * 7 * 24 * 60 * 60 * 1000);
+        const weekNumber = getWeekNumber(weekDate);
+        weeklyLabels.push(`Week ${weekNumber}`);
+        const salesRecord = weeklySalesData.find(record => record._id === weekNumber);
+        weeklyData.push(salesRecord ? salesRecord.totalSales : 0);
+    }
+
+    return { labels: weeklyLabels, data: weeklyData };
+};
+
+// Helper function to calculate the ISO week number
+const getWeekNumber = (date) => {
+    const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+    const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+    return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+};
+
+const getMonthlySales = async () => {
+    const today = new Date();
+
+    const monthlySalesData = await Order.aggregate([
+        {
+            $match: {
+                paymentStatus: "Completed",
+                createdAt: { $gte: new Date(today.getFullYear(), today.getMonth() - 11, 1) }
+            }
+        },
+        {
+            $group: {
+                _id: { $month: "$createdAt" },
+                totalSales: { $sum: "$total" }
+            }
+        },
+        { $sort: { _id: 1 } }
+    ]);
+
+    const monthlyLabels = [];
+    const monthlyData = [];
+    for (let i = 11; i >= 0; i--) {
+        const monthDate = new Date(today.getFullYear(), today.getMonth() - i, 1);
+        const monthName = monthDate.toLocaleString("default", { month: "short" });
+        monthlyLabels.push(monthName);
+        const salesRecord = monthlySalesData.find(record => record._id === monthDate.getMonth() + 1);
+        monthlyData.push(salesRecord ? salesRecord.totalSales : 0);
+    }
+
+    return { labels: monthlyLabels, data: monthlyData };
+};
+
+const getYearlySales = async () => {
+    const today = new Date();
+
+    const yearlySalesData = await Order.aggregate([
+        {
+            $match: {
+                paymentStatus: "Completed",
+                createdAt: { $gte: new Date(today.getFullYear() - 5, 0, 1) }
+            }
+        },
+        {
+            $group: {
+                _id: { $year: "$createdAt" },
+                totalSales: { $sum: "$total" }
+            }
+        },
+        { $sort: { _id: 1 } }
+    ]);
+
+    const yearlyLabels = [];
+    const yearlyData = [];
+    for (let i = 5; i >= 0; i--) {
+        const year = today.getFullYear() - i;
+        yearlyLabels.push(`${year}`);
+        const salesRecord = yearlySalesData.find(record => record._id === year);
+        yearlyData.push(salesRecord ? salesRecord.totalSales : 0);
+    }
+
+    return { labels: yearlyLabels, data: yearlyData };
+};
+
+
 module.exports = {
     numOfOrders,
     totalRevenue,
     numOfProducts,
     numOfCategories,
-    currentMonthRevenue
+    currentMonthRevenue,
+    getDailySales,
+    getWeeklySales,
+    getMonthlySales,
+    getYearlySales
 }

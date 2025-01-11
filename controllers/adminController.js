@@ -11,7 +11,7 @@ const jwt = require('jsonwebtoken');
 const { generateAccessToken } = require('../utils/generateAccessToken');
 
 //helpers
-const {numOfOrders,totalRevenue, numOfProducts, numOfCategories, currentMonthRevenue} = require('../helpers/dashBoardHelper');
+const { numOfOrders, totalRevenue, numOfProducts, numOfCategories, currentMonthRevenue, getDailySales, getWeeklySales, getMonthlySales, getYearlySales } = require('../helpers/dashBoardHelper');
 
 const loadLogin = async (req, res) => {
     try {
@@ -128,7 +128,36 @@ const loadHome = async (req, res) => {
         const productCount = await numOfProducts();
         const categoryCount = await numOfCategories();
         const monthlyEarnings = await currentMonthRevenue();
-        res.render('adminHome',{orderCount,revenue,productCount,categoryCount,monthlyEarnings});
+
+        const dailySales = await getDailySales();
+        const weeklySales = await getWeeklySales();
+        const monthlySales = await getMonthlySales();
+        const yearlySales = await getYearlySales();
+
+        console.log("Daily Sales Labels:", dailySales.labels);
+        console.log("Daily Sales Data:", dailySales.data);
+        console.log("Weekly Sales Labels:", weeklySales.labels);
+        console.log("Weekly Sales Data:", weeklySales.data);
+        console.log("Monthly Sales Labels:", monthlySales.labels);
+        console.log("Monthly Sales Data:", monthlySales.data);
+        console.log("Yearly Sales Labels:", yearlySales.labels);
+        console.log("Yearly Sales Data:", yearlySales.data);
+
+        res.render('adminHome', {
+            orderCount,
+            revenue,
+            productCount,
+            categoryCount,
+            monthlyEarnings,
+            dailyLabels: dailySales.labels,
+            dailyData: dailySales.data,
+            weeklyLabels: weeklySales.labels, // Assuming similar structure for weeklySales
+            weeklyData: weeklySales.data,
+            monthlyLabels: monthlySales.labels,
+            monthlyData: monthlySales.data,
+            yearlyLabels: yearlySales.labels,
+            yearlyData: yearlySales.data
+        });
     } catch (error) {
         console.log(error);
 
