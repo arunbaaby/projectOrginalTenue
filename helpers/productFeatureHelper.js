@@ -7,10 +7,7 @@ const getNewArrivals = async () => {
     THIRTY_DAYS_AGO.setDate(THIRTY_DAYS_AGO.getDate() - 30); 
 
     try {
-        const newArrivals = await Product.find({
-            createdAt: { $gte: THIRTY_DAYS_AGO }, 
-            is_active: true 
-        })
+        const newArrivals = await Product.find({is_active: true})
         .sort({ createdAt: -1 }) 
         .limit(8); 
 
@@ -83,7 +80,7 @@ const getMostSoldProducts = async () => {
                 }
             },
             { $sort: { totalQuantity: -1 } },
-            { $limit: 10 },
+            { $limit: 8 },
             {
                 $lookup: {
                     from: "products", // Lookup details from the products collection
