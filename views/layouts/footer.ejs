@@ -447,7 +447,15 @@
 
             if (paymentMethod === 'Razorpay') {
                 initiateRazorpayPayment(data);
-            } else {
+            } else if (paymentMethod === 'Wallet') {
+                Swal.fire({
+                    title: 'Order Successful',
+                    text: 'Your order has been placed using your wallet',
+                    icon: 'success',
+                }).then(() => {
+                    window.location.href = `/order-confirmation?orderId=${data.orderId}`;
+                });
+            }else {
                 window.location.href = data.redirectUrl;
             }
         } catch (error) {

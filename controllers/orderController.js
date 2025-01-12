@@ -151,14 +151,21 @@ const placeOrder = async (req, res) => {
         const couponDiscount = cart.couponDiscount || 0;
         const total = Math.max(0, itemsTotal + deliveryCharge - couponDiscount);
 
+        if (paymentMethod === 'Wallet') {
+            const wallet = await Wallet.findOne({ user: userId });
+            if (!wallet || wallet.amount < total) {
+                return res.status(400).json({ success: false, message: 'Insufficient wallet balance. Please select an alternative payment method.' });
+            }
+            wallet.amount -= total;
+            await wallet.save();
+        }
+
         if (paymentMethod === 'Cash on Delivery' && total > 1000) {
             return res.status(400).json({
                 success: false,
                 message: 'Cash on Delivery is not available for orders above ₹1000. Please select an alternative payment method.',
             });
         }
-
-        const orderNumber = await generateUniqueOrderNumber();
 
         for (const item of cart.items) {
             const product = item.product;
@@ -177,6 +184,7 @@ const placeOrder = async (req, res) => {
             await product.save();
         }
 
+        const orderNumber = await generateUniqueOrderNumber();
         const newOrder = new Order({
             user: userId,
             items: orderItems,
@@ -224,6 +232,16 @@ const placeOrder = async (req, res) => {
                 description: 'Purchase Description',
             });
         }
+
+        if (paymentMethod === 'Wallet') {
+            return res.json({
+                success: true,
+                message: 'Order placed successfully using wallet balance.',
+                orderId: newOrder._id,
+                redirectUrl: `/order-confirmation?orderId=${newOrder._id}`,
+            });
+        }
+
 
         if (paymentMethod !== 'Razorpay') {
             return res.json({
