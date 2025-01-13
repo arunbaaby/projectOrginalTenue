@@ -661,6 +661,27 @@
     // Default chart display (e.g., show daily data on page load)
     renderChart('daily');
 </script>
+<script>
+    document.getElementById('createReportBtn').addEventListener('click', function (event) {
+        event.preventDefault(); // Prevent default anchor behavior
+
+        // Select the section to convert to PDF
+        const section = document.getElementById('reportSection');
+
+        // Define options for html2pdf
+        const options = {
+            margin: 1,
+            filename: 'report.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
+        };
+
+        // Generate and save the PDF
+        html2pdf().from(section).set(options).save();
+    });
+</script>
+
 
 </body>
 

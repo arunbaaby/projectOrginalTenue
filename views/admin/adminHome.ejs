@@ -6,110 +6,115 @@
                 <p>Whole data about your business here</p>
             </div>
             <div>
-                <a href="/admin/best-selling" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Best Selling</a>
-                <a href="#" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Create
+                <a href="/admin/best-selling" class="btn btn-primary"><i
+                        class="text-muted material-icons md-post_add"></i>Best Selling</a>
+                <a href="#" class="btn btn-primary" id="createReportBtn"><i
+                        class="text-muted material-icons md-post_add"></i>Create
                     report</a>
             </div>
         </div>
-        <div class="row">
-            <div class="col-lg-3">
-                <div class="card card-body mb-4">
-                    <article class="icontext">
-                        <span class="icon icon-sm rounded-circle bg-primary-light"><i
-                                class="text-primary material-icons md-monetization_on"></i></span>
-                        <div class="text">
-                            <h6 class="mb-1 card-title">Revenue</h6>
-                            <span>₹ <%= revenue %></span>
-                            <span class="text-sm">
-                                Shipping fees are not included
-                            </span>
-                        </div>
-                    </article>
+        <div id="reportSection">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="card card-body mb-4">
+                        <article class="icontext">
+                            <span class="icon icon-sm rounded-circle bg-primary-light"><i
+                                    class="text-primary material-icons md-monetization_on"></i></span>
+                            <div class="text">
+                                <h6 class="mb-1 card-title">Revenue</h6>
+                                <span>₹ <%= revenue %></span>
+                                <span class="text-sm">
+                                    Shipping fees are not included
+                                </span>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="card card-body mb-4">
+                        <article class="icontext">
+                            <span class="icon icon-sm rounded-circle bg-success-light"><i
+                                    class="text-success material-icons md-local_shipping"></i></span>
+                            <div class="text">
+                                <h6 class="mb-1 card-title">Orders</h6> <span>
+                                    <%= orderCount %>
+                                </span>
+                                <span class="text-sm">
+                                    Excluding orders in transit
+                                </span>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="card card-body mb-4">
+                        <article class="icontext">
+                            <span class="icon icon-sm rounded-circle bg-warning-light"><i
+                                    class="text-warning material-icons md-qr_code"></i></span>
+                            <div class="text">
+                                <h6 class="mb-1 card-title">Products</h6> <span>
+                                    <%= productCount %>
+                                </span>
+                                <span class="text-sm">
+                                    In <%= categoryCount %> Categories
+                                </span>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="card card-body mb-4">
+                        <article class="icontext">
+                            <span class="icon icon-sm rounded-circle bg-info-light"><i
+                                    class="text-info material-icons md-shopping_basket"></i></span>
+                            <div class="text">
+                                <h6 class="mb-1 card-title">Monthly Earning</h6> <span>₹ <%= monthlyEarnings %></span>
+                                <span class="text-sm">
+                                    Based in your local time.
+                                </span>
+                            </div>
+                        </article>
+                    </div>
                 </div>
             </div>
-            <div class="col-lg-3">
-                <div class="card card-body mb-4">
-                    <article class="icontext">
-                        <span class="icon icon-sm rounded-circle bg-success-light"><i
-                                class="text-success material-icons md-local_shipping"></i></span>
-                        <div class="text">
-                            <h6 class="mb-1 card-title">Orders</h6> <span>
-                                <%= orderCount %>
-                            </span>
-                            <span class="text-sm">
-                                Excluding orders in transit
-                            </span>
-                        </div>
-                    </article>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="card card-body mb-4">
-                    <article class="icontext">
-                        <span class="icon icon-sm rounded-circle bg-warning-light"><i
-                                class="text-warning material-icons md-qr_code"></i></span>
-                        <div class="text">
-                            <h6 class="mb-1 card-title">Products</h6> <span>
-                                <%= productCount %>
-                            </span>
-                            <span class="text-sm">
-                                In <%= categoryCount %> Categories
-                            </span>
-                        </div>
-                    </article>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="card card-body mb-4">
-                    <article class="icontext">
-                        <span class="icon icon-sm rounded-circle bg-info-light"><i
-                                class="text-info material-icons md-shopping_basket"></i></span>
-                        <div class="text">
-                            <h6 class="mb-1 card-title">Monthly Earning</h6> <span>₹ <%= monthlyEarnings %></span>
-                            <span class="text-sm">
-                                Based in your local time.
-                            </span>
-                        </div>
-                    </article>
+            <div class="row justify-content-center">
+                <div class="col-xl-8 col-lg-10 col-md-12">
+                    <div class="card mb-4">
+                        <article class="card-body">
+                            <!-- Title -->
+                            <h5 class="card-title text-center mb-4">Sale Statistics</h5>
+
+                            <!-- Time period buttons -->
+                            <div class="btn-group d-flex justify-content-center mb-4" role="group"
+                                aria-label="Time period">
+                                <button class="btn btn-outline-secondary" id="dailyBtn">Daily</button>
+                                <button class="btn btn-outline-secondary" id="weeklyBtn">Weekly</button>
+                                <button class="btn btn-outline-secondary" id="monthlyBtn">Monthly</button>
+                                <button class="btn btn-outline-secondary" id="yearlyBtn">Yearly</button>
+                            </div>
+
+                            <!-- Hidden inputs to pass sales data -->
+                            <input type="hidden" id="dailyLabels" value='<%= JSON.stringify(dailyLabels) %>'>
+                            <input type="hidden" id="dailyData" value='<%= JSON.stringify(dailyData) %>'>
+
+                            <input type="hidden" id="weeklyLabels" value='<%= JSON.stringify(weeklyLabels) %>'>
+                            <input type="hidden" id="weeklyData" value='<%= JSON.stringify(weeklyData) %>'>
+
+                            <input type="hidden" id="monthlyLabels" value='<%= JSON.stringify(monthlyLabels) %>'>
+                            <input type="hidden" id="monthlyData" value='<%= JSON.stringify(monthlyData) %>'>
+
+                            <input type="hidden" id="yearlyLabels" value='<%= JSON.stringify(yearlyLabels) %>'>
+                            <input type="hidden" id="yearlyData" value='<%= JSON.stringify(yearlyData) %>'>
+
+                            <!-- Chart canvas -->
+                            <div class="chart-container" style="position: relative; height: 400px;">
+                                <canvas id="myChart"></canvas>
+                            </div>
+                        </article>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="row justify-content-center">
-            <div class="col-xl-8 col-lg-10 col-md-12">
-                <div class="card mb-4">
-                    <article class="card-body">
-                        <!-- Title -->
-                        <h5 class="card-title text-center mb-4">Sale Statistics</h5>
-        
-                        <!-- Time period buttons -->
-                        <div class="btn-group d-flex justify-content-center mb-4" role="group" aria-label="Time period">
-                            <button class="btn btn-outline-secondary" id="dailyBtn">Daily</button>
-                            <button class="btn btn-outline-secondary" id="weeklyBtn">Weekly</button>
-                            <button class="btn btn-outline-secondary" id="monthlyBtn">Monthly</button>
-                            <button class="btn btn-outline-secondary" id="yearlyBtn">Yearly</button>
-                        </div>
-        
-                        <!-- Hidden inputs to pass sales data -->
-                        <input type="hidden" id="dailyLabels" value='<%= JSON.stringify(dailyLabels) %>'>
-                        <input type="hidden" id="dailyData" value='<%= JSON.stringify(dailyData) %>'>
-        
-                        <input type="hidden" id="weeklyLabels" value='<%= JSON.stringify(weeklyLabels) %>'>
-                        <input type="hidden" id="weeklyData" value='<%= JSON.stringify(weeklyData) %>'>
-        
-                        <input type="hidden" id="monthlyLabels" value='<%= JSON.stringify(monthlyLabels) %>'>
-                        <input type="hidden" id="monthlyData" value='<%= JSON.stringify(monthlyData) %>'>
-        
-                        <input type="hidden" id="yearlyLabels" value='<%= JSON.stringify(yearlyLabels) %>'>
-                        <input type="hidden" id="yearlyData" value='<%= JSON.stringify(yearlyData) %>'>
-        
-                        <!-- Chart canvas -->
-                        <div class="chart-container" style="position: relative; height: 400px;">
-                            <canvas id="myChart"></canvas>
-                        </div>
-                    </article>
-                </div>
-            </div>
-        </div>
-</section> <!-- content-main end// -->
+    </section> <!-- content-main end// -->
 
     <%- include ('../layouts/admin/adminFooter') %>
