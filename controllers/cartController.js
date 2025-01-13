@@ -77,16 +77,43 @@ const addToCart = async(req,res)=>{
 const loadCart = async (req, res) => {
     try {
         const userId = req.user.id;
-        const cart = await Cart.findOne({ user: userId }).populate('items.product');
+        let cart = null;
+        let subtotal = 0;
+        let total = 0;
+        let totalDiscount = 0;
 
-        if (!cart) {
-            return res.render('cart', { items: [] }); // Render empty cart if user has no cart
+        if (userId) {
+            cart = await Cart.findOne({ user: userId }).populate('items.product');
         }
 
-        // Filter out items with null or undefined products
-        const validItems = cart.items.filter(item => item.product);
+        if (cart) {
+            cart.items = cart.items.filter(item => item.product);
 
-        res.render('cart', { items: validItems });
+            cart.items.forEach(item => {
+                const originalPrice = item.product.price || 0;
+                const discountPrice = item.product.discountPrice || originalPrice;
+
+                subtotal += originalPrice * item.quantity;
+                total += discountPrice * item.quantity;
+                totalDiscount += (originalPrice - discountPrice) * item.quantity;
+            });
+        }
+
+        res.render('cart', {
+            items: cart ? cart.items : [],
+            cart,
+            subtotal: subtotal.toFixed(2),
+            total: total.toFixed(2),
+            totalDiscount: totalDiscount.toFixed(2)
+        });
+        // if (!cart) {
+        //     return res.render('cart', { items: [] }); // Render empty cart if user has no cart
+        // }
+
+        // // Filter out items with null or undefined products
+        // const validItems = cart.items.filter(item => item.product);
+
+        // res.render('cart', { items: validItems });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error', error });
