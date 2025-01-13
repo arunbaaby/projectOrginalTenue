@@ -2,19 +2,34 @@ const bcrypt = require('bcrypt');
 
 const Address = require('../models/addressModel');
 const User = require('../models/userModel');
+const Cart = require('../models/cartModel');
 
 
 const myAccountLoad = async (req, res) => {
     try {
         const userId = req.user.id;
 
+        let cart = null;
+        if (userId) {
+            cart = await Cart.findOne({ user: userId }).populate('items.product');
+        }
+
+        let subtotal = 0;
+        if (cart) {
+            cart.items = cart.items.filter(item => item.product);
+            subtotal = cart.items.reduce((acc, item) => {
+                const productPrice = item.product.discountPrice ?? item.product.price ?? 0;
+                return acc + (productPrice * item.quantity);
+            }, 0);
+        }
+
         if (!userId) {
             return res.render('my-account', { user: null, userAddresses: null });
         }
         const user = await User.findById(userId)
-        const userAddresses = await Address.findOne({ user:userId });
+        const userAddresses = await Address.findOne({ user: userId });
 
-        res.render('my-account', { user, userAddresses });
+        res.render('my-account', { user, userAddresses, cart, subtotal });
     } catch (error) {
         console.error('My account load error:', error.message);
         return res.status(400).json({
