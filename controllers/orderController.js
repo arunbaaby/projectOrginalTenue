@@ -374,7 +374,7 @@ const loadOrderConfirmation = async (req, res) => {
 const loadMyOrders = async (req, res) => {
     try {
         const userId = req.user.id;
-        let orders = await Order.find({ user: userId }).populate('items.product');
+        let orders = await Order.find({ user: userId }).populate('items.product').sort({ _id: -1 });
 
         // Filter out orders with any null products: when product deleted from the db
         orders = orders.filter(order =>
