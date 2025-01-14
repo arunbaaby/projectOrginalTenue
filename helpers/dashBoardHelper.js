@@ -134,7 +134,7 @@ const getWeeklySales = async () => {
     return { labels: weeklyLabels, data: weeklyData };
 };
 
-// Helper function to calculate the ISO week number
+// should edit this to month plus week number
 const getWeekNumber = (date) => {
     const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
     const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
