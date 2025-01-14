@@ -324,9 +324,15 @@
 <body>
     <div class="header">
         <a href="/my-orders" class="back-link">← Back to Orders</a>
-        <button id="download-pdf"
-            style="padding: 10px 20px; background-color: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer;">Download
-            Invoice</button>
+        <% let showDownloadButton=orderDetails.items.every(item=> item.status !== 'Returned'&& item.status !== 'Cancelled'); %>
+
+            <% if (showDownloadButton) { %>
+                <button id="download-pdf"
+                    style="padding: 10px 20px; background-color: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    Download Invoice
+                </button>
+                <% } %>
+
     </div>
 
     <div class="main-container">
