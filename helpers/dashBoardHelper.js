@@ -125,21 +125,35 @@ const getWeeklySales = async () => {
     const weeklyData = [];
     for (let i = 12; i >= 0; i--) {
         const weekDate = new Date(today - i * 7 * 24 * 60 * 60 * 1000);
-        const weekNumber = getWeekNumber(weekDate);
-        weeklyLabels.push(`Week ${weekNumber}`);
-        const salesRecord = weeklySalesData.find(record => record._id === weekNumber);
+        const monthName = weekDate.toLocaleString('default', { month: 'short' });
+        const weekNumber = getWeekNumberOfMonth(weekDate);
+        weeklyLabels.push(`${monthName} ${weekNumber}${getWeekSuffix(weekNumber)} week`);
+        const salesRecord = weeklySalesData.find(record => record._id === getWeekNumber(weekDate));
         weeklyData.push(salesRecord ? salesRecord.totalSales : 0);
     }
 
     return { labels: weeklyLabels, data: weeklyData };
 };
 
-// should edit this to month plus week number
 const getWeekNumber = (date) => {
     const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
     const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
     return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
 };
+
+const getWeekNumberOfMonth = (date) => {
+    const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+    const pastDaysOfMonth = (date - firstDayOfMonth) / 86400000;
+    return Math.ceil((pastDaysOfMonth + firstDayOfMonth.getDay() + 1) / 7);
+};
+
+const getWeekSuffix = (weekNumber) => {
+    if (weekNumber === 1) return "st";
+    if (weekNumber === 2) return "nd";
+    if (weekNumber === 3) return "rd";
+    return "th";
+};
+
 
 const getMonthlySales = async () => {
     const today = new Date();
