@@ -781,7 +781,7 @@
                                                 <% if (cart.couponDiscount && cart.couponDiscount> 0) { %>
                                                     <div class="your-order-info order-coupon">
                                                         <ul>
-                                                            <li>Coupon Discount <span>-$<%=
+                                                            <li>Coupon Discount <span>-₹<%=
                                                                         cart.couponDiscount.toFixed(2) %></span></li>
                                                         </ul>
                                                     </div>
@@ -790,7 +790,7 @@
                                                             <ul>
                                                                 <!-- Deduct couponDiscount from total -->
                                                                 <li>Total
-                                                                    <span>$<%= (total + deliveryCharges -
+                                                                    <span>₹<%= (total + deliveryCharges -
                                                                             (cart.couponDiscount || 0)).toFixed(2) %>
                                                                             </span>
                                                                 </li>
