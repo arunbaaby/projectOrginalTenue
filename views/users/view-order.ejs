@@ -318,13 +318,18 @@
             border-radius: 3px;
             margin-left: 8px;
         }
+
+        .invoice-container {
+        display: none; 
+        }
     </style>
 </head>
 
 <body>
     <div class="header">
         <a href="/my-orders" class="back-link">← Back to Orders</a>
-        <% let showDownloadButton=orderDetails.items.every(item=> item.status !== 'Returned'&& item.status !== 'Cancelled'); %>
+        <% let showDownloadButton=orderDetails.items.every(item=> item.status !== 'Returned'&& item.status !==
+            'Cancelled'); %>
 
             <% if (showDownloadButton) { %>
                 <button id="download-pdf"
@@ -339,7 +344,7 @@
         <div class="left-section">
             <% orderDetails.items.forEach(item=> { %>
                 <div class="order-status">
-                    <img src="/api/placeholder/22/22" alt="Confirmed icon" />
+                    <img src="/assets/images/deliveryIcon.png" alt="Confirmed icon" />
                     <h1 style="margin: 0; font-size: 18px; font-weight: 600;">
                         <%= item.status %>
                     </h1>
@@ -384,6 +389,117 @@
                                             </button>
                                         <% } %>
                                         
+                </div>
+
+                <div class="invoice-container"
+                    style="padding: 40px; font-family: Arial, sans-serif; border: 1px solid #ddd; margin: 20px auto;">
+                    <div style="margin-bottom: 40px;">
+                        <h1 style="font-size: 24px; color: #333; margin-bottom: 30px;">Invoice</h1>
+
+                        <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px;">
+                            <!-- Sender Details -->
+                            <div style="flex: 1; min-width: 250px;">
+                                <h3 style="font-size: 16px; margin-bottom: 10px;">Delivery Address</h3>
+                                <p style="font-size: 14px; color: #666; margin: 5px 0;">
+                                    <%= orderDetails.shippingAddress.houseNo %>
+                                        <%= orderDetails.shippingAddress.street %>,<br>
+                                            <%= orderDetails.shippingAddress.city %>, <%=
+                                                    orderDetails.shippingAddress.state %>,<br>
+                                                    <%= orderDetails.shippingAddress.pincode %>
+                                </p>
+                            </div>
+
+                            <!-- Invoice Details -->
+                            <div style="flex: 1; min-width: 250px;">
+                                <div style="margin-bottom: 10px;">
+                                    <span style="font-weight: bold; color: #666;">Invoice date</span>
+                                    <span style="margin-left: 20px;">
+                                        <%= new Date(orderDetails.createdAt).toLocaleDateString() %>
+                                    </span>
+                                </div>
+                                <div>
+                                    <h3 style="font-size: 16px; margin-bottom: 10px;">Tenue Fasho Private Limited</h3>
+                                    <p style="font-size: 14px; color: #666; margin: 5px 0;">
+                                        5/1, Penthouse 01, 6th Floor, Rich<br>
+                                        Homes Apartment, Richmond Road<br>
+                                        Bengaluru, Karnataka 560025<br>
+                                        GSTIN 04ARCPD9874312Z5
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Invoice Table -->
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; min-width: 600px;">
+                            <thead>
+                                <tr style="background-color: #f8f8f8;">
+                                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Description
+                                    </th>
+                                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Qty</th>
+                                    <th style="padding: 12px; border: 1px solid #ddd; text-align: right;">Price</th>
+                                    <th style="padding: 12px; border: 1px solid #ddd; text-align: right;">Discount Price
+                                    </th>
+                                    <th style="padding: 12px; border: 1px solid #ddd; text-align: center;">Tax</th>
+                                    <th style="padding: 12px; border: 1px solid #ddd; text-align: right;">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% orderDetails.items.forEach(item=> { %>
+                                    <tr>
+                                        <td style="padding: 12px; border: 1px solid #ddd;">
+                                            <%= item.product.name %>
+                                        </td>
+                                        <td style="padding: 12px; border: 1px solid #ddd;">
+                                            <%= item.quantity %>
+                                        </td>
+                                        <td style="padding: 12px; border: 1px solid #ddd; text-align: right;">
+                                            <%= item.priceAtPurchase.toFixed(2) %>
+                                        </td>
+                                        <td style="padding: 12px; border: 1px solid #ddd; text-align: right;">
+                                            <%= item.discountPriceAtPurchase.toFixed(2) %>
+                                        </td>
+                                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center;">CGST 14%
+                                            + SGST 14%</td>
+                                        <td style="padding: 12px; border: 1px solid #ddd; text-align: right;">
+                                            <%= (item.quantity * item.discountPriceAtPurchase).toFixed(2) %>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Totals -->
+                    <div style="margin-left: auto; max-width: 100%;">
+                        <!-- <div
+                            style="display: flex; justify-content: flex-end; gap: 40px; padding: 8px 0; border-top: 1px solid #ddd;">
+                            <span>Sub-total</span>
+                            <span style="min-width: 120px; text-align: right;">₹ <%= orderDetails.total %></span>
+                        </div> -->
+                        <!-- <div style="display: flex; justify-content: flex-end; gap: 40px; padding: 8px 0;">
+                            <span>CGST</span>
+                            <span style="min-width: 120px; text-align: right;">₹ <%= (orderDetails.total * 0.14).toFixed(2) %>
+                                    </span>
+                        </div>
+                        <div style="display: flex; justify-content: flex-end; gap: 40px; padding: 8px 0;">
+                            <span>SGST</span>
+                            <span style="min-width: 120px; text-align: right;">₹ <%= (orderDetails.total * 0.14).toFixed(2) %>
+                                    </span>
+                        </div> -->
+                        <div
+                            style="display: flex; justify-content: flex-end; gap: 40px; padding: 8px 0; font-weight: bold; border-top: 1px solid #ddd;">
+                            <span>Total</span>
+                            <span style="min-width: 120px; text-align: right;">₹ <%= orderDetails.total %></span>
+                        </div>
+                    </div>
+
+                    <!-- Total in words -->
+                    <!-- <div style="margin-top: 30px; font-size: 14px; color: #666;">
+                        <p><strong>Total in words</strong><br>
+                            Rupees One Lakh Fifty Seven Thousand Five Hundred</p>
+                    </div> -->
                 </div>
                 <% }) %>
         </div>
@@ -603,16 +719,32 @@
     </script>
     <script>
         document.getElementById('download-pdf').addEventListener('click', () => {
-            const element = document.querySelector('.main-container'); // Select the part of the page to download
+            const element = document.querySelector('.invoice-container');
+            if (!element) {
+                console.error('Invoice container not found.');
+                return;
+            }
+
+            // Temporarily make the element visible for PDF generation
+            element.style.display = 'block';
+
             const options = {
                 margin: 0.5,
-                filename: 'Order Invoice.pdf',
+                filename: 'Invoice.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
             };
 
-            html2pdf().from(element).set(options).save();
+            // Generate the PDF
+            html2pdf()
+                .from(element)
+                .set(options)
+                .save()
+                .finally(() => {
+                    // Hide the element again after generating the PDF
+                    element.style.display = 'none';
+                });
         });
     </script>
 
