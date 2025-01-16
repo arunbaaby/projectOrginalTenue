@@ -259,7 +259,9 @@ const loadOrderAdmin = async (req, res) => {
                 filter.user = { $in: userIDs };
             } else if (['Delivered', 'Pending', 'Processing', 'Shipped', 'Cancelled', 'Returned'].includes(query)) {
                 filter.items = { $elemMatch: { status: query } };
-            } else {
+            } else if (query.toLowerCase() === 'pending-returns') {
+               filter['requests.status'] = 'Pending';
+            }  else {
                 filter.orderNumber = query;
             }
         }
@@ -297,6 +299,11 @@ const loadOrderAdmin = async (req, res) => {
             orders = orders.filter(order => order.user !== null);
         }
 
+        // Count of pending return requests
+        const pendingReturnCount = await Order.countDocuments({
+            'requests.status': 'Pending',
+        });
+
         res.render('adminOrders', {
             order: orders,
             currentPage,
@@ -304,6 +311,7 @@ const loadOrderAdmin = async (req, res) => {
             query,
             startingDate: startingDate || '',
             endingDate: endingDate || '',
+            pendingReturnCount
         });
     } catch (error) {
         console.error("Error:", error.message);

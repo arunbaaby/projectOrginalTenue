@@ -177,7 +177,27 @@
                                     Business name: Grand Market LLC <br>
                                     Phone: +1 (800) 555-154-52
                             </p>
+                        </div><br>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="card-header" style="font-weight: bolder;">User Requests</div>
+                        
+                                <% if (order.requests && order.requests.length > 0 && order.requests[0].status === 'Pending') { %>
+                                    <h6>Request for: <%= order.requests[0].type %></h6>
+                                    <label for="reason">Reason:</label>
+                                    <input type="text" value="<%= order.requests[0].reason %>" readonly class="mb-3 text-center">
+                                    <br><br>
+                                    <p>Request status: <%= order.requests[0].status %></p>
+                        
+                                    <button class="btn btn-success" onclick="acceptCancel('<%= order._id %>')">Accept</button>
+                                    <button class="btn btn-danger" onclick="rejectCancel('<%= order._id %>')">Reject</button>
+                                <% } else { %>
+                                    <p class="h6 text-center">No pending requests available.</p>
+                                <% } %>
+                            </div>
                         </div>
+                        <hr>
+                        
                     </div> <!-- col// -->
                 </div>
             </div> <!-- card-body end// -->
