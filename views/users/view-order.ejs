@@ -320,7 +320,127 @@
         }
 
         .invoice-container {
-        display: none; 
+            display: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .refund-container {
+            font-family: system-ui, -apple-system, sans-serif;
+            padding: 20px;
+            max-width: 600px;
+        }
+
+        .reason-section h3 {
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .required {
+            color: red;
+            margin-left: 2px;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .comments-section {
+            margin-top: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .refund-footer {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-top: 1px solid #eee;
+        }
+
+        .refund-amount {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .amount {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .cancel-btn {
+            background-color: #fc4f4f;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .arrow {
+            font-size: 18px;
+        }
+
+        .cancel-btn:hover {
+            background-color: #fc4f4f;
         }
     </style>
 </head>
@@ -381,14 +501,20 @@
                                             data-order-id="<%= orderDetails._id %>">
                                             Return Order Item
                                         </button>
+
+                                        <!-- <button class="return-order-btn" data-item-id="<%= item._id %>"
+                                            data-order-id="<%= orderDetails._id %>">
+                                            Return Order Item
+                                        </button> -->
                                         <% } %>
 
-                                        <% if (orderDetails.paymentStatus === 'Failed') { %>
-                                            <button class="retry-payment-btn" data-order-id="<%= orderDetails._id %>">
-                                                Retry Payment
-                                            </button>
-                                        <% } %>
-                                        
+                                            <% if (orderDetails.paymentStatus==='Failed' ) { %>
+                                                <button class="retry-payment-btn"
+                                                    data-order-id="<%= orderDetails._id %>">
+                                                    Retry Payment
+                                                </button>
+                                                <% } %>
+
                 </div>
 
                 <div class="invoice-container"
@@ -624,6 +750,65 @@
         </div>
     </div>
 
+    <!-- Retry Payment Modal -->
+    <div id="refund-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="refund-container">
+                <form action="/submit-return-request" method="POST" class="refund-container">
+                    <div class="reason-section">
+                        <h3>Select Reason<span class="required">*</span></h3>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="reason" value="incorrect-size" required>
+                                Incorrect size delivered
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="reason" value="not-required">
+                                Product not required anymore
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="reason" value="defective-product">
+                                The product is damaged or defective
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="reason" value="wrong-color">
+                                Not the exact color I wanted
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="reason" value="style-change">
+                                The product does not meet your expectations
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="reason" value="wrong-product">
+                                Wrong product delivered
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="reason" value="duplicate">
+                                Not original product
+                            </label>
+                        </div>
+                        <div class="comments-section">
+                            <textarea name="comments" placeholder="Additional Comments" rows="4"></textarea>
+                        </div>
+                    </div>
+                    <div class="refund-footer">
+                        <div class="refund-amount">
+                            <input type="hidden" value="<%= orderDetails._id %>" name="orderId" id="orderId">
+                            <span class="label">REFUND DETAILS</span>
+                            <span class="amount">₹ 0</span>
+                        </div>
+                        <button class="cancel-btn" type="submit">
+                            CANCEL
+                            <span class="arrow">→</span>
+                        </button>
+                    </div>
+                </form>                
+            </div>
+        </div>
+    </div>
+
+
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
@@ -650,26 +835,26 @@
             });
         });
 
-        document.querySelectorAll('.return-order-btn').forEach(button => {
-            button.addEventListener('click', function () {
-                const itemId = this.getAttribute('data-item-id');
-                const orderId = this.getAttribute('data-order-id');
+        // document.querySelectorAll('.return-order-btn').forEach(button => {
+        //     button.addEventListener('click', function () {
+        //         const itemId = this.getAttribute('data-item-id');
+        //         const orderId = this.getAttribute('data-order-id');
 
-                Swal.fire({
-                    title: 'Confirm Return',
-                    text: "Do you want to return this item?",
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, return it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        returnOrderItem(itemId, orderId);
-                    }
-                });
-            });
-        });
+        //         Swal.fire({
+        //             title: 'Confirm Return',
+        //             text: "Do you want to return this item?",
+        //             icon: 'question',
+        //             showCancelButton: true,
+        //             confirmButtonColor: '#3085d6',
+        //             cancelButtonColor: '#d33',
+        //             confirmButtonText: 'Yes, return it!'
+        //         }).then((result) => {
+        //             if (result.isConfirmed) {
+        //                 returnOrderItem(itemId, orderId);
+        //             }
+        //         });
+        //     });
+        // });
 
         async function cancelOrderItem(itemId, orderId) {
             try {
@@ -694,28 +879,28 @@
             }
         }
 
-        async function returnOrderItem(itemId, orderId) {
-            try {
-                const response = await fetch('/return-order-item', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ itemId, orderId })
-                });
+        // async function returnOrderItem(itemId, orderId) {
+        //     try {
+        //         const response = await fetch('/return-order-item', {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type': 'application/json',
+        //             },
+        //             body: JSON.stringify({ itemId, orderId })
+        //         });
 
-                const result = await response.json();
-                if (result.success) {
-                    Swal.fire('Returned!', 'Your item has been returned.', 'success').then(() => {
-                        location.reload();
-                    });
-                } else {
-                    Swal.fire('Error', result.message || 'Could not return item', 'error');
-                }
-            } catch (error) {
-                Swal.fire('Error', 'Something went wrong. Please try again later.', 'error');
-            }
-        }
+        //         const result = await response.json();
+        //         if (result.success) {
+        //             Swal.fire('Returned!', 'Your item has been returned.', 'success').then(() => {
+        //                 location.reload();
+        //             });
+        //         } else {
+        //             Swal.fire('Error', result.message || 'Could not return item', 'error');
+        //         }
+        //     } catch (error) {
+        //         Swal.fire('Error', 'Something went wrong. Please try again later.', 'error');
+        //     }
+        // }
     </script>
     <script>
         document.getElementById('download-pdf').addEventListener('click', () => {
@@ -860,9 +1045,41 @@
             });
         } catch (error) {
             console.error('Error notifying payment failure:', error);
+            }
         }
-    }
-</script>
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const refundModal = document.getElementById('refund-modal');
+            const closeModalBtn = document.querySelector('#refund-modal .close-btn');
+
+            // Attach click event to return-order-btn buttons
+            document.querySelectorAll('.return-order-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    const itemId = this.getAttribute('data-item-id');
+                    const orderId = this.getAttribute('data-order-id');
+
+                    // Optionally, populate modal fields with item/order details
+                    console.log(`Returning item with ID: ${itemId} from order ID: ${orderId}`);
+
+                    // Show modal
+                    refundModal.style.display = 'flex';
+                });
+            });
+
+            // Close modal when the close button is clicked
+            closeModalBtn.addEventListener('click', () => {
+                refundModal.style.display = 'none';
+            });
+
+            // Close modal when clicking outside the modal content
+            window.addEventListener('click', (event) => {
+                if (event.target === refundModal) {
+                    refundModal.style.display = 'none';
+                }
+            });
+        });
+    </script>
 
 
 

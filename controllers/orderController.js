@@ -486,78 +486,117 @@ const changeOrderStatus = async (req, res) => {
 }
 
 
-const returnOrderItem = async (req, res) => {
+// const returnOrderItem = async (req, res) => {
+//     try {
+//         const { itemId, orderId } = req.body;
+
+//         const order = await Order.findById(orderId).populate('user');
+//         if (!order) {
+//             return res.status(404).json({ success: false, msg: 'Order not found' });
+//         }
+
+//         const item = order.items.id(itemId);
+//         if (!item) {
+//             return res.status(404).json({ success: false, msg: 'Item not found' });
+//         }
+
+//         if (item.status !== 'Delivered') {
+//             return res.status(400).json({ success: false, msg: 'Item cannot be returned unless it is delivered' });
+//         }
+
+//         if (order.paymentStatus !== 'Completed') {
+//             return res.status(400).json({ success: false, msg: 'Refunds can only be processed for completed payments' });
+//         }
+
+//         item.status = 'Returned';
+
+//         const refundAmount = item.discountPriceAtPurchase * item.quantity;
+
+//         const wallet = await Wallet.findOne({ user: order.user._id });
+//         if (wallet) {
+//             wallet.amount += refundAmount;
+//         } else {
+//             await Wallet.create({
+//                 user: order.user._id,
+//                 amount: refundAmount,
+//                 orders: [order._id]
+//             });
+//         }
+
+//         if (wallet) {
+//             if (!wallet.orders.includes(order._id)) {
+//                 wallet.orders.push(order._id); // if order id not present in wallet model 
+//             }
+//             await wallet.save();
+//         }
+
+//         const updatedTotal = order.items.reduce((acc, item) => {
+//             if (item.status !== 'Cancelled' && item.status !== 'Returned') {
+//                 return acc + (item.discountPriceAtPurchase * item.quantity);
+//             }
+//             return acc;
+//         }, 0);
+
+//         const updatedSavings = order.items.reduce((acc, item) => {
+//             if (item.status !== 'Cancelled' && item.status !== 'Returned') {
+//                 return acc + ((item.priceAtPurchase - item.discountPriceAtPurchase) * item.quantity);
+//             }
+//             return acc;
+//         }, 0);
+
+//         order.total = updatedTotal;
+//         await order.save();
+
+//         res.status(200).json({
+//             success: true,
+//             msg: 'Item returned successfully and refund added to wallet',
+//             refundAmount,
+//             walletAmount: wallet ? wallet.amount : refundAmount,
+//             updatedTotal,
+//             updatedSavings,
+//             deliveryCharges: order.deliveryCharges
+//         });
+//     } catch (error) {
+//         console.error('Error returning the item:', error.message);
+//         res.status(500).json({ success: false, msg: 'Internal server error' });
+//     }
+// };
+
+const returnOrderRequest = async (req, res) => {
     try {
-        const { itemId, orderId } = req.body;
+        const { reason, orderId, comments } = req.body;
 
-        const order = await Order.findById(orderId).populate('user');
+        if (!reason || !orderId) {
+            return res.status(400).json({ success: false, error: "Reason and orderId are required" });
+        }
+
+        const order = await Order.findById(orderId);
+
         if (!order) {
-            return res.status(404).json({ success: false, msg: 'Order not found' });
+            return res.status(404).json({ success: false, error: "Order not found" });
         }
 
-        const item = order.items.id(itemId);
-        if (!item) {
-            return res.status(404).json({ success: false, msg: 'Item not found' });
+        
+        const isDelivered = order.items.every(item => item.status === 'Delivered');
+
+        if (!isDelivered) {
+            return res.status(400).json({ success: false, error: "Return requests can only be made for delivered items" });
         }
 
-        if (item.status !== 'Delivered') {
-            return res.status(400).json({ success: false, msg: 'Item cannot be returned unless it is delivered' });
-        }
+        const newReturnRequest = {
+            type: 'Return',
+            status: 'Pending',
+            reason: reason,
+            comments: comments || null, 
+        };
 
-        if (order.paymentStatus !== 'Completed') {
-            return res.status(400).json({ success: false, msg: 'Refunds can only be processed for completed payments' });
-        }
+        order.requests.push(newReturnRequest);
 
-        item.status = 'Returned';
-
-        const refundAmount = item.discountPriceAtPurchase * item.quantity;
-
-        const wallet = await Wallet.findOne({ user: order.user._id });
-        if (wallet) {
-            wallet.amount += refundAmount;
-        } else {
-            await Wallet.create({
-                user: order.user._id,
-                amount: refundAmount,
-                orders: [order._id]
-            });
-        }
-
-        if (wallet) {
-            if (!wallet.orders.includes(order._id)) {
-                wallet.orders.push(order._id); // if order id not present in wallet model 
-            }
-            await wallet.save();
-        }
-
-        const updatedTotal = order.items.reduce((acc, item) => {
-            if (item.status !== 'Cancelled' && item.status !== 'Returned') {
-                return acc + (item.discountPriceAtPurchase * item.quantity);
-            }
-            return acc;
-        }, 0);
-
-        const updatedSavings = order.items.reduce((acc, item) => {
-            if (item.status !== 'Cancelled' && item.status !== 'Returned') {
-                return acc + ((item.priceAtPurchase - item.discountPriceAtPurchase) * item.quantity);
-            }
-            return acc;
-        }, 0);
-
-        order.total = updatedTotal;
         await order.save();
 
-        res.status(200).json({
-            success: true,
-            msg: 'Item returned successfully and refund added to wallet',
-            refundAmount,
-            walletAmount: wallet ? wallet.amount : refundAmount,
-            updatedTotal,
-            updatedSavings,
-            deliveryCharges: order.deliveryCharges
-        });
+        res.json({ success: true, message: "Order return request submitted successfully" });
     } catch (error) {
-        console.error('Error returning the item:', error.message);
+        console.error('Error requesting return order:', error.message);
         res.status(500).json({ success: false, msg: 'Internal server error' });
     }
 };
@@ -572,7 +611,8 @@ module.exports = {
     cancelOrderItem,
     verifyPayment,
     changeOrderStatus,
-    returnOrderItem,
+    // returnOrderItem,
     notifyPaymentFailure,
-    retryPayment
+    retryPayment,
+    returnOrderRequest
 }

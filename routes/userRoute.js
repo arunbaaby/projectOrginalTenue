@@ -109,7 +109,8 @@ user_route.get('/order-confirmation',isLoggedIn,orderController.loadOrderConfirm
 user_route.get('/my-orders',isLoggedIn,orderController.loadMyOrders);
 user_route.get('/view-order',isLoggedIn,orderController.loadViewOrder);
 user_route.post('/cancel-order-item',isLoggedIn,orderController.cancelOrderItem);
-user_route.post('/return-order-item',isLoggedIn,orderController.returnOrderItem);
+// user_route.post('/return-order-item',isLoggedIn,orderController.returnOrderItem);
+user_route.post('/submit-return-request',isLoggedIn,orderController.returnOrderRequest);
 
 user_route.get('/retry-payment/:orderId',isLoggedIn,orderController.retryPayment);
 

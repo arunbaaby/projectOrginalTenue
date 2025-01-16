@@ -71,6 +71,24 @@ const orderSchema = new mongoose.Schema({
         type: String,
         enum: ['Pending', 'Completed', 'Failed'],
         default: 'Pending'
+    },
+    requests: [{
+      type: {
+        type: String,
+        enum: ['Return'],
+      },
+      status: {
+        type: String,
+        enum: ['Pending', 'Accepted', 'Rejected'],
+        default: 'Pending',
+      },
+      reason: String,
+      comments: String
+      
+    }, ],
+    is_returned: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true // This will add `createdAt` and `updatedAt` fields
