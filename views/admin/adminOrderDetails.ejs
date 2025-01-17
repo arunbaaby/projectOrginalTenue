@@ -181,16 +181,17 @@
                         <div class="card mb-4">
                             <div class="card-body">
                                 <div class="card-header" style="font-weight: bolder;">User Requests</div>
-                        
+                            
                                 <% if (order.requests && order.requests.length > 0 && order.requests[0].status === 'Pending') { %>
                                     <h6>Request for: <%= order.requests[0].type %></h6>
                                     <label for="reason">Reason:</label>
                                     <input type="text" value="<%= order.requests[0].reason %>" readonly class="mb-3 text-center">
                                     <br><br>
                                     <p>Request status: <%= order.requests[0].status %></p>
-                        
-                                    <button class="btn btn-success" onclick="acceptCancel('<%= order._id %>')">Accept</button>
-                                    <button class="btn btn-danger" onclick="rejectCancel('<%= order._id %>')">Reject</button>
+                            
+                                    <button class="btn btn-success" 
+                                            onclick="acceptReturn('<%= order._id %>', '<%= order.requests[0].itemId %>')">Accept</button>
+                                    <button class="btn btn-danger">Reject</button>
                                 <% } else { %>
                                     <p class="h6 text-center">No pending requests available.</p>
                                 <% } %>

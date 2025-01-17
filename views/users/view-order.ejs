@@ -497,16 +497,21 @@
                                         Cancel Order Item
                                     </button>
                                     <% } else if (item.status==='Delivered' ) { %>
-                                        <button class="return-order-btn" data-item-id="<%= item._id %>"
-                                            data-order-id="<%= orderDetails._id %>">
-                                            Return Order Item
-                                        </button>
-
-                                        <!-- <button class="return-order-btn" data-item-id="<%= item._id %>"
+                                        <% const existingRequest=orderDetails.requests.find(request=>
+                                            request.itemId.toString() === item._id.toString()
+                                            );
+                                            %>
+                                            <button class="return-order-btn" data-item-id="<%= item._id %>"
+                                                data-order-id="<%= orderDetails._id %>" <% if (existingRequest) { %>
+                                                disabled
+                                                <% } %>>
+                                                    <%= existingRequest ? "Return Requested" : "Return Order Item" %>
+                                            </button>
+                                            <% } %>
+                                                <!-- <button class="return-order-btn" data-item-id="<%= item._id %>"
                                             data-order-id="<%= orderDetails._id %>">
                                             Return Order Item
                                         </button> -->
-                                        <% } %>
 
                                             <% if (orderDetails.paymentStatus==='Failed' ) { %>
                                                 <button class="retry-payment-btn"
@@ -737,15 +742,15 @@
 
     <div class="features">
         <div class="feature">
-            <img src="/api/placeholder/40/40" alt="Easy Exchange" />
+            <img src="/assets/images/return-box.png" alt="Easy Exchange" />
             <span class="feature-text">EASY EXCHANGE</span>
         </div>
         <div class="feature">
-            <img src="/api/placeholder/40/40" alt="100% Handpicked" />
+            <img src="/assets/images/hand.png" alt="100% Handpicked" />
             <span class="feature-text">100% HANDPICKED</span>
         </div>
         <div class="feature">
-            <img src="/api/placeholder/40/40" alt="Assured Quality" />
+            <img src="/assets/images/quality.png" alt="Assured Quality" />
             <span class="feature-text">ASSURED QUALITY</span>
         </div>
     </div>
@@ -795,15 +800,18 @@
                     <div class="refund-footer">
                         <div class="refund-amount">
                             <input type="hidden" value="<%= orderDetails._id %>" name="orderId" id="orderId">
+                            <input type="hidden" value="<%= itemId %>" name="itemId" id="itemId">
                             <span class="label">REFUND DETAILS</span>
-                            <span class="amount">₹ 0</span>
+                            <span class="amount">
+                                <%= orderDetails.total %>
+                            </span>
                         </div>
                         <button class="cancel-btn" type="submit">
                             CANCEL
                             <span class="arrow">→</span>
                         </button>
                     </div>
-                </form>                
+                </form>
             </div>
         </div>
     </div>
@@ -1080,7 +1088,50 @@
             });
         });
     </script>
+    <script>document.querySelector('.refund-container').addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevent default form submission
 
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('/submit-return-request', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: result.message || 'Your return request has been submitted successfully!',
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: result.error || 'An error occurred while submitting your request.',
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Internal Server Error',
+                    text: 'Something went wrong. Please try again later.',
+                });
+                console.error('Error submitting the return request:', error);
+            }
+        });
+    </script>
 
 
 </body>

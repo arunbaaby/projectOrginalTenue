@@ -399,8 +399,10 @@ const loadViewOrder = async (req, res) => {
             return res.status(404).json({ success: false, msg: 'Order not found' });
         }
 
-        const shippingAddress = orderDetails.shippingAddress; // Directly access the address
-        res.render('view-order', { orderDetails, shippingAddress });
+        const shippingAddress = orderDetails.shippingAddress;
+        const itemId = orderDetails.items[0] ? orderDetails.items[0]._id : null;  // first item id
+
+        res.render('view-order', { orderDetails, shippingAddress, itemId });
     } catch (error) {
         console.error('Error loading the view-order page:', error.message);
         res.status(500).json({ success: false, msg: 'Failed to load view-order page' });
@@ -485,89 +487,99 @@ const changeOrderStatus = async (req, res) => {
     }
 }
 
+const acceptReturnRequest = async (req, res) => {
+    try {
+        const { itemId, orderId } = req.body;
 
-// const returnOrderItem = async (req, res) => {
-//     try {
-//         const { itemId, orderId } = req.body;
+        if (!itemId || !orderId) {
+            return res.status(400).json({ success: false, msg: 'Missing itemId or orderId' });
+        }
 
-//         const order = await Order.findById(orderId).populate('user');
-//         if (!order) {
-//             return res.status(404).json({ success: false, msg: 'Order not found' });
-//         }
+        const order = await Order.findById(orderId).populate('user');
+        if (!order) {
+            return res.status(404).json({ success: false, msg: 'Order not found' });
+        }
 
-//         const item = order.items.id(itemId);
-//         if (!item) {
-//             return res.status(404).json({ success: false, msg: 'Item not found' });
-//         }
+        const item = order.items.id(itemId);
+        if (!item) {
+            return res.status(404).json({ success: false, msg: 'Item not found' });
+        }
 
-//         if (item.status !== 'Delivered') {
-//             return res.status(400).json({ success: false, msg: 'Item cannot be returned unless it is delivered' });
-//         }
+        if (item.status !== 'Delivered') {
+            return res.status(400).json({ success: false, msg: 'Item cannot be returned unless it is delivered' });
+        }
 
-//         if (order.paymentStatus !== 'Completed') {
-//             return res.status(400).json({ success: false, msg: 'Refunds can only be processed for completed payments' });
-//         }
+        if (order.paymentStatus !== 'Completed') {
+            return res.status(400).json({ success: false, msg: 'Refunds can only be processed for completed payments' });
+        }
 
-//         item.status = 'Returned';
+        item.status = 'Returned';
 
-//         const refundAmount = item.discountPriceAtPurchase * item.quantity;
+        const request = order.requests.find((req) => req.type === 'Return' && req.status === 'Pending');
+        if (request) {
+            request.status = 'Accepted';
+        }
 
-//         const wallet = await Wallet.findOne({ user: order.user._id });
-//         if (wallet) {
-//             wallet.amount += refundAmount;
-//         } else {
-//             await Wallet.create({
-//                 user: order.user._id,
-//                 amount: refundAmount,
-//                 orders: [order._id]
-//             });
-//         }
+        order.is_returned = true;
 
-//         if (wallet) {
-//             if (!wallet.orders.includes(order._id)) {
-//                 wallet.orders.push(order._id); // if order id not present in wallet model 
-//             }
-//             await wallet.save();
-//         }
+        const refundAmount = item.discountPriceAtPurchase * item.quantity;
 
-//         const updatedTotal = order.items.reduce((acc, item) => {
-//             if (item.status !== 'Cancelled' && item.status !== 'Returned') {
-//                 return acc + (item.discountPriceAtPurchase * item.quantity);
-//             }
-//             return acc;
-//         }, 0);
+        const wallet = await Wallet.findOne({ user: order.user._id });
+        if (wallet) {
+            wallet.amount += refundAmount;
+        } else {
+            await Wallet.create({
+                user: order.user._id,
+                amount: refundAmount,
+                orders: [order._id]
+            });
+        }
 
-//         const updatedSavings = order.items.reduce((acc, item) => {
-//             if (item.status !== 'Cancelled' && item.status !== 'Returned') {
-//                 return acc + ((item.priceAtPurchase - item.discountPriceAtPurchase) * item.quantity);
-//             }
-//             return acc;
-//         }, 0);
+        if (wallet) {
+            if (!wallet.orders.includes(order._id)) {
+                wallet.orders.push(order._id);
+            }
+            await wallet.save();
+        }
 
-//         order.total = updatedTotal;
-//         await order.save();
+        const updatedTotal = order.items.reduce((acc, item) => {
+            if (item.status !== 'Cancelled' && item.status !== 'Returned') {
+                return acc + (item.discountPriceAtPurchase * item.quantity);
+            }
+            return acc;
+        }, 0);
 
-//         res.status(200).json({
-//             success: true,
-//             msg: 'Item returned successfully and refund added to wallet',
-//             refundAmount,
-//             walletAmount: wallet ? wallet.amount : refundAmount,
-//             updatedTotal,
-//             updatedSavings,
-//             deliveryCharges: order.deliveryCharges
-//         });
-//     } catch (error) {
-//         console.error('Error returning the item:', error.message);
-//         res.status(500).json({ success: false, msg: 'Internal server error' });
-//     }
-// };
+        const updatedSavings = order.items.reduce((acc, item) => {
+            if (item.status !== 'Cancelled' && item.status !== 'Returned') {
+                return acc + ((item.priceAtPurchase - item.discountPriceAtPurchase) * item.quantity);
+            }
+            return acc;
+        }, 0);
+
+        order.total = updatedTotal;
+        await order.save();
+
+        res.status(200).json({
+            success: true,
+            msg: 'Item returned successfully. Refund added to wallet.',
+            refundAmount,
+            walletAmount: wallet ? wallet.amount : refundAmount,
+            updatedTotal,
+            updatedSavings,
+            deliveryCharges: order.deliveryCharges
+        });
+    } catch (error) {
+        console.error('Error returning the item:', error.message);
+        res.status(500).json({ success: false, msg: 'Internal server error' });
+    }
+};
 
 const returnOrderRequest = async (req, res) => {
     try {
-        const { reason, orderId, comments } = req.body;
+        const { reason, orderId, itemId, comments } = req.body;
 
-        if (!reason || !orderId) {
-            return res.status(400).json({ success: false, error: "Reason and orderId are required" });
+        if (!reason || !orderId || !itemId) {
+            return res.status(400).json({ success: false, error: "Reason, orderId, and itemId are required" });
         }
 
         const order = await Order.findById(orderId);
@@ -576,18 +588,31 @@ const returnOrderRequest = async (req, res) => {
             return res.status(404).json({ success: false, error: "Order not found" });
         }
 
-        
-        const isDelivered = order.items.every(item => item.status === 'Delivered');
+        const item = order.items.id(itemId);
 
-        if (!isDelivered) {
+        if (!item) {
+            return res.status(404).json({ success: false, error: "Item not found in the order" });
+        }
+
+        // Check if a return request already exists for this item
+        const existingRequest = order.requests.find(
+            (request) => request.itemId.toString() === itemId && request.type === 'Return'
+        );
+
+        if (existingRequest) {
+            return res.status(400).json({ success: false, error: "A return request already exists for this item" });
+        }
+
+        if (item.status !== 'Delivered') {
             return res.status(400).json({ success: false, error: "Return requests can only be made for delivered items" });
         }
 
         const newReturnRequest = {
             type: 'Return',
             status: 'Pending',
-            reason: reason,
-            comments: comments || null, 
+            reason,
+            comments: comments || null,
+            itemId: item._id, // Ensure item._id is properly assigned
         };
 
         order.requests.push(newReturnRequest);
@@ -611,7 +636,7 @@ module.exports = {
     cancelOrderItem,
     verifyPayment,
     changeOrderStatus,
-    // returnOrderItem,
+    acceptReturnRequest,
     notifyPaymentFailure,
     retryPayment,
     returnOrderRequest

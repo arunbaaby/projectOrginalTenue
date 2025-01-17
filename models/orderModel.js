@@ -83,7 +83,12 @@ const orderSchema = new mongoose.Schema({
         default: 'Pending',
       },
       reason: String,
-      comments: String
+      comments: String,
+      itemId: {
+        type: ObjectId,
+        ref: 'Product',
+        required: true, // Make this required
+    },
       
     }, ],
     is_returned: {

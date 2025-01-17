@@ -72,6 +72,8 @@ admin_route.delete('/delete-product-img',isLoggedIn,productController.deleteProd
 admin_route.get('/order',isLoggedIn,adminController.loadOrderAdmin);
 admin_route.get('/order-details',isLoggedIn,adminController.loadAdminOrderDetails);
 admin_route.post('/change-order-status/:id',isLoggedIn,orderController.changeOrderStatus);
+//order return
+admin_route.post('/accept-return',isLoggedIn,orderController.acceptReturnRequest);
 
 //coupon management
 admin_route.get('/coupon',isLoggedIn,couponController.loadCouponList);
