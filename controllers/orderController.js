@@ -626,6 +626,48 @@ const returnOrderRequest = async (req, res) => {
     }
 };
 
+const rejectReturnRequest = async (req, res) => {
+    try {
+        const { itemId, orderId } = req.body;
+
+        if (!itemId || !orderId) {
+            return res.status(400).json({ success: false, msg: 'Missing itemId or orderId' });
+        }
+
+        const order = await Order.findById(orderId).populate('user');
+        if (!order) {
+            return res.status(404).json({ success: false, msg: 'Order not found' });
+        }
+
+        const item = order.items.id(itemId);
+        if (!item) {
+            return res.status(404).json({ success: false, msg: 'Item not found' });
+        }
+
+        const request = order.requests.find((req) => req.type === 'Return' && req.itemId.toString() === itemId && req.status === 'Pending');
+        if (!request) {
+            return res.status(404).json({ success: false, msg: 'No pending return request found for this item' });
+        }
+
+        // status to "Rejected"
+        request.status = 'Rejected';
+
+        await order.save();
+
+        res.status(200).json({
+            success: true,
+            msg: 'Return request rejected successfully.',
+            itemId,
+            orderId,
+            requestStatus: request.status
+        });
+    } catch (error) {
+        console.error('Error rejecting the return request:', error.message);
+        res.status(500).json({ success: false, msg: 'Internal server error' });
+    }
+};
+
+
 
 module.exports = {
     loadCheckout,
@@ -639,5 +681,6 @@ module.exports = {
     acceptReturnRequest,
     notifyPaymentFailure,
     retryPayment,
-    returnOrderRequest
+    returnOrderRequest,
+    rejectReturnRequest
 }

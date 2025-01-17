@@ -74,6 +74,7 @@ admin_route.get('/order-details',isLoggedIn,adminController.loadAdminOrderDetail
 admin_route.post('/change-order-status/:id',isLoggedIn,orderController.changeOrderStatus);
 //order return
 admin_route.post('/accept-return',isLoggedIn,orderController.acceptReturnRequest);
+admin_route.post('/reject-return',isLoggedIn,orderController.rejectReturnRequest);
 
 //coupon management
 admin_route.get('/coupon',isLoggedIn,couponController.loadCouponList);

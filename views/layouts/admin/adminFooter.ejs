@@ -703,6 +703,28 @@
         }
     }
 </script>
+<script>
+    async function rejectReturn(orderId, itemId) {
+        try {
+            const response = await fetch('/admin/reject-return', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ orderId, itemId })
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                alert(result.msg);
+                window.location.reload();
+            } else {
+                alert(result.msg);
+            }
+        } catch (error) {
+            console.error('Error rejecting the return request:', error);
+            alert('An error occurred. Please try again.');
+        }
+    }
+</script>
 
 </body>
 

@@ -191,7 +191,7 @@
                             
                                     <button class="btn btn-success" 
                                             onclick="acceptReturn('<%= order._id %>', '<%= order.requests[0].itemId %>')">Accept</button>
-                                    <button class="btn btn-danger">Reject</button>
+                                    <button class="btn btn-danger" onclick="rejectReturn('<%= order._id %>', '<%= order.requests[0].itemId %>')">Reject</button>
                                 <% } else { %>
                                     <p class="h6 text-center">No pending requests available.</p>
                                 <% } %>
