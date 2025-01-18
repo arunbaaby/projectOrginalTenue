@@ -40,7 +40,7 @@
                                 <td><%= coupon.maximumAmount %></td>
                                 <td><%= coupon.expirationDate.toLocaleDateString() %></td>
                                 <td><%= coupon.maxUsers %></td>
-                                <td><a href="/admin/edit-coupon/<%= coupon._id %>" class="edit-coupon btn btn-primary">Edit</td>
+                                <td><a href="/admin/edit-coupon?id=<%= coupon._id %>" class="btn btn-primary">Edit</a></td>
                                 <td>
                                     <% if (coupon.isActive) { %>
                                         <span style="color: red;">Inactive</span>

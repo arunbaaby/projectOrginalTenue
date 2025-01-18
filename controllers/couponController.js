@@ -193,10 +193,11 @@ const removeCoupon = async (req, res) => {
 
 const loadEditCoupon = async(req,res)=>{
     try {
-        const couponId = req.params.id;
+        const couponId = req.query.id;
         console.log('edit coupon :', couponId);
+        const coupon = await Coupon.findById(couponId);
         
-        res.send('edit coupon');
+        res.render('edit-coupon',{coupon});
     } catch (error) {
         console.error('Error removing coupon:', error.message);
         return res.status(500).json({ success: false, msg: 'Server error.' });
