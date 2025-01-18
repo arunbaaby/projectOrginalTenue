@@ -191,6 +191,18 @@ const removeCoupon = async (req, res) => {
     }
 };
 
+const loadEditCoupon = async(req,res)=>{
+    try {
+        const couponId = req.params.id;
+        console.log('edit coupon :', couponId);
+        
+        res.send('edit coupon');
+    } catch (error) {
+        console.error('Error removing coupon:', error.message);
+        return res.status(500).json({ success: false, msg: 'Server error.' });
+    }
+}
+
 module.exports = {
     loadCouponList,
     loadCreateCoupon,
@@ -198,5 +210,6 @@ module.exports = {
     deactivateCoupon,
     activateCoupon,
     applyCoupon,
-    removeCoupon
+    removeCoupon,
+    loadEditCoupon
 }

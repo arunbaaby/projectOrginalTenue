@@ -18,12 +18,13 @@
                         <tr>
                             <th>SL NO.</th>
                             <th>Coupon Code</th>
-                            <th>Description</th>
-                            <th>Discount In Purchase Amount</th>
-                            <th>Minimum Purchase Amount</th>
-                            <th>Maximum Purchase Amount</th>
+                            <!-- <th>Description</th> -->
+                            <th>Discount</th>
+                            <th>Min Purchase Amount</th>
+                            <th>Max Purchase Amount</th>
                             <th>Expired on</th>
-                            <th>Maximum Users</th>
+                            <th>Max Users</th>
+                            <th>Edit</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
@@ -33,12 +34,13 @@
                             <tr>
                                 <td><%= index + 1 %></td>
                                 <td><%= coupon.code %></td>
-                                <td><%= coupon.description %></td>
+                                <!-- <td><%= coupon.description %></td> -->
                                 <td><%= coupon.discountPercentage %></td>
                                 <td><%= coupon.minimumAmount %></td>
                                 <td><%= coupon.maximumAmount %></td>
-                                <td><%= coupon.expirationDate %></td>
+                                <td><%= coupon.expirationDate.toLocaleDateString() %></td>
                                 <td><%= coupon.maxUsers %></td>
+                                <td><a href="/admin/edit-coupon/<%= coupon._id %>" class="edit-coupon btn btn-primary">Edit</td>
                                 <td>
                                     <% if (coupon.isActive) { %>
                                         <span style="color: red;">Inactive</span>
@@ -49,11 +51,11 @@
                                     <td>
                                         <% if (coupon.is_active) { %>
                                             <form action="/admin/deactivate-coupon/<%= coupon._id %>" method="POST" style="display:inline;">
-                                                <button type="submit" class="btn btn-danger">Deactivate</button>
+                                                <button type="submit" class="btn btn-danger btn-same-size">Deactivate</button>
                                             </form>
                                         <% } else { %>
                                             <form action="/admin/activate-coupon/<%= coupon._id %>" method="POST" style="display:inline;">
-                                                <button type="submit" class="btn btn-success">Activate</button>
+                                                <button type="submit" class="btn btn-success btn-same-size">Activate</button>
                                             </form>
                                         <% } %>
                                         <!-- <button class="btn btn-danger" value="<%= coupon._id %>">Delete</button> -->

@@ -4865,5 +4865,13 @@ body.dark .dropdown-menu .dropdown-item.text-danger {
   background-color: #E0A800;
 }
 
+.btn-same-size {
+  width: 100px; /* Set a specific width */
+  height: 40px; /* Set a specific height */
+  /* You can add other shared styles like padding, font-size, etc. */
+  font-size: 16px;
+  padding: 8px;
+}
+
 
 /*# sourceMappingURL=main.css.map */
