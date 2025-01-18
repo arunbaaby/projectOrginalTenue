@@ -1,12 +1,14 @@
+require('dotenv').config();
 //index.js
 const mongoose = require('mongoose');
 //connect mongodb server and also give the name of the database
-mongoose.connect('mongodb://127.0.0.1:27017/tenue');
+mongoose.connect(process.env.MONGO_URI);
+// mongoose.connect('mongodb://127.0.0.1:27017/tenue');
 
 // const logger = require('morgan');
 
 
-require('dotenv').config();
+// require('dotenv').config();
 
 
 const express = require('express');
@@ -24,5 +26,5 @@ const adminRoute = require('./routes/adminRoute');
 app.use('/admin',adminRoute);
 
 app.listen(port,()=>{
-    console.log("server listening on 3000");
+    console.log(`server listening on ${port}`);
 });
