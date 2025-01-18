@@ -443,6 +443,20 @@ const cancelOrderItem = async (req, res) => {
         order.total = updatedTotal;
         await order.save();
 
+        // payment status === 'Completed', refund to user's wallet
+        if (order.paymentStatus === 'Completed') {
+            const refundAmount = item.discountPriceAtPurchase * item.quantity;
+
+            let wallet = await Wallet.findOne({ user: order.user });
+            if (!wallet) {
+                wallet = new Wallet({ user: order.user, amount: 0 });
+            }
+
+            wallet.amount += refundAmount;
+            wallet.orders.push(orderId);
+            await wallet.save();
+        }
+
         res.status(200).json({
             success: true,
             msg: 'Item cancelled successfully',
