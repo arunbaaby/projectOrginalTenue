@@ -668,14 +668,15 @@
 
             const result = await response.json();
             if (response.ok) {
-                alert(result.msg);
-                window.location.reload();
+                Swal.fire(result.msg).then(()=>{
+                    window.location.reload();
+                });
             } else {
-                alert(result.msg);
+                Swal.fire(result.msg);
             }
         } catch (error) {
             console.error('Error accepting the return request:', error);
-            alert('An error occurred. Please try again.');
+            Swal.fire('An error occurred. Please try again.');
         }
     }
 </script>
