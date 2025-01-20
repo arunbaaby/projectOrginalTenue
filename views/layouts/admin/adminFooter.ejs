@@ -459,34 +459,28 @@
     });
 </script>
 
-<!--category offer validation-->
 <script>
-    // JavaScript Validation
     document.getElementById('catOfferForm').addEventListener('submit', function (event) {
         let valid = true;
 
-        // Reset error messages
         document.getElementById('catOfferName-error').textContent = '';
         document.getElementById('catStartingDate-error').textContent = '';
         document.getElementById('catEndingDate-error').textContent = '';
         document.getElementById('category-error').textContent = '';
         document.getElementById('catDiscount-error').textContent = '';
 
-        // Validate Offer Name
         const name = document.getElementById('name').value.trim();
         if (!name) {
             valid = false;
             document.getElementById('catOfferName-error').textContent = 'Offer name is required.';
         }
 
-        // Validate Starting Date
         const startingDate = document.getElementById('catStartingDate').value.trim();
         if (!startingDate) {
             valid = false;
             document.getElementById('catStartingDate-error').textContent = 'Starting date is required.';
         }
 
-        // Validate Ending Date
         const endingDate = document.getElementById('catEndingDate').value.trim();
         if (!endingDate) {
             valid = false;
@@ -496,14 +490,12 @@
             document.getElementById('catEndingDate-error').textContent = 'Ending date cannot be before the starting date.';
         }
 
-        // Validate Category
         const category = document.getElementById('category').value.trim();
         if (!category) {
             valid = false;
             document.getElementById('category-error').textContent = 'Category is required.';
         }
 
-        // Validate Category Discount
         const categoryDiscount = document.getElementById('categoryDiscount').value.trim();
         if (!categoryDiscount) {
             valid = false;
@@ -513,7 +505,6 @@
             document.getElementById('catDiscount-error').textContent = 'Please enter a valid discount value.';
         }
 
-        // If validation fails, prevent form submission
         if (!valid) {
             event.preventDefault();
         }
@@ -525,7 +516,7 @@
         const form = document.getElementById('prdOfferForm');
 
         form.addEventListener('submit', function (event) {
-            event.preventDefault(); // Prevent default form submission
+            event.preventDefault(); 
 
             const name = document.getElementById('name').value.trim();
             const startingDate = document.getElementById('prdStartingDate').value.trim();
@@ -537,7 +528,6 @@
 
             let isValid = true;
 
-            // Validate Offer Name
             if (!name) {
                 showError('prdOfferName-error', 'Offer Name is required');
                 isValid = false;
@@ -546,7 +536,6 @@
                 isValid = false;
             }
 
-            // Validate Starting Date
             const today = new Date().toISOString().split('T')[0];
             if (!startingDate) {
                 showError('prdStartingDate-error', 'Starting Date is required');
@@ -556,7 +545,6 @@
                 isValid = false;
             }
 
-            // Validate Ending Date
             if (!endingDate) {
                 showError('prdEndingDate-error', 'Ending Date is required');
                 isValid = false;
@@ -566,13 +554,11 @@
                 isValid = false;
             }
 
-            // Validate Product Selection
             if (!product) {
                 showError('error4', 'Please select a product');
                 isValid = false;
             }
 
-            // Validate Product Discount
             if (!productDiscount) {
                 showError('prdDiscount-error', 'Product Discount is required');
                 isValid = false;
@@ -585,7 +571,7 @@
             }
 
             if (isValid) {
-                form.submit(); // Submit the form if valid
+                form.submit(); 
             }
         });
 
@@ -607,30 +593,25 @@
 
 
 <script>
-    // Initialize chart variable
     let myChart;
 
-    // Function to get hidden input data
     function getChartData(type) {
         const labels = JSON.parse(document.getElementById(`${type}Labels`).value);
         const data = JSON.parse(document.getElementById(`${type}Data`).value);
         return { labels, data };
     }
 
-    // Function to create or update the chart
     function renderChart(type) {
         const chartData = getChartData(type);
 
         const ctx = document.getElementById('myChart').getContext('2d');
 
-        // Destroy existing chart instance if it exists
         if (myChart) {
             myChart.destroy();
         }
 
-        // Create a new chart
         myChart = new Chart(ctx, {
-            type: 'line', // Use 'bar' if you want bar charts
+            type: 'line', 
             data: {
                 labels: chartData.labels,
                 datasets: [{
@@ -652,23 +633,19 @@
         });
     }
 
-    // Add event listeners to buttons
     document.getElementById('dailyBtn').addEventListener('click', () => renderChart('daily'));
     document.getElementById('weeklyBtn').addEventListener('click', () => renderChart('weekly'));
     document.getElementById('monthlyBtn').addEventListener('click', () => renderChart('monthly'));
     document.getElementById('yearlyBtn').addEventListener('click', () => renderChart('yearly'));
 
-    // Default chart display (e.g., show daily data on page load)
     renderChart('daily');
 </script>
 <script>
     document.getElementById('createReportBtn').addEventListener('click', function (event) {
-        event.preventDefault(); // Prevent default anchor behavior
+        event.preventDefault();
 
-        // Select the section to convert to PDF
         const section = document.getElementById('reportSection');
 
-        // Define options for html2pdf
         const options = {
             margin: 1,
             filename: 'report.pdf',
@@ -677,7 +654,6 @@
             jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
         };
 
-        // Generate and save the PDF
         html2pdf().from(section).set(options).save();
     });
 </script>
@@ -729,14 +705,12 @@
     const form = document.getElementById('editCouponForm');
 
     form.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Prevent default form submission
+        e.preventDefault(); 
         
         let isValid = true;
 
-        // Reset previous error messages
         document.querySelectorAll('.text-danger').forEach((error) => (error.textContent = ''));
 
-        // Validation checks
         const name = document.getElementById('couponName').value.trim();
         if (name === '') {
             document.getElementById('nameError').textContent = 'Coupon name is required.';
@@ -786,10 +760,8 @@
             isValid = false;
         }
 
-        // Stop here if validation fails
         if (!isValid) return;
 
-        // Prepare data for submission
         const formData = new FormData(form);
         const formObject = Object.fromEntries(formData.entries());
 
@@ -811,7 +783,7 @@
                     text: result.message,
                     confirmButtonText: 'OK',
                 }).then(() => {
-                    window.location.reload(); // Reload page after success
+                    window.location.reload(); 
                 });
             } else {
                 Swal.fire({
