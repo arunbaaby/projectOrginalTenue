@@ -316,7 +316,7 @@ const allProductsLoad = async (req, res) => {
             is_active: true,
             name: { $regex: query, $options: 'i' },
             price: { $gte: priceMin, $lte: priceMax },
-            ...(brand && { brand: { $regex: `^${brand}$`, $options: 'i' } }) // Dynamically construct regex here
+            ...(brand && { brand: { $regex: `^${brand}$`, $options: 'i' } }) 
         };
         
 
@@ -331,9 +331,9 @@ const allProductsLoad = async (req, res) => {
                 }
             },
             { $unwind: '$category' },
-            { $match: { 'category.is_active': true } }, // Ensure the category is active
-            ...(sortCriteria ? [{ $sort: sortCriteria }] : []), // Apply sorting if specified
-            { $skip: (currentPage - 1) * itemsPerPage }, // Pagination offset
+            { $match: { 'category.is_active': true } }, 
+            ...(sortCriteria ? [{ $sort: sortCriteria }] : []), 
+            { $skip: (currentPage - 1) * itemsPerPage }, 
             { $limit: itemsPerPage }
         ];
 
