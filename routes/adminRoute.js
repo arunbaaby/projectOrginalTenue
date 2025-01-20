@@ -83,6 +83,7 @@ admin_route.post('/create-coupon',isLoggedIn,couponController.createCoupon);
 admin_route.post('/deactivate-coupon/:id',isLoggedIn,couponController.deactivateCoupon);
 admin_route.post('/activate-coupon/:id',isLoggedIn,couponController.activateCoupon);
 admin_route.get('/edit-coupon',isLoggedIn,couponController.loadEditCoupon);
+admin_route.post('/edit-coupon',isLoggedIn,couponController.editCoupon);
 
 //sales report
 admin_route.get('/sales-report', isLoggedIn,salesReportController.loadSalesReport);

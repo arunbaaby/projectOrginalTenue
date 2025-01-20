@@ -12,65 +12,69 @@
     </div>
     <div class="card">
         <div class="card-body">
+            <form id="editCouponForm" action="/admin/edit-coupon" method="post">
+                <!-- Hidden Input for Coupon ID -->
+                <input type="hidden" name="id" value="<%= coupon._id %>" />
+        
                 <div class="mb-4">
                     <label for="couponName" class="form-label">Coupon Name</label>
                     <input type="text" placeholder="Type here" class="form-control" name="name" id="couponName"
-                    value="<%= coupon.name %>" />
+                           value="<%= coupon.name %>" />
                     <p id="nameError" class="text-danger"></p>
                 </div>
-
+        
                 <div class="mb-4">
                     <label for="couponCode" class="form-label">Coupon Code</label>
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" name="code" id="couponCode"
-                            placeholder="Generate or type" aria-label="Coupon code" value="<%= coupon.code %>" readonly>
-                        <!-- <button class="btn btn-primary" type="button" id="generateCode">Generate Code</button> -->
+                               placeholder="Generate or type" aria-label="Coupon code" value="<%= coupon.code %>" readonly>
                     </div>
                 </div>
-
+        
                 <div class="mb-4">
                     <label class="form-label">Description</label>
                     <textarea class="form-control" name="description" id="description"><%= coupon.description %></textarea>
                     <p id="descriptionError" class="text-danger"></p>
                 </div>
-
+        
                 <div class="mb-4">
                     <label for="discountPercentage" class="form-label">Discount Percentage (%)</label>
                     <input type="number" class="form-control" min="0" name="discountPercentage"
-                        id="discountPercentage" value="<%= coupon.discountPercentage %>" />
+                           id="discountPercentage" value="<%= coupon.discountPercentage %>" />
                     <p id="discountPercentageError" class="text-danger"></p>
                 </div>
-
+        
                 <div class="mb-4">
                     <label for="minPurchaseAmount" class="form-label">Minimum Purchase Amount</label>
                     <input type="number" class="form-control" name="minPurchaseAmount" id="minPurchaseAmount"
-                    value="<%= coupon.minimumAmount %>" />
+                           value="<%= coupon.minimumAmount %>" />
                     <p id="minimumAmountError" class="text-danger"></p>
                 </div>
-
+        
                 <div class="mb-4">
                     <label for="maxPurchaseAmount" class="form-label">Maximum Purchase Amount</label>
                     <input type="number" class="form-control" name="maxPurchaseAmount" id="maxPurchaseAmount"
-                    value="<%= coupon.maximumAmount %>"  />
+                           value="<%= coupon.maximumAmount %>" />
                     <p id="maximumAmountError" class="text-danger"></p>
                 </div>
-
+        
                 <div class="mb-4">
                     <label for="expirationDate" class="form-label">Expiration Date</label>
                     <input type="date" class="form-control" name="expirationDate" id="expirationDate"
-                    value="<%= new Date(coupon.expirationDate).toISOString().split('T')[0] %>" />
+                           value="<%= new Date(coupon.expirationDate).toISOString().split('T')[0] %>" />
                     <p id="expirationDateError" class="text-danger"></p>
                 </div>
-
+        
                 <div class="mb-4">
                     <label for="maxUsers" class="form-label">Maximum Users Allowed</label>
-                    <input type="number" class="form-control" name="maxUsers" id="maxUsers" value="<%= coupon.maxUsers %>"  />
+                    <input type="number" class="form-control" name="maxUsers" id="maxUsers" value="<%= coupon.maxUsers %>" />
                     <p id="maxUsersError" class="text-danger"></p>
                 </div>
-
+        
                 <div class="d-grid">
                     <button type="submit" class="btn btn-primary" id="submitForm">Edit Coupon</button>
                 </div>
+            </form>
             <div class="mt-3">
                 <a href="/admin/coupon" class="btn btn-secondary">Go Back</a>
             </div>

@@ -204,6 +204,46 @@ const loadEditCoupon = async(req,res)=>{
     }
 }
 
+
+const editCoupon = async (req, res) => {
+    const {
+        id,
+        name,
+        code,
+        description,
+        discountPercentage,
+        minPurchaseAmount,
+        maxPurchaseAmount,
+        expirationDate,
+        maxUsers
+    } = req.body;
+
+    try {
+        const coupon = await Coupon.findById(id);
+        if (!coupon) {
+            return res.status(404).json({ success: false, message: 'Coupon not found' });
+        }
+
+        // Update coupon fields
+        coupon.name = name || coupon.name;
+        coupon.code = code || coupon.code;
+        coupon.description = description || coupon.description;
+        coupon.discountPercentage = discountPercentage || coupon.discountPercentage;
+        coupon.minimumAmount = minPurchaseAmount || coupon.minimumAmount;
+        coupon.maximumAmount = maxPurchaseAmount || coupon.maximumAmount;
+        coupon.expirationDate = expirationDate || coupon.expirationDate;
+        coupon.maxUsers = maxUsers || coupon.maxUsers;
+
+        await coupon.save();
+
+        res.status(200).json({ success: true, message: 'Coupon updated successfully' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'An error occurred while updating the coupon', error });
+    }
+};
+
+
+
 module.exports = {
     loadCouponList,
     loadCreateCoupon,
@@ -212,5 +252,6 @@ module.exports = {
     activateCoupon,
     applyCoupon,
     removeCoupon,
-    loadEditCoupon
+    loadEditCoupon,
+    editCoupon
 }

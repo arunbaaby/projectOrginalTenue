@@ -725,6 +725,113 @@
         }
     }
 </script>
+<script>
+    const form = document.getElementById('editCouponForm');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault(); // Prevent default form submission
+        
+        let isValid = true;
+
+        // Reset previous error messages
+        document.querySelectorAll('.text-danger').forEach((error) => (error.textContent = ''));
+
+        // Validation checks
+        const name = document.getElementById('couponName').value.trim();
+        if (name === '') {
+            document.getElementById('nameError').textContent = 'Coupon name is required.';
+            isValid = false;
+        }
+
+        const description = document.getElementById('description').value.trim();
+        if (description === '') {
+            document.getElementById('descriptionError').textContent = 'Description is required.';
+            isValid = false;
+        }
+
+        const discountPercentage = document.getElementById('discountPercentage').value;
+        if (discountPercentage === '' || discountPercentage < 0) {
+            document.getElementById('discountPercentageError').textContent = 'Discount percentage must be 0 or greater.';
+            isValid = false;
+        }
+
+        const minPurchaseAmount = document.getElementById('minPurchaseAmount').value;
+        if (minPurchaseAmount === '' || minPurchaseAmount < 0) {
+            document.getElementById('minimumAmountError').textContent = 'Minimum purchase amount must be 0 or greater.';
+            isValid = false;
+        }
+
+        const maxPurchaseAmount = document.getElementById('maxPurchaseAmount').value;
+        if (maxPurchaseAmount === '' || maxPurchaseAmount < 0) {
+            document.getElementById('maximumAmountError').textContent = 'Maximum purchase amount must be 0 or greater.';
+            isValid = false;
+        } else if (parseFloat(maxPurchaseAmount) < parseFloat(minPurchaseAmount)) {
+            document.getElementById('maxPurchaseAmountError').textContent =
+                'Maximum purchase amount must be greater than or equal to the minimum purchase amount.';
+            isValid = false;
+        }
+
+        const expirationDate = document.getElementById('expirationDate').value;
+        if (expirationDate === '') {
+            document.getElementById('expirationDateError').textContent = 'Expiration date is required.';
+            isValid = false;
+        } else if (new Date(expirationDate) < new Date()) {
+            document.getElementById('expirationDateError').textContent = 'Expiration date must be in the future.';
+            isValid = false;
+        }
+
+        const maxUsers = document.getElementById('maxUsers').value;
+        if (maxUsers === '' || maxUsers <= 0) {
+            document.getElementById('maxUsersError').textContent = 'Maximum users must be greater than 0.';
+            isValid = false;
+        }
+
+        // Stop here if validation fails
+        if (!isValid) return;
+
+        // Prepare data for submission
+        const formData = new FormData(form);
+        const formObject = Object.fromEntries(formData.entries());
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formObject),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: result.message,
+                    confirmButtonText: 'OK',
+                }).then(() => {
+                    window.location.reload(); // Reload page after success
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: result.message,
+                    confirmButtonText: 'Try Again',
+                });
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                text: 'Something went wrong. Please try again later.',
+                confirmButtonText: 'OK',
+            });
+        }
+    });
+</script>
+
 
 </body>
 
