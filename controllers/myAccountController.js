@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const Address = require('../models/addressModel');
 const User = require('../models/userModel');
 const Cart = require('../models/cartModel');
+const Wallet = require('../models/walletModel');
 
 
 const myAccountLoad = async (req, res) => {
@@ -13,6 +14,8 @@ const myAccountLoad = async (req, res) => {
         if (userId) {
             cart = await Cart.findOne({ user: userId }).populate('items.product');
         }
+
+        const wallet = await Wallet.findOne({ user: userId });
 
         let subtotal = 0;
         if (cart) {
@@ -29,7 +32,7 @@ const myAccountLoad = async (req, res) => {
         const user = await User.findById(userId)
         const userAddresses = await Address.findOne({ user: userId });
 
-        res.render('my-account', { user, userAddresses, cart, subtotal });
+        res.render('my-account', { user, userAddresses, cart, subtotal, wallet });
     } catch (error) {
         console.error('My account load error:', error.message);
         return res.status(400).json({

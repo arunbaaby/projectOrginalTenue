@@ -301,6 +301,8 @@
                     <div class="myaccount-tab-menu nav" role="tablist">
                         <a href="#dashboad" class="active" data-bs-toggle="tab">
                             Dashboard</a>
+                        <a href="#wallet" data-bs-toggle="tab">
+                            Wallet</a>
                         <a href="/my-orders"> Orders</a>
                         <a href="#download" data-bs-toggle="tab"> Referrals </a>
                         <a href="#address-edit" data-bs-toggle="tab"> address</a>
@@ -344,9 +346,14 @@
                         </div>
                         <!-- Single Tab Content End -->
                         <!-- Single Tab Content Start -->
-                        <div class="tab-pane fade" id="orders" role="tabpanel">
-                            <div class="myaccount-content">
-                                <div class="myaccount-table table-responsive text-center">
+                        <div class="tab-pane fade" id="wallet" role="tabpanel">
+                            <div style="font-family: Arial, sans-serif; padding: 20px;">
+                                <div style="color: #4caf50; font-size: 18px; font-weight: bold; padding-bottom: 1%;">TOTAL WALLET BALANCE</div>
+                                <div style="font-size: 36px; font-weight: bold; padding: 1%;">₹ <%= wallet.amount %></div>
+                                <div style="color: #737373; font-size: 14px;">Your total MynCash is worth ₹ <%= wallet.amount %></div>
+                                <div style="color: #737373; font-size: 14px;">You can pay upto 100% of your order value through wallet. Use them on the Payments page during checkout.</div>
+                              </div>
+                                <!-- <div class="myaccount-table table-responsive text-center">
                                     <table class="table table-bordered">
                                         <thead class="thead-light">
                                             <tr>
@@ -381,7 +388,7 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                         <!-- Single Tab Content End -->
