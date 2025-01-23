@@ -55,24 +55,17 @@ const isLoggedIn = async (req, res, next) => {
 
 const isLoggedOut = async (req, res, next) => {
     try {
-        console.log('isLoggedOut working');
-        
+        console.log('isLoggedOut middleware triggered');
         if (req.cookies.jwt) {
-            console.log('isLoggedOut token');
-            
-            if (req.path === "/auth") {
-                return res.redirect("/home");
-            }
-            res.redirect('/home');
+            console.log('JWT cookie found. Redirecting to /home.');
+            return res.redirect('/home');
         }
-        else {
-            next();
-        }
-
+        next();
     } catch (error) {
-        console.log(error.message)
+        console.error('Error in isLoggedOut middleware:', error.message);
+        next(error);
     }
-}
+};
 
 module.exports = {
     isLoggedIn,
