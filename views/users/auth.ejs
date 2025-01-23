@@ -382,4 +382,12 @@
             /* Adjust size of the Google icon */
         }
     </style>
+    <script>
+        window.onpageshow = function(event) {
+            if (event.persisted) {//if true='loaded from cache : false=freshly loaded page'
+                window.location.reload();
+            }
+        };
+    </script>
+    
     <%- include ('../layouts/footer') %>
