@@ -1,269 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Orders</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
-
-       body {
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            margin: 0;
-            padding: 24px;
-            background-color: #f8f9fa;
-            color: #333;
-            line-height: 1.4;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-        }
-
-        .header {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 24px;
-        }
-
-        .order-container {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 24px;
-        }
-
-        .header h1 {
-            font-size: 24px;
-            color: #333;
-        }
-
-        .header p {
-            color: #666;
-        }
-
-        .order {
-            display: flex;
-            align-items: center;
-            position: relative;
-            grid-template-columns: 80px 1fr;
-            grid-gap: 1rem;
-            background-color: #f5f5f5;
-            border-radius: 6px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .order-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #f5f5f5;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-            padding: 16px 24px;
-        }
-
-        .order-id {
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .view-order-btn {
-            position: absolute;
-            right: 20px;
-            padding: 8px 16px;
-            background-color: #fc4f4f;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .view-order-btn:hover {
-            background-color: #df2b2b;
-        }
-
-        .order-image {
-            width: 90px;
-            height: 90px;
-            border-radius: 4px;
-        }
-
-        .order-details {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-            padding: 16px 24px;
-        }
-
-        .product-image {
-            width: 84px;
-            height: 84px;
-            border-radius: 4px;
-        }
-
-        .product-info {
-            flex: 1;
-        }
-
-        .product-name {
-            font-size: 14px;
-            font-weight: normal;
-            margin: 0 0 4px 0;
-        }
-
-        .product-size {
-            font-size: 14px;
-            color: #666;
-            margin: 4px 0;
-        }
-
-        .product-price {
-            font-size: 14px;
-        }
-
-        .product-quantity{
-            font-size: 14px;
-            color: #181717;
-            margin: 4px 0;
-        }
-
-        .delivery-status {
-            font-size: 14px;
-            color: #666;
-            margin: 4px 0;
-        }
-
-        .view-order {
-            color: #0066cc;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        .order-status {
-            color: #4caf50;
-            font-weight: 600;
-        }
-
-        .order-number {
-            font-weight: 700;
-        }
-
-        .order-delivery {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .order-payment {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .pagination {
-            display: flex;
-            justify-content: center;
-            margin-top: 2rem;
-        }
-
-        .pagination-button {
-            padding: 8px 16px;
-            border: 1px solid #ddd;
-            background-color: white;
-            color: #333;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .pagination-button:hover {
-            background-color: #f5f5f5;
-        }
-
-        .pagination-button.active {
-            background-color: #fc4f4f;
-            color: white;
-            border-color: #fc4f4f;
-        }
-
-        @media (max-width: 600px) {
-            .container {
-                padding: 1.5rem;
-            }
-
-            .order {
-                grid-template-columns: 60px 1fr;
-                grid-gap: 0.75rem;
-            }
-
-            .order-image {
-                width: 60px;
-                height: 60px;
-            }
-        }
-
-        .button-container {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .button {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-        }
-
-        .primary-button {
-            background-color: #fc4f4f;
-            color: white;
-        }
-
-        .secondary-button {
-            background-color: white;
-            color: #333;
-            border: 1px solid #ddd;
-        }
-
-        @media (max-width: 480px) {
-            .button-container {
-                flex-direction: column;
-            }
-        }
-    </style>
-</head>
-
-<body>
-    <div class="container">
-        <div class="header">
+<%- include ('../layouts/header') %>
+<div class="orders-wrapper">
+    <div class="orders-container">
+        <div class="orders-header">
             <h1>My Orders</h1>
             <p>Track your open orders & view the summary of your past orders</p>
         </div>
 
         <% orders.forEach(order => { %>
-            <div class="order-container">
+            <div class="order-card">
                 <!-- Order Header -->
-                <div class="order-header">
+                <div class="order-card-header">
                     <div class="order-id">Order#: <%= order.orderNumber %></div>
                 </div>
                 <!-- Order Items -->
                 <% order.items.forEach(item => { %>
-                    
                     <div class="order-details">
                         <!-- Product Image -->
                         <% if (item.product.images && item.product.images.length > 0) { %>
@@ -282,27 +32,19 @@
                             <div class="product-price">
                                 ₹<%= item.discountPriceAtPurchase * item.quantity %> (Includes Service Charge)
                             </div>
-                            <!-- <div class="delivery-status">Estimated Delivery: Wed, 13 Nov</div> -->
                         </div>
         
                         <!-- View Order Link -->
-                        <a href="/view-order?orderId=<%= order._id %>" class="view-order">View Order</a>
+                        <a href="/view-order?orderId=<%= order._id %>" class="view-order-link">View Order</a>
                     </div>
                 <% }) %>
             </div>
         <% }) %>
         
-                        <div class="button-container">
-                            <a href="/allProducts" class="button secondary-button">CONTINUE SHOPPING</a>
-                            <a href="/my-account" class="button primary-button">MY ACCOUNT</a>
-                        </div>
-
-                        <!-- <div class="pagination">
-            <button class="pagination-button active">1</button>
-            <button class="pagination-button">2</button>
-            <button class="pagination-button">3</button>
-        </div> -->
+        <div class="button-container">
+            <a href="/allProducts" class="button secondary-button">CONTINUE SHOPPING</a>
+            <a href="/my-account" class="button primary-button">MY ACCOUNT</a>
+        </div>
     </div>
-</body>
-
-</html>
+</div>
+<%- include ('../layouts/footer') %>
