@@ -1,823 +1,381 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            margin: 0;
-            padding: 24px;
-            background-color: #f8f9fa;
-            color: #333;
-            line-height: 1.4;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 24px;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto 24px;
-            padding: 0 16px;
-        }
-
-        .back-link {
-            color: #0066cc;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-        }
-
-        .need-help {
-            color: #0066cc;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        .main-container {
-            display: grid;
-            grid-template-columns: 1.8fr 1fr;
-            gap: 24px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 16px;
-        }
-
-        .left-section {
-            background: white;
-            border-radius: 8px;
-            padding: 24px;
-        }
-
-
-        .right-section {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .order-status {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
-        .order-status img {
-            width: 22px;
-            height: 22px;
-        }
-
-        .product-container {
-            background-color: white;
-            border-radius: 8px;
-            padding: 24px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            display: flex;
-            gap: 24px;
-            position: relative;
-            margin-bottom: 24px;
-        }
-
-        .product-image {
-            width: 84px;
-            height: 84px;
-        }
-
-        .product-details {
-            flex: 1;
-            padding-right: 100px;
-            /* Make space for cancel button */
-        }
-
-        .cancel-order-btn {
-            color: #0066cc;
-            /* Blue text color */
-            border: 2px solid white;
-            /* Border matching the text color */
-            background-color: white;
-            /* White background */
-            text-decoration: none;
-            font-size: 14px;
-            position: absolute;
-            top: 24px;
-            right: 24px;
-            padding: 8px 16px;
-            /* Adjusted padding for a better button size */
-            border-radius: 4px;
-            /* Rounded corners */
-            /* font-weight: 600; */
-            /* Bold font */
-            cursor: pointer;
-            /* Pointer cursor on hover */
-            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-            /* Smooth transitions for hover effects */
-        }
-
-        /* On hover, change the background and text color */
-        .cancel-order-btn:hover {
-            /* color: white; */
-            /* White text on hover */
-            /* background-color: #0066cc; */
-            /* Blue background on hover */
-            border-color: #0066cc;
-            /* Keep border color same as background on hover */
-        }
-
-        .return-order-btn {
-            color: #0066cc;
-            /* Blue text color */
-            border: 2px solid white;
-            /* Border matching the text color */
-            background-color: white;
-            /* White background */
-            text-decoration: none;
-            font-size: 14px;
-            position: absolute;
-            top: 24px;
-            right: 24px;
-            padding: 8px 16px;
-            /* Adjusted padding for a better button size */
-            border-radius: 4px;
-            /* Rounded corners */
-            /* font-weight: 600; */
-            /* Bold font */
-            cursor: pointer;
-            /* Pointer cursor on hover */
-            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-            /* Smooth transitions for hover effects */
-        }
-
-        .retry-payment-btn {
-            color: #0066cc;
-            border: 2px solid white;
-            background-color: white;
-            text-decoration: none;
-            font-size: 14px;
-            position: absolute;
-            top: 72px;
-            /* Positioned right below the cancel/return button */
-            right: 24px;
-            /* Same right alignment as other buttons */
-            padding: 10px 20px;
-            /* Consistent button size */
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-        }
-
-        /* On hover, change the background and text color */
-        .retry-payment-btn:hover {
-            border-color: #0066cc;
-        }
-
-
-        .product-title {
-            font-size: 14px;
-            font-weight: normal;
-            margin: 0 0 8px 0;
-            color: #333;
-            line-height: 1.4;
-        }
-
-        .product-size {
-            font-size: 14px;
-            color: #666;
-            margin: 4px 0;
-        }
-
-        .product-quantity {
-            font-size: 14px;
-            color: #181717;
-            margin: 4px 0;
-        }
-
-        .product-price {
-            font-size: 14px;
-            color: black;
-        }
-
-        .delivery-estimate {
-            font-size: 14px;
-            color: #666;
-            margin: 4px 0;
-        }
-
-        .order-info-box {
-            background: #fff3e0;
-            border-radius: 8px;
-            padding: 16px;
-        }
-
-        .order-info-box p {
-            margin: 4px 0;
-            font-size: 14px;
-        }
-
-        .payment-details {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-        }
-
-        .payment-details h3 {
-            font-size: 16px;
-            margin: 0 0 16px 0;
-            font-weight: 600;
-        }
-
-        .payment-row {
-            display: flex;
-            justify-content: space-between;
-            margin: 8px 0;
-            font-size: 14px;
-        }
-
-        .payment-savings {
-            color: #00a100;
-        }
-
-        .delivery-address {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-        }
-
-        .delivery-address h3 {
-            font-size: 16px;
-            margin: 0 0 16px 0;
-            font-weight: 600;
-        }
-
-        .delivery-address p {
-            margin: 6px 0;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        .whats-this {
-            color: #0066cc;
-            text-decoration: none;
-            font-size: 12px;
-            margin-left: 4px;
-        }
-
-        .return-info {
-            color: #0066cc;
-            text-decoration: none;
-            font-size: 13px;
-            text-align: right;
-            display: block;
-            margin-top: 12px;
-        }
-
-        .convenience-fee {
-            color: #666;
-            font-size: 12px;
-            margin-top: 2px;
-        }
-
-        .features {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            text-align: center;
-            margin-top: 48px;
-            padding-top: 24px;
-            border-top: 1px solid #e0e0e0;
-            max-width: 1200px;
-            margin: 48px auto 0;
-            padding: 24px 16px 0;
-        }
-
-        .feature {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .feature img {
-            width: 40px;
-            height: 40px;
-        }
-
-        .feature-text {
-            font-size: 13px;
-            font-weight: 600;
-            color: #444;
-        }
-
-        .edit-text {
-            font-size: 12px;
-            color: #666;
-            background: #f5f5f5;
-            padding: 2px 6px;
-            border-radius: 3px;
-            margin-left: 8px;
-        }
-
-        .invoice-container {
-            display: none;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.4);
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            max-width: 500px;
-            width: 90%;
-            position: relative;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        .refund-container {
-            font-family: system-ui, -apple-system, sans-serif;
-            padding: 20px;
-            max-width: 600px;
-        }
-
-        .reason-section h3 {
-            margin: 0 0 15px 0;
-            font-size: 16px;
-            font-weight: 500;
-        }
-
-        .required {
-            color: red;
-            margin-left: 2px;
-        }
-
-        .radio-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .radio-option {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .comments-section {
-            margin-top: 20px;
-        }
-
-        textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            resize: vertical;
-            font-family: inherit;
-        }
-
-        .refund-footer {
-            margin-top: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-            border-top: 1px solid #eee;
-        }
-
-        .refund-amount {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .label {
-            font-size: 12px;
-            color: #666;
-        }
-
-        .amount {
-            font-size: 16px;
-            font-weight: 500;
-        }
-
-        .cancel-btn {
-            background-color: #fc4f4f;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-        }
-
-        .arrow {
-            font-size: 18px;
-        }
-
-        .cancel-btn:hover {
-            background-color: #fc4f4f;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="header">
-        <a href="/my-orders" class="back-link">← Back to Orders</a>
-        <% let showDownloadButton=orderDetails.items.every(item=> item.status !== 'Returned'&& item.status !==
-            'Cancelled'); %>
-
-            <% if (showDownloadButton) { %>
-                <button id="download-pdf"
-                    style="padding: 10px 20px; background-color: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                    Download Invoice
-                </button>
-                <% } %>
-
-    </div>
-
-    <div class="main-container">
-        <div class="left-section">
-            <% orderDetails.items.forEach(item=> { %>
-                <div class="order-status">
-                    <img src="/assets/images/deliveryIcon.png" alt="Confirmed icon" />
-                    <h1 style="margin: 0; font-size: 18px; font-weight: 600;">
-                        <%= item.status %>
-                    </h1>
-                </div>
-                <div class="product-container">
-                    <% if (item.product.images && item.product.images.length> 0) { %>
-                        <img src="/admin/productImages/<%= item.product.images[0] %>" alt="<%= item.product.name %>"
-                            class="product-image" width="84" height="84">
-                        <% } else { %>
-                            <img src="defaultImage.jpg" alt="No Image" class="product-image" width="84" height="84">
-                            <% } %>
-
-                                <div class="product-details">
-                                    <h2 class="product-title">
-                                        <%= item.product.name %>
-                                    </h2>
-                                    <div class="product-size">Size: <%= item.size %>
+<%- include ('../layouts/header') %>
+    <div class="order-details-wrapper">
+        <div class="header">
+            <a href="/my-orders" class="back-link">← Back to Orders</a>
+            <% let showDownloadButton=orderDetails.items.every(item=> item.status !== 'Returned'&& item.status !==
+                'Cancelled'); %>
+
+                <% if (showDownloadButton) { %>
+                    <button id="download-pdf"
+                        style="padding: 10px 20px; background-color: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        Download Invoice
+                    </button>
+                    <% } %>
+
+        </div>
+
+        <div class="main-container">
+            <div class="left-section">
+                <% orderDetails.items.forEach(item=> { %>
+                    <div class="order-status">
+                        <img src="/assets/images/deliveryIcon.png" alt="Confirmed icon" />
+                        <h1 style="margin: 0; font-size: 18px; font-weight: 600;">
+                            <%= item.status %>
+                        </h1>
+                    </div>
+                    <div class="product-container">
+                        <% if (item.product.images && item.product.images.length> 0) { %>
+                            <img src="/admin/productImages/<%= item.product.images[0] %>" alt="<%= item.product.name %>"
+                                class="product-image" width="84" height="84">
+                            <% } else { %>
+                                <img src="defaultImage.jpg" alt="No Image" class="product-image" width="84" height="84">
+                                <% } %>
+
+                                    <div class="product-details">
+                                        <h2 class="product-title">
+                                            <%= item.product.name %>
+                                        </h2>
+                                        <div class="product-size">Size: <%= item.size %>
+                                        </div>
+                                        <div class="product-quantity">Quantity: <%= item.quantity %>
+                                        </div>
+                                        <div class="product-price">
+                                            ₹<%= item.discountPriceAtPurchase * item.quantity %>
+                                        </div>
                                     </div>
-                                    <div class="product-quantity">Quantity: <%= item.quantity %>
-                                    </div>
-                                    <div class="product-price">
-                                        ₹<%= item.discountPriceAtPurchase * item.quantity %>
-                                    </div>
-                                </div>
 
-                                <% if (item.status==='Pending' || item.status==='Processing' || item.status==='Shipped'
-                                    ) { %>
-                                    <button class="cancel-order-btn" data-item-id="<%= item._id %>"
-                                        data-order-id="<%= orderDetails._id %>">
-                                        Cancel Order Item
-                                    </button>
-                                    <% } else if (item.status==='Delivered' ) { %>
-                                        <% const existingRequest=orderDetails.requests.find(request=>
-                                            request.itemId.toString() === item._id.toString()
-                                            );
-                                            %>
-                                            <button class="return-order-btn" data-item-id="<%= item._id %>"
-                                                data-order-id="<%= orderDetails._id %>" <% if (existingRequest) { %>
-                                                disabled
-                                                <% } %>>
-                                                    <%= existingRequest ? "Return Requested" : "Return Order Item" %>
-                                            </button>
-                                            <% } %>
-                                                <!-- <button class="return-order-btn" data-item-id="<%= item._id %>"
+                                    <% if (item.status==='Pending' || item.status==='Processing' ||
+                                        item.status==='Shipped' ) { %>
+                                        <button class="cancel-order-btn" data-item-id="<%= item._id %>"
                                             data-order-id="<%= orderDetails._id %>">
-                                            Return Order Item
-                                        </button> -->
-
-                                            <% if (orderDetails.paymentStatus==='Failed' ) { %>
-                                                <button class="retry-payment-btn"
-                                                    data-order-id="<%= orderDetails._id %>">
-                                                    Retry Payment
+                                            Cancel Order Item
+                                        </button>
+                                        <% } else if (item.status==='Delivered' ) { %>
+                                            <% const existingRequest=orderDetails.requests.find(request=>
+                                                request.itemId.toString() === item._id.toString()
+                                                );
+                                                %>
+                                                <button class="return-order-btn" data-item-id="<%= item._id %>"
+                                                    data-order-id="<%= orderDetails._id %>" <% if (existingRequest) { %>
+                                                    disabled
+                                                    <% } %>>
+                                                        <%= existingRequest ? "Return Requested" : "Return Order Item"
+                                                            %>
                                                 </button>
                                                 <% } %>
+                                                    <!-- <button class="return-order-btn" data-item-id="<%= item._id %>"
+                                                data-order-id="<%= orderDetails._id %>">
+                                                Return Order Item
+                                            </button> -->
 
-                </div>
+                                                    <% if (orderDetails.paymentStatus==='Failed' ) { %>
+                                                        <button class="retry-payment-btn"
+                                                            data-order-id="<%= orderDetails._id %>">
+                                                            Retry Payment
+                                                        </button>
+                                                        <% } %>
 
-                <div class="invoice-container"
-                    style="padding: 40px; font-family: Arial, sans-serif; border: 1px solid #ddd; margin: 20px auto;">
-                    <div style="margin-bottom: 40px;">
-                        <h1 style="font-size: 24px; color: #333; margin-bottom: 30px;">Invoice</h1>
+                    </div>
 
-                        <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px;">
-                            <!-- Sender Details -->
-                            <div style="flex: 1; min-width: 250px;">
-                                <h3 style="font-size: 16px; margin-bottom: 10px;">Delivery Address</h3>
-                                <p style="font-size: 14px; color: #666; margin: 5px 0;">
-                                    <%= orderDetails.shippingAddress.houseNo %>
-                                        <%= orderDetails.shippingAddress.street %>,<br>
-                                            <%= orderDetails.shippingAddress.city %>, <%=
-                                                    orderDetails.shippingAddress.state %>,<br>
-                                                    <%= orderDetails.shippingAddress.pincode %>
-                                </p>
-                            </div>
+                    <div class="invoice-container"
+                        style="padding: 40px; font-family: Arial, sans-serif; border: 1px solid #ddd; margin: 20px auto;">
+                        <div style="margin-bottom: 40px;">
+                            <h1 style="font-size: 24px; color: #333; margin-bottom: 30px;">Invoice</h1>
 
-                            <!-- Invoice Details -->
-                            <div style="flex: 1; min-width: 250px;">
-                                <div style="margin-bottom: 10px;">
-                                    <span style="font-weight: bold; color: #666;">Invoice date</span>
-                                    <span style="margin-left: 20px;">
-                                        <%= new Date(orderDetails.createdAt).toLocaleDateString() %>
-                                    </span>
-                                </div>
-                                <div>
-                                    <h3 style="font-size: 16px; margin-bottom: 10px;">Tenue Fasho Private Limited</h3>
+                            <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px;">
+                                <!-- Sender Details -->
+                                <div style="flex: 1; min-width: 250px;">
+                                    <h3 style="font-size: 16px; margin-bottom: 10px;">Delivery Address</h3>
                                     <p style="font-size: 14px; color: #666; margin: 5px 0;">
-                                        5/1, Penthouse 01, 6th Floor, Rich<br>
-                                        Homes Apartment, Richmond Road<br>
-                                        Bengaluru, Karnataka 560025<br>
-                                        GSTIN 04ARCPD9874312Z5
+                                        <%= orderDetails.shippingAddress.houseNo %>
+                                            <%= orderDetails.shippingAddress.street %>,<br>
+                                                <%= orderDetails.shippingAddress.city %>, <%=
+                                                        orderDetails.shippingAddress.state %>,<br>
+                                                        <%= orderDetails.shippingAddress.pincode %>
                                     </p>
                                 </div>
+
+                                <!-- Invoice Details -->
+                                <div style="flex: 1; min-width: 250px;">
+                                    <div style="margin-bottom: 10px;">
+                                        <span style="font-weight: bold; color: #666;">Invoice date</span>
+                                        <span style="margin-left: 20px;">
+                                            <%= new Date(orderDetails.createdAt).toLocaleDateString() %>
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <h3 style="font-size: 16px; margin-bottom: 10px;">Tenue Fasho Private Limited
+                                        </h3>
+                                        <p style="font-size: 14px; color: #666; margin: 5px 0;">
+                                            5/1, Penthouse 01, 6th Floor, Rich<br>
+                                            Homes Apartment, Richmond Road<br>
+                                            Bengaluru, Karnataka 560025<br>
+                                            GSTIN 04ARCPD9874312Z5
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Invoice Table -->
-                    <div style="overflow-x: auto;">
-                        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; min-width: 600px;">
-                            <thead>
-                                <tr style="background-color: #f8f8f8;">
-                                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Description
-                                    </th>
-                                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Qty</th>
-                                    <th style="padding: 12px; border: 1px solid #ddd; text-align: right;">Price</th>
-                                    <th style="padding: 12px; border: 1px solid #ddd; text-align: right;">Discount Price
-                                    </th>
-                                    <th style="padding: 12px; border: 1px solid #ddd; text-align: center;">Tax</th>
-                                    <th style="padding: 12px; border: 1px solid #ddd; text-align: right;">Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% orderDetails.items.forEach(item=> { %>
-                                    <tr>
-                                        <td style="padding: 12px; border: 1px solid #ddd;">
-                                            <%= item.product.name %>
-                                        </td>
-                                        <td style="padding: 12px; border: 1px solid #ddd;">
-                                            <%= item.quantity %>
-                                        </td>
-                                        <td style="padding: 12px; border: 1px solid #ddd; text-align: right;">
-                                            <%= item.priceAtPurchase.toFixed(2) %>
-                                        </td>
-                                        <td style="padding: 12px; border: 1px solid #ddd; text-align: right;">
-                                            <%= item.discountPriceAtPurchase.toFixed(2) %>
-                                        </td>
-                                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center;">CGST 14%
-                                            + SGST 14%</td>
-                                        <td style="padding: 12px; border: 1px solid #ddd; text-align: right;">
-                                            <%= (item.quantity * item.discountPriceAtPurchase).toFixed(2) %>
-                                        </td>
+                        <!-- Invoice Table -->
+                        <div style="overflow-x: auto;">
+                            <table
+                                style="width: 100%; border-collapse: collapse; margin-bottom: 20px; min-width: 600px;">
+                                <thead>
+                                    <tr style="background-color: #f8f8f8;">
+                                        <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Description
+                                        </th>
+                                        <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Qty</th>
+                                        <th style="padding: 12px; border: 1px solid #ddd; text-align: right;">Price</th>
+                                        <th style="padding: 12px; border: 1px solid #ddd; text-align: right;">Discount
+                                            Price
+                                        </th>
+                                        <th style="padding: 12px; border: 1px solid #ddd; text-align: center;">Tax</th>
+                                        <th style="padding: 12px; border: 1px solid #ddd; text-align: right;">Amount
+                                        </th>
                                     </tr>
-                                    <% }) %>
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody>
+                                    <% orderDetails.items.forEach(item=> { %>
+                                        <tr>
+                                            <td style="padding: 12px; border: 1px solid #ddd;">
+                                                <%= item.product.name %>
+                                            </td>
+                                            <td style="padding: 12px; border: 1px solid #ddd;">
+                                                <%= item.quantity %>
+                                            </td>
+                                            <td style="padding: 12px; border: 1px solid #ddd; text-align: right;">
+                                                <%= item.priceAtPurchase.toFixed(2) %>
+                                            </td>
+                                            <td style="padding: 12px; border: 1px solid #ddd; text-align: right;">
+                                                <%= item.discountPriceAtPurchase.toFixed(2) %>
+                                            </td>
+                                            <td style="padding: 12px; border: 1px solid #ddd; text-align: center;">CGST
+                                                14%
+                                                + SGST 14%</td>
+                                            <td style="padding: 12px; border: 1px solid #ddd; text-align: right;">
+                                                <%= (item.quantity * item.discountPriceAtPurchase).toFixed(2) %>
+                                            </td>
+                                        </tr>
+                                        <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
 
-                    <!-- Totals -->
-                    <div style="margin-left: auto; max-width: 100%;">
-                        <!-- <div
-                            style="display: flex; justify-content: flex-end; gap: 40px; padding: 8px 0; border-top: 1px solid #ddd;">
-                            <span>Sub-total</span>
-                            <span style="min-width: 120px; text-align: right;">₹ <%= orderDetails.total %></span>
+                        <!-- Totals -->
+                        <div style="margin-left: auto; max-width: 100%;">
+                            <!-- <div
+                                style="display: flex; justify-content: flex-end; gap: 40px; padding: 8px 0; border-top: 1px solid #ddd;">
+                                <span>Sub-total</span>
+                                <span style="min-width: 120px; text-align: right;">₹ <%= orderDetails.total %></span>
+                            </div> -->
+                            <!-- <div style="display: flex; justify-content: flex-end; gap: 40px; padding: 8px 0;">
+                                <span>CGST</span>
+                                <span style="min-width: 120px; text-align: right;">₹ <%= (orderDetails.total * 0.14).toFixed(2) %>
+                                        </span>
+                            </div>
+                            <div style="display: flex; justify-content: flex-end; gap: 40px; padding: 8px 0;">
+                                <span>SGST</span>
+                                <span style="min-width: 120px; text-align: right;">₹ <%= (orderDetails.total * 0.14).toFixed(2) %>
+                                        </span>
+                            </div> -->
+                            <div
+                                style="display: flex; justify-content: flex-end; gap: 40px; padding: 8px 0; font-weight: bold; border-top: 1px solid #ddd;">
+                                <span>Total</span>
+                                <span style="min-width: 120px; text-align: right;">₹ <%= orderDetails.total %></span>
+                            </div>
+                        </div>
+
+                        <!-- Total in words -->
+                        <!-- <div style="margin-top: 30px; font-size: 14px; color: #666;">
+                            <p><strong>Total in words</strong><br>
+                                Rupees One Lakh Fifty Seven Thousand Five Hundred</p>
                         </div> -->
-                        <!-- <div style="display: flex; justify-content: flex-end; gap: 40px; padding: 8px 0;">
-                            <span>CGST</span>
-                            <span style="min-width: 120px; text-align: right;">₹ <%= (orderDetails.total * 0.14).toFixed(2) %>
-                                    </span>
-                        </div>
-                        <div style="display: flex; justify-content: flex-end; gap: 40px; padding: 8px 0;">
-                            <span>SGST</span>
-                            <span style="min-width: 120px; text-align: right;">₹ <%= (orderDetails.total * 0.14).toFixed(2) %>
-                                    </span>
-                        </div> -->
-                        <div
-                            style="display: flex; justify-content: flex-end; gap: 40px; padding: 8px 0; font-weight: bold; border-top: 1px solid #ddd;">
-                            <span>Total</span>
-                            <span style="min-width: 120px; text-align: right;">₹ <%= orderDetails.total %></span>
-                        </div>
                     </div>
-
-                    <!-- Total in words -->
-                    <!-- <div style="margin-top: 30px; font-size: 14px; color: #666;">
-                        <p><strong>Total in words</strong><br>
-                            Rupees One Lakh Fifty Seven Thousand Five Hundred</p>
-                    </div> -->
-                </div>
-                <% }) %>
-        </div>
-
-        <div class="right-section">
-            <div class="order-info-box">
-                <p>Order Number: <%= orderDetails.orderNumber %>
-                </p>
-                <!-- Render the first product name or modify as needed if multiple products should be displayed -->
-                <!-- <p>Product Name: <%= orderDetails.items.length > 0 ? orderDetails.items[0].product.name : 'No items in order' %></p> -->
-                <p>Payment Method: <%= orderDetails.paymentMethod %>
-                </p>
-                <p>Payment status: <%= orderDetails.paymentStatus %>
-                </p>
+                    <% }) %>
             </div>
 
-
-            <div class="payment-details">
-                <h3>Order Payment Details</h3>
-                <div class="payment-row">
-                    <span>Order Amount</span>
-                    <!-- Calculate and display the total amount for all items -->
-                    <span>
-                        <%= orderDetails.items .filter(item=> item.status !== 'Cancelled')
-                            .reduce((acc, item) => acc + (item.priceAtPurchase * item.quantity), 0) %>
-                    </span>
-                </div>
-                <div class="payment-row">
-                    <span>Order Savings</span>
-                    <span class="payment-savings">
-                        -<%= orderDetails.items .filter(item=> item.status !== 'Cancelled')
-                            .reduce((acc, item) => acc + ((item.priceAtPurchase - item.discountPriceAtPurchase) *
-                            item.quantity), 0) %>
-                    </span>
-                </div>
-                <div class="payment-row">
-                    <div>
-                        <span>Delivery Charge</span>
-                        <div class="convenience-fee">(Non-refundable)</div>
-                    </div>
-                    <span>
-                        <%= orderDetails.deliveryCharges %>
-                    </span>
-                </div>
-                <div class="payment-row">
-                    <div>
-                        <span>Coupon Discount</span>
-                    </div>
-                    <span style="color: #00a100;">
-                        -<%= orderDetails.couponDiscount %>
-                    </span>
-                </div>
-                <div class="payment-row" style="font-weight: 600; margin-top: 12px;">
-                    <span>Order Total</span>
-                    <span>
-                        <%= orderDetails.total %>
-                    </span>
+            <div class="right-section">
+                <div class="order-info-box">
+                    <p>Order Number: <%= orderDetails.orderNumber %>
+                    </p>
+                    <!-- Render the first product name or modify as needed if multiple products should be displayed -->
+                    <!-- <p>Product Name: <%= orderDetails.items.length > 0 ? orderDetails.items[0].product.name : 'No items in order' %></p> -->
+                    <p>Payment Method: <%= orderDetails.paymentMethod %>
+                    </p>
+                    <p>Payment status: <%= orderDetails.paymentStatus %>
+                    </p>
                 </div>
 
-                <h3 style="margin-top: 24px;">Payment Mode</h3>
-                <div class="payment-row">
-                    <span>
-                        <%= orderDetails.paymentMethod %>
-                    </span>
-                    <span>
-                        <%= orderDetails.total %>
-                    </span>
+
+                <div class="payment-details">
+                    <h3>Order Payment Details</h3>
+                    <div class="payment-row">
+                        <span>Order Amount</span>
+                        <!-- Calculate and display the total amount for all items -->
+                        <span>
+                            <%= orderDetails.items .filter(item=> item.status !== 'Cancelled')
+                                .reduce((acc, item) => acc + (item.priceAtPurchase * item.quantity), 0) %>
+                        </span>
+                    </div>
+                    <div class="payment-row">
+                        <span>Order Savings</span>
+                        <span class="payment-savings">
+                            -<%= orderDetails.items .filter(item=> item.status !== 'Cancelled')
+                                .reduce((acc, item) => acc + ((item.priceAtPurchase - item.discountPriceAtPurchase) *
+                                item.quantity), 0) %>
+                        </span>
+                    </div>
+                    <div class="payment-row">
+                        <div>
+                            <span>Delivery Charge</span>
+                            <div class="convenience-fee">(Non-refundable)</div>
+                        </div>
+                        <span>
+                            <%= orderDetails.deliveryCharges %>
+                        </span>
+                    </div>
+                    <div class="payment-row">
+                        <div>
+                            <span>Coupon Discount</span>
+                        </div>
+                        <span style="color: #00a100;">
+                            -<%= orderDetails.couponDiscount %>
+                        </span>
+                    </div>
+                    <div class="payment-row" style="font-weight: 600; margin-top: 12px;">
+                        <span>Order Total</span>
+                        <span>
+                            <%= orderDetails.total %>
+                        </span>
+                    </div>
+
+                    <h3 style="margin-top: 24px;">Payment Mode</h3>
+                    <div class="payment-row">
+                        <span>
+                            <%= orderDetails.paymentMethod %>
+                        </span>
+                        <span>
+                            <%= orderDetails.total %>
+                        </span>
+                    </div>
+                    <a href="#" class="return-info">Return Information</a>
                 </div>
-                <a href="#" class="return-info">Return Information</a>
+
+
+                <div class="delivery-address">
+                    <h3>Deliver to</h3>
+                    <!-- Dynamically display the first name, last name, and phone -->
+                    <p>
+                        <%= shippingAddress.firstName %>
+                            <%= shippingAddress.lastName %>
+                                <span class="edit-text">edit</span>
+                    </p>
+                    <!-- Dynamically display the address details -->
+                    <p>
+                        <%= shippingAddress.houseNo %>, <%= shippingAddress.street %>, <%= shippingAddress.landmark %>
+                    </p>
+                    <p>
+                        <%= shippingAddress.city %>, <%= shippingAddress.district %>,
+                    </p>
+                    <p>
+                        <%= shippingAddress.state %>, India - <%= shippingAddress.pincode %>
+                    </p>
+                    <!-- <p>Phone: <%= shippingAddress.phone || 'N/A' %></p> -->
+                </div>
+
+                <!-- <div class="delivery-address">
+                    <h3>Deliver to</h3>
+                    <p>
+                        Arun
+                        <span class="edit-text">edit</span>
+                    </p>
+                    <p>266, Vengoor, Kidangoor P.O Angamaly /Kidangoor</p>
+                    <p>kavala /near snra 66,</p>
+                    <p>Surabhi marbles, Angamaly,</p>
+                    <p>Angamaly, KERALA</p>
+                    <p>India - 683572</p>
+                    <p>Phone: 8590260356</p>
+                </div> -->
             </div>
+        </div>
 
-
-            <div class="delivery-address">
-                <h3>Deliver to</h3>
-                <!-- Dynamically display the first name, last name, and phone -->
-                <p>
-                    <%= shippingAddress.firstName %>
-                        <%= shippingAddress.lastName %>
-                            <span class="edit-text">edit</span>
-                </p>
-                <!-- Dynamically display the address details -->
-                <p>
-                    <%= shippingAddress.houseNo %>, <%= shippingAddress.street %>, <%= shippingAddress.landmark %>
-                </p>
-                <p>
-                    <%= shippingAddress.city %>, <%= shippingAddress.district %>,
-                </p>
-                <p>
-                    <%= shippingAddress.state %>, India - <%= shippingAddress.pincode %>
-                </p>
-                <!-- <p>Phone: <%= shippingAddress.phone || 'N/A' %></p> -->
+        <div class="features">
+            <div class="feature">
+                <img src="/assets/images/return-box.png" alt="Easy Exchange" />
+                <span class="feature-text">EASY EXCHANGE</span>
             </div>
+            <div class="feature">
+                <img src="/assets/images/hand.png" alt="100% Handpicked" />
+                <span class="feature-text">100% HANDPICKED</span>
+            </div>
+            <div class="feature">
+                <img src="/assets/images/quality.png" alt="Assured Quality" />
+                <span class="feature-text">ASSURED QUALITY</span>
+            </div>
+        </div>
 
-            <!-- <div class="delivery-address">
-                <h3>Deliver to</h3>
-                <p>
-                    Arun
-                    <span class="edit-text">edit</span>
-                </p>
-                <p>266, Vengoor, Kidangoor P.O Angamaly /Kidangoor</p>
-                <p>kavala /near snra 66,</p>
-                <p>Surabhi marbles, Angamaly,</p>
-                <p>Angamaly, KERALA</p>
-                <p>India - 683572</p>
-                <p>Phone: 8590260356</p>
-            </div> -->
-        </div>
-    </div>
-
-    <div class="features">
-        <div class="feature">
-            <img src="/assets/images/return-box.png" alt="Easy Exchange" />
-            <span class="feature-text">EASY EXCHANGE</span>
-        </div>
-        <div class="feature">
-            <img src="/assets/images/hand.png" alt="100% Handpicked" />
-            <span class="feature-text">100% HANDPICKED</span>
-        </div>
-        <div class="feature">
-            <img src="/assets/images/quality.png" alt="Assured Quality" />
-            <span class="feature-text">ASSURED QUALITY</span>
-        </div>
-    </div>
-
-    <!-- Retry Payment Modal -->
-    <div id="refund-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <div class="refund-container">
-                <form action="/submit-return-request" method="POST" class="refund-container">
-                    <div class="reason-section">
-                        <h3>Select Reason<span class="required">*</span></h3>
-                        <div class="radio-group">
-                            <label class="radio-option">
-                                <input type="radio" name="reason" value="incorrect-size" required>
-                                Incorrect size delivered
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" name="reason" value="not-required">
-                                Product not required anymore
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" name="reason" value="defective-product">
-                                The product is damaged or defective
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" name="reason" value="wrong-color">
-                                Not the exact color I wanted
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" name="reason" value="style-change">
-                                The product does not meet your expectations
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" name="reason" value="wrong-product">
-                                Wrong product delivered
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" name="reason" value="duplicate">
-                                Not original product
-                            </label>
+        <!-- Retry Payment Modal -->
+        <div id="refund-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <div class="refund-container">
+                    <form action="/submit-return-request" method="POST" class="refund-container">
+                        <div class="reason-section">
+                            <h3>Select Reason<span class="required">*</span></h3>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="reason" value="incorrect-size" required>
+                                    Incorrect size delivered
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="reason" value="not-required">
+                                    Product not required anymore
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="reason" value="defective-product">
+                                    The product is damaged or defective
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="reason" value="wrong-color">
+                                    Not the exact color I wanted
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="reason" value="style-change">
+                                    The product does not meet your expectations
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="reason" value="wrong-product">
+                                    Wrong product delivered
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="reason" value="duplicate">
+                                    Not original product
+                                </label>
+                            </div>
+                            <div class="comments-section">
+                                <textarea name="comments" placeholder="Additional Comments" rows="4"></textarea>
+                            </div>
                         </div>
-                        <div class="comments-section">
-                            <textarea name="comments" placeholder="Additional Comments" rows="4"></textarea>
+                        <div class="refund-footer">
+                            <div class="refund-amount">
+                                <input type="hidden" value="<%= orderDetails._id %>" name="orderId" id="orderId">
+                                <input type="hidden" value="<%= itemId %>" name="itemId" id="itemId">
+                                <span class="label">REFUND DETAILS</span>
+                                <span class="amount">
+                                    <%= orderDetails.total %>
+                                </span>
+                            </div>
+                            <button class="cancel-btn" type="submit">
+                                CANCEL
+                                <span class="arrow">→</span>
+                            </button>
                         </div>
-                    </div>
-                    <div class="refund-footer">
-                        <div class="refund-amount">
-                            <input type="hidden" value="<%= orderDetails._id %>" name="orderId" id="orderId">
-                            <input type="hidden" value="<%= itemId %>" name="itemId" id="itemId">
-                            <span class="label">REFUND DETAILS</span>
-                            <span class="amount">
-                                <%= orderDetails.total %>
-                            </span>
-                        </div>
-                        <button class="cancel-btn" type="submit">
-                            CANCEL
-                            <span class="arrow">→</span>
-                        </button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-
-
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
