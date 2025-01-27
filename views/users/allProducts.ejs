@@ -532,7 +532,7 @@
                         <% if (currentPage> 1) { %>
                             <!-- Previous Button -->
                             <li>
-                                <a href="/allProducts?q=<%= query %>&page=<%= currentPage - 1 %>">
+                                <a href="/allProducts?q=<%= query %>&sort=<%= sortOption %>&priceMin=<%= priceMin %>&priceMax=<%= priceMax %>&brand=<%= brand %>&page=<%= currentPage - 1 %>">
                                     <i class="dlicon arrows-1_tail-left"></i> <!-- Previous icon -->
                                 </a>
                             </li>
@@ -542,7 +542,7 @@
                                 <% for (let i=1; i <=totalPages; i++) { %>
                                     <li>
                                         <a class="<%= currentPage === i ? 'active' : '' %>"
-                                            href="/allProducts?q=<%= query %>&page=<%= i %>">
+                                            href="/allProducts?q=<%= query %>&sort=<%= sortOption %>&priceMin=<%= priceMin %>&priceMax=<%= priceMax %>&brand=<%= brand %>&page=<%= i %>">
                                             <%= i %> <!-- Display the page number -->
                                         </a>
                                     </li>
@@ -551,7 +551,7 @@
                                         <% if (currentPage < totalPages) { %>
                                             <!-- Next Button -->
                                             <li>
-                                                <a href="/allProducts?q=<%= query %>&page=<%= currentPage + 1 %>">
+                                                <a href="/allProducts?q=<%= query %>&sort=<%= sortOption %>&priceMin=<%= priceMin %>&priceMax=<%= priceMax %>&brand=<%= brand %>&page=<%= currentPage + 1 %>">
                                                     <i class="dlicon arrows-1_tail-right"></i> <!-- Next icon -->
                                                 </a>
                                             </li>
