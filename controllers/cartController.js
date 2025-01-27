@@ -166,8 +166,12 @@ const updateCartQuantity = async(req,res)=>{
         item.quantity = Math.max(1, newQuantity);
         await cart.save();
 
-        res.json({ success: true });
-        
+        res.json({ 
+            success: true, 
+            message: 'Cart updated successfully', 
+            newQuantity: item.quantity, 
+            availableStock: product.stock 
+        });
         
     } catch (error) {
         console.error('Error updating cart Qty:', error.message);

@@ -280,14 +280,8 @@
     });
 </script>
 
-<script>function changeQuantity(itemId, change, currentQuantity, maxStock) {
-        const newQuantity = currentQuantity + change;
-
-        if (change > 0 && newQuantity > maxStock) {
-            alert(`Only ${maxStock} items are available in stock.`);
-            return;
-        }
-
+<script>
+    function changeQuantity(itemId, change, currentQuantity) {
         fetch('/update-cart-item', {
             method: 'POST',
             headers: {
@@ -298,14 +292,16 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    window.location.reload(); // reload
+                    window.location.reload();
                 } else {
-                    alert(data.message || "Failed to update quantity.");
+                    Swal.fire(data.message || 'Failed to update quantity.');
                 }
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire('An error occurred while updating the cart.');
+            });
     }
-
 
 </script>
 

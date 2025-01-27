@@ -268,7 +268,7 @@ const allProductsLoad = async (req, res) => {
         const brand = req.query.brand || null;
 
         const currentPage = parseInt(req.query.page) || 1;
-        const itemsPerPage = 4;
+        const itemsPerPage = 16;
 
         const userId = req.user.id;
         let cart = null;
