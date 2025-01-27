@@ -8,7 +8,7 @@ const createCategory = async (req, res) => {
         // if user clicks the create button without entering the data
         if (!name || !description) {
             const categoryDetails = await Category.find();
-            return res.status(400).render('category', {
+            return res.status(400).render('add-category', {
                 category: categoryDetails,
                 success: false,
                 msg: 'Name and description are required'
@@ -20,7 +20,7 @@ const createCategory = async (req, res) => {
 
         if (existingCat) {
             const categoryDetails = await Category.find();
-            return res.status(400).render('category', {
+            return res.status(400).render('add-category', {
                 category: categoryDetails,
                 success: false,
                 msg: 'Category already exists'
