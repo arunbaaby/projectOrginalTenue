@@ -392,7 +392,7 @@ const applyReferralCode = async (req, res) => {
                         transactions: {
                             type: 'Credit',
                             amount: 100,
-                            description: `Referral bonus for referring user ${userId}`
+                            description: `Referral bonus`
                         }
                     }
                 },

@@ -156,14 +156,14 @@ const placeOrder = async (req, res) => {
             if (!wallet || wallet.amount < total) {
                 return res.status(400).json({ success: false, message: 'Insufficient wallet balance. Please select an alternative payment method.' });
             }
-            wallet.amount -= total;
-            wallet.transactions.push({
-                type: 'Debit',
-                amount: total,
-                order: newOrder._id,
-                description: `Payment for order (Order ID: ${newOrder._id})`
-            });
-            await wallet.save();
+            // wallet.amount -= total;
+            // wallet.transactions.push({
+            //     type: 'Debit',
+            //     amount: total,
+            //     order: newOrder._id,
+            //     description: `Payment for order (Order ID: ${newOrder._id})`
+            // });
+            // await wallet.save();
         }
 
         if (paymentMethod === 'Cash on Delivery' && total > 1000) {
@@ -221,6 +221,18 @@ const placeOrder = async (req, res) => {
 
 
         console.log(newOrder);
+
+        if (paymentMethod === 'Wallet') {
+            const wallet = await Wallet.findOne({ user: userId });
+            wallet.amount -= total;
+            wallet.transactions.push({
+                type: 'Debit',
+                amount: total,
+                order: newOrder._id,
+                description: `Order payment`
+            });
+            await wallet.save();
+        }
 
         // await newOrder.save();
 
@@ -551,7 +563,7 @@ const acceptReturnRequest = async (req, res) => {
                 type: 'Credit',
                 amount: refundAmount,
                 order: order._id,
-                description: `Refund for returned item (Order ID: ${order._id})`
+                description: `Refund for returned item`
             });
         } else {
             await Wallet.create({
@@ -562,7 +574,7 @@ const acceptReturnRequest = async (req, res) => {
                     type: 'Credit',
                     amount: refundAmount,
                     order: order._id,
-                    description: `Refund for returned item (Order ID: ${order._id})`
+                    description: `Refund for returned item`
                 }]
             });
         }
