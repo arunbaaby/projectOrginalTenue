@@ -157,6 +157,12 @@ const placeOrder = async (req, res) => {
                 return res.status(400).json({ success: false, message: 'Insufficient wallet balance. Please select an alternative payment method.' });
             }
             wallet.amount -= total;
+            wallet.transactions.push({
+                type: 'Debit',
+                amount: total,
+                order: newOrder._id,
+                description: `Payment for order (Order ID: ${newOrder._id})`
+            });
             await wallet.save();
         }
 
@@ -541,11 +547,23 @@ const acceptReturnRequest = async (req, res) => {
         const wallet = await Wallet.findOne({ user: order.user._id });
         if (wallet) {
             wallet.amount += refundAmount;
+            wallet.transactions.push({
+                type: 'Credit',
+                amount: refundAmount,
+                order: order._id,
+                description: `Refund for returned item (Order ID: ${order._id})`
+            });
         } else {
             await Wallet.create({
                 user: order.user._id,
                 amount: refundAmount,
-                orders: [order._id]
+                orders: [order._id],
+                transactions: [{
+                    type: 'Credit',
+                    amount: refundAmount,
+                    order: order._id,
+                    description: `Refund for returned item (Order ID: ${order._id})`
+                }]
             });
         }
 

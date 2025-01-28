@@ -372,12 +372,30 @@ const applyReferralCode = async (req, res) => {
         const [refereeWallet, referredWallet] = await Promise.all([
             Wallet.findOneAndUpdate(
                 { user: userId },
-                { $inc: { amount: 100 } },
+                {
+                    $inc: { amount: 100 },
+                    $push: {
+                        transactions: {
+                            type: 'Credit',
+                            amount: 100,
+                            description: 'Referral bonus'
+                        }
+                    } 
+                },
                 { new: true, upsert: true } // create if not exists
             ),
             Wallet.findOneAndUpdate(
                 { user: referredByUser._id },
-                { $inc: { amount: 100 } },
+                {
+                    $inc: { amount: 100 },
+                    $push: {
+                        transactions: {
+                            type: 'Credit',
+                            amount: 100,
+                            description: `Referral bonus for referring user ${userId}`
+                        }
+                    }
+                },
                 { new: true, upsert: true } // create if not exists
             )
         ]);

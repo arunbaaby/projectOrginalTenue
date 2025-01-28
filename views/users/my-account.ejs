@@ -345,45 +345,39 @@
                             </div>
                         </div>
                         <div class="tab-pane fade" id="wallet" role="tabpanel">
-                            <div style="font-family: Arial, sans-serif; padding: 20px;">
-                                <div style="color: #4caf50; font-size: 18px; font-weight: bold; padding-bottom: 1%;">TOTAL WALLET BALANCE</div>
-                                <div style="font-size: 36px; font-weight: bold; padding: 1%;">₹ <%= wallet.amount %></div>
-                                <div style="color: #737373; font-size: 14px;">Your total MynCash is worth ₹ <%= wallet.amount %></div>
-                                <div style="color: #737373; font-size: 14px;">You can pay upto 100% of your order value through wallet. Use them on the Payments page during checkout.</div>
-                            </div>
+                                <div style="font-family: Arial, sans-serif; padding: 20px;">
+                                    <div style="color: #4caf50; font-size: 18px; font-weight: bold; padding-bottom: 1%;">TOTAL WALLET BALANCE</div>
+                                    <div style="font-size: 36px; font-weight: bold; padding: 1%;">₹ <%= wallet && wallet.amount ? wallet.amount : 0 %></div>
+                                    <div style="color: #737373; font-size: 14px;">Your total MynCash is worth ₹ <%= wallet && wallet.amount ? wallet.amount : 0 %></div>
+                                    <div style="color: #737373; font-size: 14px;">You can pay upto 100% of your order value through wallet. Use them on the Payments page during checkout.</div>
+                                </div>
                             <div class="myaccount-table table-responsive text-center">
                                 <table class="table table-bordered">
                                     <thead class="thead-light">
                                         <tr>
-                                            <th>Order</th>
+                                            <th>#</th>
+                                            <th>Type</th>
                                             <th>Date</th>
-                                            <th>Status</th>
-                                            <th>Total</th>
-                                            <th>Action</th>
+                                            <th>Description</th>
+                                            <th>Amount</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Aug 22, 2023</td>
-                                            <td>Pending</td>
-                                            <td>$3000</td>
-                                            <td><a href="cart.html" class="check-btn sqr-btn ">View</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>July 22, 2023</td>
-                                            <td>Approved</td>
-                                            <td>$200</td>
-                                            <td><a href="cart.html" class="check-btn sqr-btn ">View</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td>3</td>
-                                            <td>June 12, 2023</td>
-                                            <td>On Hold</td>
-                                            <td>$990</td>
-                                            <td><a href="cart.html" class="check-btn sqr-btn ">View</a></td>
-                                        </tr>
+                                        <% if (transactions.length > 0) { %>
+                                            <% transactions.forEach((transaction, index) => { %>
+                                                <tr>
+                                                    <td><%= index + 1 %></td>
+                                                    <td><%= transaction.type %></td>
+                                                    <td><%= new Date(transaction.date).toLocaleDateString() %></td>
+                                                    <td><%= transaction.description %></td>
+                                                    <td><%= transaction.type === 'Credit' ? '+₹' : '-₹' %><%= transaction.amount.toFixed(2) %></td>
+                                                </tr>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="5" class="text-center">No transaction history available.</td>
+                                            </tr>
+                                        <% } %>
                                     </tbody>
                                 </table>
                             </div>

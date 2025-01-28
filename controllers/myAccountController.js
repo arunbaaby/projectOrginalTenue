@@ -11,28 +11,49 @@ const myAccountLoad = async (req, res) => {
         const userId = req.user.id;
 
         let cart = null;
+        let wallet = null;
+        let transactions = [];
+        let subtotal = 0;
+
         if (userId) {
             cart = await Cart.findOne({ user: userId }).populate('items.product');
-        }
 
-        const wallet = await Wallet.findOne({ user: userId });
+            if (cart) {
+                cart.items = cart.items.filter(item => item.product);
+                subtotal = cart.items.reduce((acc, item) => {
+                    const productPrice = item.product.discountPrice ?? item.product.price ?? 0;
+                    return acc + (productPrice * item.quantity);
+                }, 0);
+            }
 
-        let subtotal = 0;
-        if (cart) {
-            cart.items = cart.items.filter(item => item.product);
-            subtotal = cart.items.reduce((acc, item) => {
-                const productPrice = item.product.discountPrice ?? item.product.price ?? 0;
-                return acc + (productPrice * item.quantity);
-            }, 0);
+            wallet = await Wallet.findOne({ user: userId }).populate('transactions.order');
+            if (!wallet || wallet.amount == null) {
+                wallet = { amount: 0, transactions: [] };
+            }
+
+            transactions = wallet.transactions.map(tx => ({
+                type: tx.type,
+                date: tx.date,
+                description: tx.description || (tx.type === 'Credit' ? 'Wallet Credit' : 'Wallet Debit'),
+                amount: tx.amount
+            }));
         }
 
         if (!userId) {
             return res.render('my-account', { user: null, userAddresses: null });
         }
-        const user = await User.findById(userId)
+
+        const user = await User.findById(userId);
         const userAddresses = await Address.findOne({ user: userId });
 
-        res.render('my-account', { user, userAddresses, cart, subtotal, wallet });
+        res.render('my-account', {
+            user,
+            userAddresses,
+            cart,
+            subtotal,
+            wallet,
+            transactions 
+        });
     } catch (error) {
         console.error('My account load error:', error.message);
         return res.status(400).json({
