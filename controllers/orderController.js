@@ -471,6 +471,12 @@ const cancelOrderItem = async (req, res) => {
             }
 
             wallet.amount += refundAmount;
+            wallet.transactions.push({
+                type: 'Credit',
+                amount: refundAmount,
+                order: orderId,
+                description: `Refund for cancelled item`,
+            });
             wallet.orders.push(orderId);
             await wallet.save();
         }
