@@ -3,13 +3,12 @@ const Product = require('../models/productModel');
 
 const addToCart = async(req,res)=>{
     try {
-        const {productId,quantity,size} = req.body;
+        const {productId,quantity} = req.body;
         const userId = req.user.id;
         console.log(productId);
         console.log(userId);
         
         console.log(`quatity: ${quantity}`);
-        console.log(size);
 
         const product = await Product.findById(productId).populate('category');
         console.log(product);
@@ -23,9 +22,9 @@ const addToCart = async(req,res)=>{
             return res.redirect('/unlisted-product');
         }
 
-        if(!size){
-            return res.redirect(req.get('referer')); // redirects to the previous page and that is the product detials page 
-        }
+        // if(!size){
+        //     return res.redirect(req.get('referer')); // redirects to the previous page and that is the product detials page 
+        // }
 
         // Check if requested quantity is greater than the stock
         if (quantity > product.stock) {
@@ -41,13 +40,13 @@ const addToCart = async(req,res)=>{
                 items: [{
                     product: productId,
                     quantity: quantity,
-                    size: size,
+                    // size: size,
                     is_selected: true // Optional, depending on your use case
                 }]
             });
         }else {
             // cart exists and product with the same size is already in the cart
-            const existingProductIndex = cart.items.findIndex(item => item.product.toString() === productId && item.size === size);
+            const existingProductIndex = cart.items.findIndex(item => item.product.toString() === productId);
 
             if (existingProductIndex !== -1) {
                 console.log('Product exists in cart, updating quantity');
@@ -58,7 +57,6 @@ const addToCart = async(req,res)=>{
                 cart.items.push({
                     product: productId,
                     quantity: quantity,
-                    size: size,
                     is_selected: true
                 });
             }

@@ -141,7 +141,7 @@ const placeOrder = async (req, res) => {
             quantity: item.quantity,
             priceAtPurchase: item.product.price,
             discountPriceAtPurchase: item.product.discountPrice,
-            size: item.size,
+            // size: item.size,
             status: paymentMethod === 'Cash on Delivery' ? 'Processing' : 'Pending'
         }));
 
@@ -414,7 +414,8 @@ const loadViewOrder = async (req, res) => {
         const orderDetails = await Order.findById(orderId).populate('items.product');
 
         if (!orderDetails) {
-            return res.status(404).json({ success: false, msg: 'Order not found' });
+            res.redirect('/404');
+            // return res.status(404).json({ success: false, msg: 'Order not found' });
         }
 
         const shippingAddress = orderDetails.shippingAddress;

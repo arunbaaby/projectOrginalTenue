@@ -84,7 +84,7 @@ const addProductsLoad = async (req, res) => {
 
 const addProduct = async (req, res) => {
     try {
-        const { name, description, brand, gender, price, discountPrice, stock, category, sizes } = req.body;
+        const { name, description, brand, gender, price, discountPrice, stock, category } = req.body;
 
         if (!name || !description || !brand || !gender || !category || !price || !discountPrice || !stock) {
             const categoryDetails = await Category.find({ is_active: true });
@@ -96,8 +96,8 @@ const addProduct = async (req, res) => {
             imagePaths = req.files.map(file => file.filename);
         }
 
-        // If sizes are not provided, set default sizes
-        const defaultSizes = sizes && sizes.length > 0 ? sizes : ['S', 'M', 'L', 'XL', 'XXL'];
+        // // If sizes are not provided, set default sizes
+        // const defaultSizes = sizes && sizes.length > 0 ? sizes : ['S', 'M', 'L', 'XL', 'XXL'];
 
         const newProduct = new Product({
             name,
@@ -109,7 +109,7 @@ const addProduct = async (req, res) => {
             // baseDiscountPrice: discountPrice,
             stock,
             category,
-            sizes: defaultSizes,  // Include sizes
+            // sizes: defaultSizes,  // Include sizes
             images: imagePaths
         });
 
@@ -201,7 +201,7 @@ const editProductLoad = async (req, res) => {
 
 const updateProduct = async (req, res) => {
     try {
-        const { name, description, brand, gender, price, discountPrice, stock, category, sizes } = req.body;
+        const { name, description, brand, gender, price, discountPrice, stock, category } = req.body;
         console.log(name, description, brand, gender, price, discountPrice, stock, category);
 
         const id = req.query.id;
@@ -233,8 +233,8 @@ const updateProduct = async (req, res) => {
             imagePaths = [...imagePaths, ...newImagePaths];
         }
 
-        // set default sizes
-        const updatedSizes = sizes && sizes.length > 0 ? sizes : existingProduct.sizes.length > 0 ? existingProduct.sizes : ['S', 'M', 'L', 'XL', 'XXL'];
+        // // set default sizes
+        // const updatedSizes = sizes && sizes.length > 0 ? sizes : existingProduct.sizes.length > 0 ? existingProduct.sizes : ['S', 'M', 'L', 'XL', 'XXL'];
 
         await Product.findByIdAndUpdate(id, {
             $set: {
@@ -246,7 +246,7 @@ const updateProduct = async (req, res) => {
                 discountPrice: discountPrice,
                 category: category,
                 stock: stock,
-                sizes: updatedSizes, 
+                // sizes: updatedSizes, 
                 images: imagePaths
             }
         });

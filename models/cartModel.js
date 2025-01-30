@@ -24,10 +24,10 @@ const cartSchema = new mongoose.Schema({
                 min: 1,
                 default: 1
             },
-            size: {
-                type: String,
-                enum: ['S', 'M', 'L', 'XL', 'XXL']
-            },
+            // size: {
+            //     type: String,
+            //     enum: ['S', 'M', 'L', 'XL', 'XXL']
+            // },
             is_selected: {
                 type: Boolean,
                 default: false

@@ -18,10 +18,11 @@ const orderSchema = new mongoose.Schema({
                 type: ObjectId,
                 ref: 'Product',
                 required: true
-            },size:{
-                type:String,
-                required:true
             },
+            // size:{
+            //     type:String,
+            //     required:true
+            // },
             quantity: {
                 type: Number,
                 required: true,
