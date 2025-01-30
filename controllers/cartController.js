@@ -1,59 +1,56 @@
 const Cart = require('../models/cartModel');
 const Product = require('../models/productModel');
 
-const addToCart = async(req,res)=>{
+const addToCart = async (req, res) => {
     try {
-        const {productId,quantity} = req.body;
+        let { productId, quantity } = req.body;
         const userId = req.user.id;
-        console.log(productId);
-        console.log(userId);
         
-        console.log(`quatity: ${quantity}`);
+        console.log("Product ID:", productId);
+        console.log("User ID:", userId);
+
+        quantity = parseInt(quantity) || 1; // Ensure quantity is an integer
+        if (quantity <= 0) {
+            return res.status(400).json({ success: false, message: "Invalid quantity selected." });
+        }
+
+        console.log(`Quantity: ${quantity}`);
 
         const product = await Product.findById(productId).populate('category');
         console.log(product);
-        
 
         if (!product) {
-            return res.status(404).json({ message: 'Product not found' });
+            return res.status(404).json({ success: false, message: "Product not found." });
         }
 
         if (!product.is_active || (product.category && !product.category.is_active)) {
-            return res.redirect('/unlisted-product');
+            return res.status(403).json({ success: false, message: "This product is unavailable." });
         }
 
-        // if(!size){
-        //     return res.redirect(req.get('referer')); // redirects to the previous page and that is the product detials page 
-        // }
-
-        // Check if requested quantity is greater than the stock
         if (quantity > product.stock) {
-            return res.redirect(req.get('referer'));
-            // return res.status(400).json({ message: `Only ${product.stock} units of this product are available` });
+            return res.status(400).json({ success: false, message: `Only ${product.stock} units available.` });
         }
-        
-        let cart = await Cart.findOne({user:userId});
-        if(!cart){
-            console.log('no cart exist');
+
+        let cart = await Cart.findOne({ user: userId });
+
+        if (!cart) {
+            console.log('No cart exists, creating new cart.');
             cart = new Cart({
                 user: userId,
                 items: [{
                     product: productId,
                     quantity: quantity,
-                    // size: size,
-                    is_selected: true // Optional, depending on your use case
+                    is_selected: true 
                 }]
             });
-        }else {
-            // cart exists and product with the same size is already in the cart
+        } else {
             const existingProductIndex = cart.items.findIndex(item => item.product.toString() === productId);
 
             if (existingProductIndex !== -1) {
-                console.log('Product exists in cart, updating quantity');
-                cart.items[existingProductIndex].quantity += parseInt(quantity);
+                console.log('Product exists in cart, updating quantity.');
+                cart.items[existingProductIndex].quantity += quantity;
             } else {
-                // same product don't exist So push to the items array
-                console.log('Adding new product to cart');
+                console.log('Adding new product to cart.');
                 cart.items.push({
                     product: productId,
                     quantity: quantity,
@@ -63,13 +60,87 @@ const addToCart = async(req,res)=>{
         }
 
         await cart.save();
-        res.redirect('/cart');
-        
+        return res.json({ success: true, message: "Product added to cart." });
+
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error', error });
+        console.error("Error adding to cart:", error);
+        return res.status(500).json({ success: false, message: "Internal server error.", error });
     }
-}
+};
+
+// const addToCart = async(req,res)=>{
+//     try {
+//         const {productId,quantity} = req.body;
+//         const userId = req.user.id;
+//         console.log(productId);
+//         console.log(userId);
+
+//         if(!quantity){
+//             quantity = 1;
+//         }
+        
+//         console.log(`quatity: ${quantity}`);
+
+//         const product = await Product.findById(productId).populate('category');
+//         console.log(product);
+        
+
+//         if (!product) {
+//             return res.status(404).json({ message: 'Product not found' });
+//         }
+
+//         if (!product.is_active || (product.category && !product.category.is_active)) {
+//             return res.redirect('/unlisted-product');
+//         }
+
+//         // if(!size){
+//         //     return res.redirect(req.get('referer')); // redirects to the previous page and that is the product detials page 
+//         // }
+
+//         // Check if requested quantity is greater than the stock
+//         if (quantity > product.stock) {
+//             return res.redirect(req.get('referer'));
+//             // return res.status(400).json({ message: `Only ${product.stock} units of this product are available` });
+//         }
+        
+//         let cart = await Cart.findOne({user:userId});
+//         if(!cart){
+//             console.log('no cart exist');
+//             cart = new Cart({
+//                 user: userId,
+//                 items: [{
+//                     product: productId,
+//                     quantity: quantity,
+//                     // size: size,
+//                     is_selected: true // Optional, depending on your use case
+//                 }]
+//             });
+//         }else {
+//             // cart exists and product with the same size is already in the cart
+//             const existingProductIndex = cart.items.findIndex(item => item.product.toString() === productId);
+
+//             if (existingProductIndex !== -1) {
+//                 console.log('Product exists in cart, updating quantity');
+//                 cart.items[existingProductIndex].quantity += parseInt(quantity);
+//             } else {
+//                 // same product don't exist So push to the items array
+//                 console.log('Adding new product to cart');
+//                 cart.items.push({
+//                     product: productId,
+//                     quantity: quantity,
+//                     is_selected: true
+//                 });
+//             }
+//         }
+
+//         await cart.save();
+//         res.redirect('/cart');
+        
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ message: 'Internal server error', error });
+//     }
+// }
 
 
 const loadCart = async (req, res) => {

@@ -236,15 +236,15 @@
                 const data = await response.json(); // Parse the JSON response
                 if (response.ok) {
                     // Success feedback (e.g., change the icon or show a toast)
-                    alert(data.message || 'Product added to wishlist');
+                    Swal.fire(data.message || 'Product added to wishlist');
                     button.querySelector('i').classList.add('added'); // Add a class for styling
                 } else {
                     // Handle errors
-                    alert(data.error || 'Failed to add to wishlist');
+                    Swal.fire(data.error || 'Failed to add to wishlist');
                 }
             } catch (err) {
                 console.error(err);
-                alert('An error occurred. Please try again.');
+                Swal.fire('An error occurred. Please try again.');
             }
         });
     });
@@ -694,6 +694,95 @@
         }
     });
 </script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".add-to-cart").forEach(button => {
+            button.addEventListener("click", function (event) {
+                console.log('add-to-cart clicked')
+                event.preventDefault();
+                const productId = this.getAttribute("data-product-id");
+    
+                fetch("/add-to-cart", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ productId, quantity: 1 }) // Default quantity = 1
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire("Product added to cart!").then(()=>{
+                            window.location.href = "/cart";
+                        });
+                        
+                    } else {
+                        Swal.fire(data.message || "Failed to add product.");
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+            });
+        });
+    });
+    </script>
+    <script>
+        document.getElementById("addToCartButton").addEventListener("click", async function (event) {
+            event.preventDefault();
+    
+            const form = this.closest("form");
+            const productId = form.querySelector("input[name='productId']").value;
+            const quantity = form.querySelector("#quantityInput").value.trim();
+    
+            if (isNaN(quantity) || quantity <= 0) {
+                Swal.fire({
+                    title: "Invalid Quantity",
+                    text: "Please enter a valid quantity.",
+                    icon: "warning",
+                    confirmButtonText: "OK"
+                });
+                return;
+            }
+    
+            try {
+                const response = await fetch("/add-to-cart", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ productId, quantity })
+                });
+    
+                const data = await response.json();
+    
+                if (response.ok) {
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Product added to cart.",
+                        icon: "success",
+                        confirmButtonText: "Go to Cart"
+                    }).then(() => {
+                        window.location.href = "/cart";
+                    });
+                } else {
+                    Swal.fire({
+                        title: "Error!",
+                        text: data.message || "Failed to add product.",
+                        icon: "error",
+                        confirmButtonText: "OK"
+                    });
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                Swal.fire({
+                    title: "Error!",
+                    text: "Something went wrong. Please try again.",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+            }
+        });
+    </script>
+    
 
 </body>
 
