@@ -7,6 +7,7 @@ const Product = require('../models/productModel');
 const Cart = require('../models/cartModel');
 
 const {calculateAndApplyOffer} = require('../helpers/offerHelper');
+const {getRecommendedProducts} = require('../helpers/productFeatureHelper');
 
 //all products for the admin side
 const productLoad = async (req, res) => {
@@ -408,6 +409,7 @@ const productDetailsLoad = async (req, res) => {
         const id = req.query.id;
         const userId = req.user.id;
         const product = await Product.findById(id).populate('category');
+        const recommendedProducts = await getRecommendedProducts(id);
         let cart = null;
 
         if (userId) {
@@ -448,7 +450,7 @@ const productDetailsLoad = async (req, res) => {
                 _id: { $ne: product._id }//avoid the same product(main product);
             }).limit(5);
         }
-        res.render('product-details', { product, relatedProducts, products, cart, subtotal });
+        res.render('product-details', { product, relatedProducts, products, cart, subtotal, recommendedProducts });
     } catch (error) {
         console.error(`Error loading productDetails: ${error.message}`);
         res.status(500).send('Internal Server Error');

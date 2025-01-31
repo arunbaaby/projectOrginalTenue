@@ -113,11 +113,36 @@ const getMostSoldProducts = async () => {
     }
 };
 
+const getRecommendedProducts = async (productId, limit = 5) => {
+    try {
+        const product = await Product.findById(productId);
+        if (!product) {
+            throw new Error("Product not found");
+        }
+
+        const recommendedProducts = await Product.find({
+            _id: { $ne: productId }, 
+            category: product.category, 
+            brand: product.brand, 
+            is_active: true, 
+            stock: { $gt: 0 } 
+        })
+        .limit(limit) 
+        .select("name images price discountPrice stock") 
+        .lean();
+
+        return recommendedProducts;
+    } catch (error) {
+        console.error("Error fetching recommended products:", error);
+        return [];
+    }
+};
 
 module.exports = {
     getNewArrivals,
     getNewCategoriesWithLatestProducts,
     getFeaturedProducts,
     getProductsWithMostDiscount,
-    getMostSoldProducts
+    getMostSoldProducts,
+    getRecommendedProducts
 }
