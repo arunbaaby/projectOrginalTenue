@@ -1,13 +1,16 @@
 const Product = require('../models/productModel');
 const Wishlist = require('../models/wishlistModel');
+const Cart = require('../models/cartModel');
 
 const loadWishlist = async (req, res) => {
     try {
       const userId = req.user.id;
       const wishlist = await Wishlist.findOne({ user: userId }).populate('products');
+      const cart = await Cart.findOne({ user: userId }).populate('items.product');
   
       res.render('wishlist', {
         wishlist: wishlist ? wishlist.products : [], // Pass the products array
+        cart
       });
     } catch (error) {
       console.error(error);

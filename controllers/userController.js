@@ -24,8 +24,11 @@ const { log } = require('console');
 const loadAuth = async (req, res) => {
     try {
         const message = req.query.message || null;
+        const cart = {
+            items: []
+        };
 
-        res.render('auth', { message });
+        res.render('auth', { message, cart });
     } catch (error) {
         console.log(error.message);
     }

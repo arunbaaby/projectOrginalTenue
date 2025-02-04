@@ -393,13 +393,14 @@ const loadMyOrders = async (req, res) => {
     try {
         const userId = req.user.id;
         let orders = await Order.find({ user: userId }).populate('items.product').sort({ _id: -1 });
+        const cart = await Cart.findOne({ user: userId }).populate('items.product');
 
         // Filter out orders with any null products: when product deleted from the db
         orders = orders.filter(order =>
             order.items.every(item => item.product !== null)
         );
 
-        res.render('my-orders', { orders });
+        res.render('my-orders', { orders, cart });
     } catch (error) {
         console.error('Error loading the order confirmation page:', error.message);
         res.status(500).json({ success: false, msg: error.message });
@@ -410,8 +411,10 @@ const loadMyOrders = async (req, res) => {
 
 const loadViewOrder = async (req, res) => {
     try {
+        const userId = req.user.id;
         const orderId = req.query.orderId;
         const orderDetails = await Order.findById(orderId).populate('items.product');
+        const cart = await Cart.findOne({ user: userId }).populate('items.product');
 
         if (!orderDetails) {
             res.redirect('/404');
@@ -421,7 +424,7 @@ const loadViewOrder = async (req, res) => {
         const shippingAddress = orderDetails.shippingAddress;
         const itemId = orderDetails.items[0] ? orderDetails.items[0]._id : null;  // first item id
 
-        res.render('view-order', { orderDetails, shippingAddress, itemId });
+        res.render('view-order', { orderDetails, shippingAddress, itemId, cart });
     } catch (error) {
         console.error('Error loading the view-order page:', error.message);
         res.status(500).json({ success: false, msg: 'Failed to load view-order page' });
