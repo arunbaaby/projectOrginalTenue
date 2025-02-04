@@ -28,7 +28,9 @@ const loadAuth = async (req, res) => {
             items: []
         };
 
-        res.render('auth', { message, cart });
+        const subtotal = null;
+
+        res.render('auth', { message, cart, subtotal });
     } catch (error) {
         console.log(error.message);
     }

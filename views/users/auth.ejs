@@ -1,4 +1,34 @@
 <%- include ('../layouts/header') %>
+    <div class="header-small-mobile section-padding-1">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-6">
+                    <div class="mobile-logo logo-width">
+                        <a href="/home">
+                            <img alt="" src="assets/images/logo/logo.png">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="mobile-header-right-wrap">
+                        <div class="header-right-wrap header-right-flex">
+                            <div class="same-style cart-wrap">
+                                <a href="#" class="cart-active">
+                                    <i class="dlicon shopping_bag-20"></i>
+                                    <span class="count-style"><%= cart.items.length %></span>
+                                </a>
+                            </div>
+                            <div class="same-style header-off-canvas">
+                                <a class="header-aside-button" href="#">
+                                    <i class="dlicon ui-3_menu-left"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- search start -->
     <div class="search-content-wrap main-search-active">
         <a class="search-close"><i class="dlicon ui-1_simple-remove"></i></a>
@@ -17,34 +47,36 @@
             <div class="cart-content">
                 <h3>Shopping Cart</h3>
                 <ul>
-                    <li class="single-product-cart">
-                        <div class="cart-img">
-                            <a href="#"><img src="/assets/images/cart/cart-1.jpg" alt=""></a>
-                        </div>
-                        <div class="cart-title">
-                            <h4><a href="#">Bejewelled velvet sandals</a></h4>
-                            <span> 1 × $49.00 </span>
-                        </div>
-                        <div class="cart-delete">
-                            <a href="#">×</a>
-                        </div>
-                    </li>
-                    <li class="single-product-cart">
-                        <div class="cart-img">
-                            <a href="#"><img src="/assets/images/cart/cart-2.jpg" alt=""></a>
-                        </div>
-                        <div class="cart-title">
-                            <h4><a href="#">Contrast faux fur jacket</a></h4>
-                            <span> 1 × $49.00 </span>
-                        </div>
-                        <div class="cart-delete">
-                            <a href="#">×</a>
-                        </div>
-                    </li>
+                    <% if (cart && cart.items.length> 0) { %>
+                        <% cart.items.forEach(item=> { %>
+                            <li class="single-product-cart">
+                                <div class="cart-img">
+                                    <a href="#">
+                                        <img src="/admin/productImages/<%= item.product.images && item.product.images[0] %>"
+                                            alt="<%= item.product.name %>" height="90px" width="90px">
+                                    </a>
+                                </div>
+                                <div class="cart-title">
+                                    <h4><a href="#">
+                                            <%= item.product.name %>
+                                        </a></h4>
+                                    <span>
+                                        <%= item.quantity %> × $<%= item.product.discountPrice || item.product.price %>
+                                    </span>
+                                </div>
+                                <div class="cart-delete">
+                                    <a href="#">×</a>
+                                </div>
+                            </li>
+                            <% }) %>
+                                <% } else { %>
+                                    <li>Your cart is empty</li>
+                                    <% } %>
                 </ul>
                 <div class="cart-total">
-                    <h4>Subtotal: <span>$170.00</span></h4>
+                    <h4>Subtotal: <span>₹<%= subtotal %></span></h4>
                 </div>
+                
                 <div class="cart-checkout-btn">
                     <a class="btn-hover cart-btn-style" href="/cart">view cart</a>
                     <a class="no-mrg btn-hover cart-btn-style" href="/order">checkout</a>
@@ -288,13 +320,15 @@
                                     </div>
                                 </div>
                                 <div class="error-msg">
-                                    <% if (typeof loginErrors !== 'undefined' && loginErrors.length > 0) { %>
+                                    <% if (typeof loginErrors !=='undefined' && loginErrors.length> 0) { %>
                                         <ul>
                                             <% loginErrors.forEach(function(error) { %>
-                                                <li><%= error.msg %></li>
-                                            <% }); %>
+                                                <li>
+                                                    <%= error.msg %>
+                                                </li>
+                                                <% }); %>
                                         </ul>
-                                    <% } %>
+                                        <% } %>
                                 </div>
                                 <a href="/forgot-password">Lost your password?</a>
                             </form>
@@ -338,19 +372,21 @@
                                     <a class="google" href="/auth/google"><i class="fa fa-google"></i></a>
                                 </div>
                                 <div class="error-msg">
-                                    <% if (typeof registerErrors !== 'undefined' && registerErrors.length > 0) { %>
+                                    <% if (typeof registerErrors !=='undefined' && registerErrors.length> 0) { %>
                                         <ul>
                                             <% registerErrors.forEach(function(error) { %>
-                                                <li><%= error.msg %></li>
-                                            <% }); %>
+                                                <li>
+                                                    <%= error.msg %>
+                                                </li>
+                                                <% }); %>
                                         </ul>
-                                    <% } %>
+                                        <% } %>
 
-                                    <% if (typeof message !== 'undefined' && message) { %>
-                                        <div class="success-msg">
-                                            <%= message %>
-                                        </div>
-                                    <% } %>
+                                            <% if (typeof message !=='undefined' && message) { %>
+                                                <div class="success-msg">
+                                                    <%= message %>
+                                                </div>
+                                                <% } %>
                                 </div>
                             </form>
                         </div>
@@ -383,11 +419,11 @@
         }
     </style>
     <script>
-        window.onpageshow = function(event) {
+        window.onpageshow = function (event) {
             if (event.persisted) {//if true='loaded from cache : false=freshly loaded page'
                 window.location.reload();
             }
         };
     </script>
-    
+
     <%- include ('../layouts/footer') %>
