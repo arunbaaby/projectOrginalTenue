@@ -753,17 +753,8 @@
                                                 </div>
                                                 <div class="your-order-middle">
                                                     <ul>
-                                                        <% let subtotal=0; let total=0; let deliveryCharges=50; %>
-                                                            <% items.forEach(item=> { %>
-                                                                <li style="display: flex; align-items: center;">
-                                                                    <%= item.product.name %> X <%= item.quantity %>
-                                                                            <span style="margin-left: auto;">₹<%=
-                                                                                    (item.product.discountPrice *
-                                                                                    item.quantity).toFixed(2) %></span>
-                                                                </li>
-                                                                <% subtotal +=item.product.price * item.quantity; total
-                                                                    +=item.product.discountPrice * item.quantity; %>
-                                                                    <% }); %>
+                                                        <li>Subtotal <span>₹<%= subtotal.toFixed(2) %>
+                                                            </span></li>
                                                     </ul>
                                                 </div>
                                                 <!-- <div class="your-order-info order-subtotal">
@@ -773,7 +764,13 @@
                                                 </div> -->
                                                 <div class="your-order-info order-delivery">
                                                     <ul>
-                                                        <li>Delivery Charges <span>₹<%= deliveryCharges.toFixed(2) %>
+                                                        <li style="color: green;">Total Discount <span>-₹<%= totalDiscount.toFixed(2) %>
+                                                            </span></li>
+                                                    </ul>
+                                                </div>
+                                                <div class="your-order-info order-delivery">
+                                                    <ul>
+                                                        <li style="color: red;">Delivery Charges <span>+₹<%= cart.deliveryCharges.toFixed(2) %>
                                                             </span></li>
                                                     </ul>
                                                 </div>
@@ -790,9 +787,7 @@
                                                             <ul>
                                                                 <!-- Deduct couponDiscount from total -->
                                                                 <li>Total
-                                                                    <span>₹<%= (total + deliveryCharges -
-                                                                            (cart.couponDiscount || 0)).toFixed(2) %>
-                                                                            </span>
+                                                                    <span>₹<%= total.toFixed(2) %></span>
                                                                 </li>
                                                             </ul>
                                                         </div>

@@ -68,7 +68,21 @@ const loadCheckout = async (req, res) => {
             // return res.status(400).json('no items in the cart');
         }
 
-        const validItems = cart.items.filter(item => item.product);
+        cart.items = cart.items.filter(item => item.product);
+
+        const subtotal = cart.items.reduce((acc, item) => {
+            return acc + item.product.price * item.quantity;
+        }, 0);
+
+        const itemsTotal = cart.items.reduce((acc, item) => {
+            return acc + (item.product.discountPrice * item.quantity);
+        }, 0);
+
+        const deliveryCharges = cart.deliveryCharges || 50;
+        const couponDiscount = cart.couponDiscount || 0;
+        const totalDiscount = subtotal-itemsTotal || 0;
+        
+        const total = Math.max(0, itemsTotal + deliveryCharges - couponDiscount);
 
         // Fetch active and valid coupons
         const today = new Date();
@@ -77,7 +91,18 @@ const loadCheckout = async (req, res) => {
             expirationDate: { $gte: today },
         });
 
-        res.render('checkout', { userAddresses, cart, user, items: validItems, availableCoupons });
+        res.render('checkout', { 
+            userAddresses, 
+            cart, 
+            user, 
+            items: cart.items, 
+            availableCoupons, 
+            subtotal, 
+            total,
+            totalDiscount, 
+            deliveryCharges, 
+            couponDiscount 
+        });
     } catch (error) {
         console.error('Error loading the checkout page:', error.message);
         return res.status(400).json({
