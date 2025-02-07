@@ -8,9 +8,14 @@ const loadWishlist = async (req, res) => {
       const wishlist = await Wishlist.findOne({ user: userId }).populate('products');
       const cart = await Cart.findOne({ user: userId }).populate('items.product');
   
+      const subtotal = cart.items.reduce((acc, item) => {
+        return acc + item.product.price * item.quantity;
+      }, 0);
+
       res.render('wishlist', {
         wishlist: wishlist ? wishlist.products : [], // Pass the products array
-        cart
+        cart,
+        subtotal
       });
     } catch (error) {
       res.status(500).json({ error: 'Error loading the wishlist' });
