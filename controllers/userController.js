@@ -18,7 +18,6 @@ const { generateAccessToken } = require('../utils/generateAccessToken');
 
 const jwt = require('jsonwebtoken');
 const { token } = require('morgan');
-const { log } = require('console');
 
 // First we have to show the register page..async method
 const loadAuth = async (req, res) => {
@@ -32,7 +31,6 @@ const loadAuth = async (req, res) => {
 
         res.render('auth', { message, cart, subtotal });
     } catch (error) {
-        console.log(error.message);
     }
 }
 
@@ -50,8 +48,6 @@ const generateAndSendOTP = async (userData) => {
         { otp: g_otp, timestamp: new Date() },
         { upsert: true, new: true, setDefaultsOnInsert: true }
     );
-
-    console.log('generateAndSendOTP 3');
 
     const msg = `<p>Hi ${userData.name}, please use the following OTP to verify your account: <b>${g_otp}</b></p>`;
     await mailer.sendMail(userData.email, 'OTP Verification', msg);
@@ -105,7 +101,6 @@ const userRegister = async (req, res) => {
 
         return res.redirect(`/verify-otp?email=${encodeURIComponent(email)}`);
     } catch (error) {
-        console.log(`Registration error: ${error.message}`);
         return res.status(400).render('auth', {
             errors: [{ msg: error.message }],
             success: false,
@@ -154,7 +149,6 @@ const sendOtp = async (req, res) => {
             msg: 'OTP has been sent to your email',
         });
     } catch (error) {
-        console.log(`Send OTP error: ${error.message}`);
         return res.status(400).json({
             success: false,
             msg: error.message
@@ -192,9 +186,6 @@ const verifyOtp = async (req, res) => {
 
         const accessToken = generateAccessToken(userData._id); // Pass `userData._id`
 
-
-        console.log('Generated token:', accessToken);
-
         res.cookie('jwt', accessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
@@ -205,7 +196,6 @@ const verifyOtp = async (req, res) => {
 
         return res.status(200).json({ success: true, message: 'User registration successful' });
     } catch (error) {
-        console.error('Verify OTP Error:', error.message);
         return res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
 };
@@ -232,7 +222,6 @@ const resendOtp = async (req, res) => {
 
         return res.status(200).json({ success: true, message: 'A new OTP has been sent to your email.' });
     } catch (error) {
-        console.error('Resend OTP Error:', error.message);
         return res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
 };
@@ -250,11 +239,9 @@ const loginUser = async (req, res) => {
         }
 
         const { email, password } = req.body;
-        console.log('Email:', email);
 
         const userData = await User.findOne({ email });
         if (!userData) {
-            console.log('User not found');
             return res.status(401).render('auth', {
                 loginErrors: [{ msg: 'User not found' }],  // Custom error for login
                 registerErrors: [],                                           // No registration errors
@@ -264,7 +251,6 @@ const loginUser = async (req, res) => {
         }
 
         if (userData.is_blocked === 1) {
-            console.log('User is blocked');
             return res.status(401).render('auth', {
                 loginErrors: [{ msg: 'User is blocked' }],  // Custom error for login
                 registerErrors: [],                                           // No registration errors
@@ -286,7 +272,6 @@ const loginUser = async (req, res) => {
         const passwordMatch = userData.password && await bcrypt.compare(password, userData.password);
 
         if (!passwordMatch) {
-            console.log('Password mismatch');
             return res.status(401).render('auth', {
                 loginErrors: [{ msg: 'Email and Password are incorrect' }],  // Custom error for login
                 registerErrors: [],                                           // No registration errors
@@ -297,20 +282,15 @@ const loginUser = async (req, res) => {
 
         const accessToken = generateAccessToken(userData._id); // Pass `userData._id`
 
-
-        console.log('Generated token:', accessToken);
-
         res.cookie('jwt', accessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             maxAge: 2 * 60 * 60 * 1000, // 2 hours
         });
 
-        console.log('Login successful:', email);
         return res.redirect('/home');
 
     } catch (error) {
-        console.error('Login Error:', error.message);
         return res.status(400).json({
             success: false,
             msg: error.message
@@ -344,8 +324,10 @@ const loadUserHome = async (req, res) => {
 
         res.render('userHome', { newArrivals, newCategoryProduct, featuredProducts, mostDiscountProduct, mostDiscountProduct, mostSoldProducts, cart, subtotal});
     } catch (error) {
-        console.log(error);
-
+        return res.status(400).json({
+            success: false,
+            msg: error.message
+        });
     }
 }
 
@@ -381,7 +363,6 @@ const googleAuthCallback = (err, user, info, req, res, next) => {
         // Redirect to the home page after successful authentication
         res.redirect('/home');
     } catch (error) {
-        console.error('Google Auth Callback Error:', error);
         return res.status(500).render('auth', {
             loginErrors: [{ msg: 'Authentication error. Please try again later.' }],
             registerErrors: [],
@@ -403,7 +384,6 @@ const logoutUser = async (req, res) => {
 
         res.redirect('/auth');
     } catch (error) {
-        console.error('Logout Error:', error.message);
         return res.status(400).json({
             success: false,
             msg: error.message
@@ -416,7 +396,6 @@ const loadForgotPassword = async (req, res) => {
     try {
         res.render('forgotPassword');
     } catch (error) {
-        console.error('Logout Error:', error.message);
         return res.status(400).json({
             success: false,
             msg: error.message
@@ -427,10 +406,8 @@ const loadForgotPassword = async (req, res) => {
 const forgotPasswordLink = async (req, res) => {
     try {
         const userEmail = req.body.email;
-        console.log(userEmail);
 
         const user = await User.findOne({ email: userEmail });
-        console.log(user);
 
         if (!user) {
             return res.status(404).render("forgotPassword", { userNotFound: true });
@@ -438,8 +415,6 @@ const forgotPasswordLink = async (req, res) => {
 
         // random token
         const resetToken = crypto.randomBytes(32).toString("hex");
-        console.log(resetToken);
-
 
         // Set token and expiration on the user's record
         user.resetPasswordToken = resetToken;
@@ -447,8 +422,6 @@ const forgotPasswordLink = async (req, res) => {
         await user.save();
 
         const resetLink = `${process.env.BASE_URL}/reset-password?token=${resetToken}`;
-        console.log(resetLink);
-
 
         // email content
         const subject = "Password Reset Request";
@@ -470,7 +443,6 @@ const forgotPasswordLink = async (req, res) => {
 
 const resetPassword = async (req, res) => {
     const token = req.query.token;
-    console.log("reset:", token);
     try {
         const user = await User.findOne({
             resetPasswordToken: token,
@@ -483,7 +455,6 @@ const resetPassword = async (req, res) => {
 
         return res.render("reset-password", { token, invalidToken: false });
     } catch (error) {
-        console.error("Error finding user by token:", error);
         res.status(500).send("Server error");
     }
 };
@@ -512,7 +483,6 @@ const newPasswordUpdate = async (req, res) => {
 
         return res.redirect('/auth');
     } catch (error) {
-        console.error("Error resetting password:", error);
         return res.render("reset-password", { token, serverError: true });
     }
 };
@@ -521,7 +491,6 @@ const load404 = async (req, res) => {
     try {
         res.render('404');
     } catch (error) {
-        console.error("Error resetting password:", error);
         return res.render("reset-password", { token, serverError: true });
     }
 }
@@ -530,7 +499,6 @@ const loadUnlistedProduct = async(req,res)=>{
     try {
         res.render('unlisted-product');
     } catch (error) {
-        console.error("Error resetting password:", error);
         return res.render("reset-password", { token, serverError: true });
     }
 }
