@@ -375,12 +375,16 @@ const loadMyOrders = async (req, res) => {
         let orders = await Order.find({ user: userId }).populate('items.product').sort({ _id: -1 });
         const cart = await Cart.findOne({ user: userId }).populate('items.product');
 
+        const subtotal = cart.items.reduce((acc, item) => {
+            return acc + item.product.price * item.quantity;
+        }, 0);
+
         // Filter out orders with any null products: when product deleted from the db
         orders = orders.filter(order =>
             order.items.every(item => item.product !== null)
         );
 
-        res.render('my-orders', { orders, cart });
+        res.render('my-orders', { orders, cart, subtotal });
     } catch (error) {
         res.status(500).json({ success: false, msg: error.message });
     }

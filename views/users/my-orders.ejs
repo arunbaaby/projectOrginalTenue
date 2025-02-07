@@ -1,50 +1,142 @@
 <%- include ('../layouts/header') %>
-<div class="orders-wrapper">
-    <div class="orders-container">
-        <div class="orders-header">
-            <h1>My Orders</h1>
-            <p>Track your open orders & view the summary of your past orders</p>
-        </div>
-
-        <% orders.forEach(order => { %>
-            <div class="order-card">
-                <!-- Order Header -->
-                <div class="order-card-header">
-                    <div class="order-id">Order#: <%= order.orderNumber %></div>
+    <div class="header-small-mobile section-padding-1">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-6">
+                    <div class="mobile-logo logo-width">
+                        <a href="index.html">
+                            <img alt="" src="assets/images/logo/logo.png">
+                        </a>
+                    </div>
                 </div>
-                <!-- Order Items -->
-                <% order.items.forEach(item => { %>
-                    <div class="order-details">
-                        <!-- Product Image -->
-                        <% if (item.product.images && item.product.images.length > 0) { %>
-                            <img src="/admin/productImages/<%= item.product.images[0] %>" alt="<%= item.product.name %>"
-                                 class="product-image" height="84" width="84">
-                        <% } else { %>
-                            <img src="defaultImage.jpg" alt="No Image" class="product-image" height="84" width="84">
-                        <% } %>
-        
-                        <!-- Product Info -->
-                        <div class="product-info">
-                            <div class="order-status">Status: <%= item.status %></div>
-                            <h3 class="product-name"><%= item.product.name %></h3>
-                            <!-- <div class="product-size">Size: <%= item.size %></div> -->
-                            <div class="product-quantity">Quantity: <%= item.quantity %></div>
-                            <div class="product-price">
-                                ₹<%= item.discountPriceAtPurchase * item.quantity %> (Includes Service Charge)
+                <div class="col-6">
+                    <div class="mobile-header-right-wrap">
+                        <div class="header-right-wrap header-right-flex">
+                            <div class="same-style cart-wrap">
+                                <a href="#" class="cart-active">
+                                    <i class="dlicon shopping_bag-20"></i>
+                                    <span class="count-style">02</span>
+                                </a>
+                            </div>
+                            <div class="same-style header-off-canvas">
+                                <a class="header-aside-button" href="#">
+                                    <i class="dlicon ui-3_menu-left"></i>
+                                </a>
                             </div>
                         </div>
-        
-                        <!-- View Order Link -->
-                        <a href="/view-order?orderId=<%= order._id %>" class="view-order-link">View Order</a>
                     </div>
-                <% }) %>
+                </div>
             </div>
-        <% }) %>
-        
-        <div class="button-container">
-            <a href="/allProducts" class="button secondary-button">CONTINUE SHOPPING</a>
-            <a href="/my-account" class="button primary-button">MY ACCOUNT</a>
         </div>
     </div>
-</div>
-<%- include ('../layouts/footer') %>
+    <!-- search start -->
+    <div class="search-content-wrap main-search-active">
+        <a class="search-close"><i class="dlicon ui-1_simple-remove"></i></a>
+        <div class="search-content">
+            <p>Start typing and press Enter to search</p>
+            <form class="search-form" action="/allProducts" method="GET">
+                <input type="text" name="q" placeholder="Search">
+                <button class="button-search" type="submit"><i class="dlicon ui-1_zoom"></i></button>
+            </form>
+        </div>
+    </div>
+    <!-- mini cart start -->
+    <div class="sidebar-cart-active">
+        <div class="sidebar-cart-all">
+            <a class="cart-close" href="#"><i class="dlicon ui-1_simple-remove"></i></a>
+            <div class="cart-content">
+                <h3>Shopping Cart</h3>
+                <ul>
+                    <% if (cart && cart.items.length> 0) { %>
+                        <% cart.items.forEach(item=> { %>
+                            <li class="single-product-cart">
+                                <div class="cart-img">
+                                    <a href="#">
+                                        <img src="/admin/productImages/<%= item.product.images && item.product.images[0] %>"
+                                            alt="<%= item.product.name %>" height="90px" width="90px">
+                                    </a>
+                                </div>
+                                <div class="cart-title">
+                                    <h4><a href="#">
+                                            <%= item.product.name %>
+                                        </a></h4>
+                                    <span>
+                                        <%= item.quantity %> × $<%= item.product.discountPrice || item.product.price %>
+                                    </span>
+                                </div>
+                                <div class="cart-delete">
+                                    <a href="#">×</a>
+                                </div>
+                            </li>
+                            <% }) %>
+                                <% } else { %>
+                                    <li>Your cart is empty</li>
+                                    <% } %>
+                </ul>
+                <div class="cart-total">
+                    <h4>Subtotal: <span>₹<%= subtotal %></span></h4>
+                </div>
+                <div class="cart-checkout-btn">
+                    <a class="btn-hover cart-btn-style" href="/cart">view cart</a>
+                    <a class="no-mrg btn-hover cart-btn-style" href="/order">checkout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="orders-wrapper">
+        <div class="orders-container">
+            <div class="orders-header">
+                <h1>My Orders</h1>
+                <p>Track your open orders & view the summary of your past orders</p>
+            </div>
+
+            <% orders.forEach(order=> { %>
+                <div class="order-card">
+                    <!-- Order Header -->
+                    <div class="order-card-header">
+                        <div class="order-id">Order#: <%= order.orderNumber %>
+                        </div>
+                    </div>
+                    <!-- Order Items -->
+                    <% order.items.forEach(item=> { %>
+                        <div class="order-details">
+                            <!-- Product Image -->
+                            <% if (item.product.images && item.product.images.length> 0) { %>
+                                <img src="/admin/productImages/<%= item.product.images[0] %>"
+                                    alt="<%= item.product.name %>" class="product-image" height="84" width="84">
+                                <% } else { %>
+                                    <img src="defaultImage.jpg" alt="No Image" class="product-image" height="84"
+                                        width="84">
+                                    <% } %>
+
+                                        <!-- Product Info -->
+                                        <div class="product-info">
+                                            <div class="order-status">Status: <%= item.status %>
+                                            </div>
+                                            <h3 class="product-name">
+                                                <%= item.product.name %>
+                                            </h3>
+                                            <!-- <div class="product-size">Size: <%= item.size %></div> -->
+                                            <div class="product-quantity">Quantity: <%= item.quantity %>
+                                            </div>
+                                            <div class="product-price">
+                                                ₹<%= item.discountPriceAtPurchase * item.quantity %> (Includes Service
+                                                    Charge)
+                                            </div>
+                                        </div>
+
+                                        <!-- View Order Link -->
+                                        <a href="/view-order?orderId=<%= order._id %>" class="view-order-link">View
+                                            Order</a>
+                        </div>
+                        <% }) %>
+                </div>
+                <% }) %>
+
+                    <div class="button-container">
+                        <a href="/allProducts" class="button secondary-button">CONTINUE SHOPPING</a>
+                        <a href="/my-account" class="button primary-button">MY ACCOUNT</a>
+                    </div>
+        </div>
+    </div>
+    <%- include ('../layouts/footer') %>
