@@ -6,7 +6,6 @@ const loadCouponList = async(req,res)=>{
         const coupons = await Coupon.find();
         res.render('couponList',{coupons});
     } catch (error) {
-        console.error('Error loading the coupon page:', error.message);
         res.status(500).json({ success: false, msg: 'Internal server error' });
     }
 }
@@ -15,7 +14,6 @@ const loadCreateCoupon = async(req,res)=>{
     try {
         res.render('create-coupon');
     } catch (error) {
-        console.error('Error loading the coupon page:', error.message);
         res.status(500).json({ success: false, msg: 'Internal server error' });
     }
 }
@@ -46,7 +44,6 @@ const createCoupon = async(req,res)=>{
                 maxUsers
             });
             const addedcoupon = await newCoupon.save();
-            console.log(addedcoupon+" coupon saved");
             return res.status(200).json({ success: true, message: "Coupon created successfully." });
         }
 
@@ -55,7 +52,6 @@ const createCoupon = async(req,res)=>{
         res.send('create coupon');
         
     } catch (error) {
-        console.error('Error creating coupon    :', error.message);
         res.status(500).json({ success: false, msg: 'Internal server error' });
     }
 }
@@ -64,12 +60,10 @@ const deactivateCoupon = async(req,res)=>{
     try {
         const couponId = req.params.id;
         await Coupon.findByIdAndUpdate(couponId, { is_active: false });
-        console.log(`Coupon with ID ${couponId} deactivated`);
         res.redirect('/admin/coupon');
         // res.send('decativate coupon');
         
     } catch (error) {
-        console.error('Error deactivating coupon :', error.message);
         res.status(500).json({ success: false, msg: 'Internal server error' });
     }
 }
@@ -79,10 +73,8 @@ const activateCoupon = async(req,res)=>{
     try {
         const couponId = req.params.id;
         await Coupon.findByIdAndUpdate(couponId, { is_active: true });
-        console.log(`Coupon with ID ${couponId} activated`);
         res.redirect('/admin/coupon');
     } catch (error) {
-        console.error('Error activating coupon :', error.message);
         res.status(500).json({ success: false, msg: 'Internal server error' });
     }
 }
@@ -152,7 +144,6 @@ const applyCoupon = async (req, res) => {
             newTotal: newTotal.toFixed(2),
         });
     } catch (error) {
-        console.error('Error applying coupon:', error.message);
         return res.status(500).json({ success: false, msg: 'Server error.' });
     }
 };
@@ -186,7 +177,6 @@ const removeCoupon = async (req, res) => {
             newTotal: cartTotal.toFixed(2),
         });
     } catch (error) {
-        console.error('Error removing coupon:', error.message);
         return res.status(500).json({ success: false, msg: 'Server error.' });
     }
 };
@@ -194,12 +184,10 @@ const removeCoupon = async (req, res) => {
 const loadEditCoupon = async(req,res)=>{
     try {
         const couponId = req.query.id;
-        console.log('edit coupon :', couponId);
         const coupon = await Coupon.findById(couponId);
         
         res.render('edit-coupon',{coupon});
     } catch (error) {
-        console.error('Error removing coupon:', error.message);
         return res.status(500).json({ success: false, msg: 'Server error.' });
     }
 }
