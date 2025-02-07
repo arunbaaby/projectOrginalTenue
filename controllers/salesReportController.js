@@ -65,7 +65,6 @@ const loadSalesReport = async (req, res) => {
             totalDiscountPrice,
         });
     } catch (error) {
-        console.error("Error loading sales report:", error.message);
         res.status(500).json({ success: false, message: "Server error." });
     }
 };
@@ -82,9 +81,6 @@ const customDateFilter = async (req, res, next) => {
         const startDate = new Date(startingDate);
         const endDate = new Date(endingDate);
         endDate.setHours(23, 59, 59, 999);
-
-        console.log("Start Date:", startDate);
-        console.log("End Date:", endDate);
 
         const salesData = await Order.aggregate([
             { $unwind: "$items" },
@@ -148,7 +144,6 @@ const customDateFilter = async (req, res, next) => {
             totalDiscountPrice,
         });
     } catch (error) {
-        console.error("Error in customDateFilter:", error.message);
         res.status(500).json({
             success: false,
             message: "Failed to filter sales data by custom date range.",
@@ -262,7 +257,6 @@ const filterSalesReport = async (req, res) => {
         totalDiscountPrice,
       });
     } catch (error) {
-      console.error("Error filtering sales report:", error.message);
       res.status(500).json({ success: false, message: "Server error." });
     }
   };
