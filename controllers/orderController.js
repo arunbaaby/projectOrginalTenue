@@ -404,10 +404,14 @@ const loadViewOrder = async (req, res) => {
             // return res.status(404).json({ success: false, msg: 'Order not found' });
         }
 
+        const subtotal = cart.items.reduce((acc, item) => {
+            return acc + item.product.price * item.quantity;
+        }, 0);
+
         const shippingAddress = orderDetails.shippingAddress;
         const itemId = orderDetails.items[0] ? orderDetails.items[0]._id : null;  // first item id
 
-        res.render('view-order', { orderDetails, shippingAddress, itemId, cart });
+        res.render('view-order', { orderDetails, shippingAddress, itemId, cart, subtotal });
     } catch (error) {
         res.status(500).json({ success: false, msg: 'Failed to load view-order page' });
     }

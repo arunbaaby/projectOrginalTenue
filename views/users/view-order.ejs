@@ -1,4 +1,88 @@
 <%- include ('../layouts/header') %>
+    <div class="header-small-mobile section-padding-1">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-6">
+                    <div class="mobile-logo logo-width">
+                        <a href="index.html">
+                            <img alt="" src="assets/images/logo/logo.png">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="mobile-header-right-wrap">
+                        <div class="header-right-wrap header-right-flex">
+                            <div class="same-style cart-wrap">
+                                <a href="#" class="cart-active">
+                                    <i class="dlicon shopping_bag-20"></i>
+                                    <span class="count-style">02</span>
+                                </a>
+                            </div>
+                            <div class="same-style header-off-canvas">
+                                <a class="header-aside-button" href="#">
+                                    <i class="dlicon ui-3_menu-left"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- search start -->
+    <div class="search-content-wrap main-search-active">
+        <a class="search-close"><i class="dlicon ui-1_simple-remove"></i></a>
+        <div class="search-content">
+            <p>Start typing and press Enter to search</p>
+            <form class="search-form" action="/allProducts" method="GET">
+                <input type="text" name="q" placeholder="Search">
+                <button class="button-search" type="submit"><i class="dlicon ui-1_zoom"></i></button>
+            </form>
+        </div>
+    </div>
+    <!-- mini cart start -->
+    <div class="sidebar-cart-active">
+        <div class="sidebar-cart-all">
+            <a class="cart-close" href="#"><i class="dlicon ui-1_simple-remove"></i></a>
+            <div class="cart-content">
+                <h3>Shopping Cart</h3>
+                <ul>
+                    <% if (cart && cart.items.length> 0) { %>
+                        <% cart.items.forEach(item=> { %>
+                            <li class="single-product-cart">
+                                <div class="cart-img">
+                                    <a href="#">
+                                        <img src="/admin/productImages/<%= item.product.images && item.product.images[0] %>"
+                                            alt="<%= item.product.name %>" height="90px" width="90px">
+                                    </a>
+                                </div>
+                                <div class="cart-title">
+                                    <h4><a href="#">
+                                            <%= item.product.name %>
+                                        </a></h4>
+                                    <span>
+                                        <%= item.quantity %> × $<%= item.product.discountPrice || item.product.price %>
+                                    </span>
+                                </div>
+                                <div class="cart-delete">
+                                    <a href="#">×</a>
+                                </div>
+                            </li>
+                            <% }) %>
+                                <% } else { %>
+                                    <li>Your cart is empty</li>
+                                    <% } %>
+                </ul>
+                <div class="cart-total">
+                    <h4>Subtotal: <span>₹<%= subtotal %></span></h4>
+                </div>
+                <div class="cart-checkout-btn">
+                    <a class="btn-hover cart-btn-style" href="/cart">view cart</a>
+                    <a class="no-mrg btn-hover cart-btn-style" href="/order">checkout</a>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="order-details-wrapper">
         <div class="header">
             <a href="/my-orders" class="back-link">← Back to Orders</a>
@@ -379,6 +463,38 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <!-- Modernizer JS -->
+    <script src="/assets/js/vendor/modernizr-3.11.7.min.js"></script>
+    <!-- jquery -->
+    <script src="/assets/js/vendor/jquery-v3.6.0.min.js"></script>
+    <!-- Popper JS -->
+    <script src="/assets/js/vendor/popper.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="/assets/js/vendor/bootstrap.min.js"></script>
+    <script src="/assets/js/plugins/owl-carousel.js"></script>
+    <script src="/assets/js/plugins/slick.js"></script>
+    <script src="/assets/js/plugins/jarallax.min.js"></script>
+    <script src="/assets/js/plugins/countdown.js"></script>
+    <script src="/assets/js/plugins/magnific-popup.js"></script>
+    <script src="/assets/js/plugins/instafeed.js"></script>
+    <script src="/assets/js/plugins/tilt.js"></script>
+    <script src="/assets/js/plugins/images-loaded.js"></script>
+    <script src="/assets/js/plugins/isotope.js"></script>
+    <script src="/assets/js/plugins/scrolloverflow-fullpage.js"></script>
+    <script src="/assets/js/plugins/fullpage.js"></script>
+    <script src="/assets/js/plugins/jquery-ui.js"></script>
+    <script src="/assets/js/plugins/jquery-ui-touch-punch.js"></script>
+    <script src="/assets/js/plugins/easyzoom.js"></script>
+    <script src="/assets/js/plugins/resizesensor.js"></script>
+    <script src="/assets/js/plugins/sticky-sidebar.js"></script>
+    <script src="/assets/js/plugins/scrollup.js"></script>
+    <script src="/assets/js/plugins/select2.min.js"></script>
+    <script src="/assets/js/plugins/cookie.js"></script>
+    <script src="/assets/js/plugins/bpopup.js"></script>
+    <script src="/assets/js/plugins/wow.js"></script>
+    <script src="/assets/js/plugins/ajax-mail.js"></script>
+    <!-- Main JS -->
+    <script src="/assets/js/main.js"></script>
     <script>
         document.querySelectorAll('.cancel-order-btn').forEach(button => {
             button.addEventListener('click', function () {
@@ -499,118 +615,118 @@
         });
     </script>
 
-<script>
-    document.addEventListener("click", async (event) => {
-        if (event.target.classList.contains("retry-payment-btn")) {
-            const orderId = event.target.dataset.orderId;
+    <script>
+        document.addEventListener("click", async (event) => {
+            if (event.target.classList.contains("retry-payment-btn")) {
+                const orderId = event.target.dataset.orderId;
+                try {
+                    const response = await fetch(`/retry-payment/${orderId}`, {
+                        method: "GET",
+                        headers: { "Content-Type": "application/json" },
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success && data.paymentMethod === "Razorpay") {
+                        initiateRazorpayPayment(data);
+                    } else {
+                        Swal.fire(data.message || "Unable to retry payment.");
+                    }
+                } catch (error) {
+                    console.error("Error retrying payment:", error);
+                    Swal.fire("Something went wrong. Please try again.");
+                }
+            }
+        });
+
+        function initiateRazorpayPayment(data) {
+            const options = {
+                key: data.key,
+                amount: data.amount,
+                currency: data.currency,
+                name: data.name,
+                description: data.description,
+                order_id: data.razorpayOrderId,
+                handler: function (response) {
+                    verifyPayment(response, data.orderId);
+                },
+                theme: { color: "#fc4f4f" },
+                modal: {
+                    escape: false,
+                    ondismiss: async function () {
+                        await handlePaymentClosure(data.orderId);
+                    },
+                },
+            };
+
+            const rzp = new Razorpay(options);
+
+            rzp.on('payment.failed', async function (response) {
+                await notifyPaymentFailure(data.orderId);
+
+                alert('Payment failed. You will be redirected to view your order.')
+                window.location.href = `/view-order?orderId=${data.orderId}`;
+
+            });
+
+            rzp.open();
+        }
+
+        async function handlePaymentClosure(orderId) {
             try {
-                const response = await fetch(`/retry-payment/${orderId}`, {
-                    method: "GET",
-                    headers: { "Content-Type": "application/json" },
+                await notifyPaymentFailure(orderId);
+
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Payment Window Closed',
+                    text: 'You closed the payment window',
+                    confirmButtonText: 'OK',
+                }).then(() => {
+                    window.location.href = `/view-order?orderId=${orderId}`;
+                });
+            } catch (error) {
+                console.error('Error handling payment closure:', error);
+                alert('Something went wrong. Please check your order status.');
+            }
+        }
+
+        async function verifyPayment(paymentDetails, orderId) {
+            try {
+                const response = await fetch('/verify-payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ paymentDetails, orderId }),
                 });
 
                 const data = await response.json();
 
-                if (data.success && data.paymentMethod === "Razorpay") {
-                    initiateRazorpayPayment(data);
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Payment Successful',
+                        text: 'Your payment has been verified successfully.',
+                        confirmButtonText: 'OK',
+                    }).then(() => {
+                        window.location.reload();
+                    });
                 } else {
-                    Swal.fire(data.message || "Unable to retry payment.");
+                    Swal.fire(data.message || 'Payment verification failed.');
                 }
             } catch (error) {
-                console.error("Error retrying payment:", error);
-                Swal.fire("Something went wrong. Please try again.");
+                console.error('Error verifying payment:', error);
+                Swal.fire('Something went wrong during payment verification.');
             }
         }
-    });
 
-    function initiateRazorpayPayment(data) {
-        const options = {
-            key: data.key,
-            amount: data.amount,
-            currency: data.currency,
-            name: data.name,
-            description: data.description,
-            order_id: data.razorpayOrderId,
-            handler: function (response) {
-                verifyPayment(response, data.orderId);
-            },
-            theme: { color: "#fc4f4f" },
-            modal: {
-                escape: false,
-                ondismiss: async function () {
-                    await handlePaymentClosure(data.orderId);
-                },
-            },
-        };
-
-        const rzp = new Razorpay(options);
-
-        rzp.on('payment.failed', async function (response) {
-            await notifyPaymentFailure(data.orderId);
-
-            alert('Payment failed. You will be redirected to view your order.')
-            window.location.href = `/view-order?orderId=${data.orderId}`;
-
-        });
-
-        rzp.open();
-    }
-
-    async function handlePaymentClosure(orderId) {
-        try {
-            await notifyPaymentFailure(orderId);
-
-            Swal.fire({
-                icon: 'info',
-                title: 'Payment Window Closed',
-                text: 'You closed the payment window',
-                confirmButtonText: 'OK',
-            }).then(() => {
-                window.location.href = `/view-order?orderId=${orderId}`;
-            });
-        } catch (error) {
-            console.error('Error handling payment closure:', error);
-            alert('Something went wrong. Please check your order status.');
-        }
-    }
-
-    async function verifyPayment(paymentDetails, orderId) {
-        try {
-            const response = await fetch('/verify-payment', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ paymentDetails, orderId }),
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Payment Successful',
-                    text: 'Your payment has been verified successfully.',
-                    confirmButtonText: 'OK',
-                }).then(() => {
-                    window.location.reload();
+        async function notifyPaymentFailure(orderId) {
+            try {
+                await fetch('/notify-payment-failure', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ orderId }),
                 });
-            } else {
-                Swal.fire(data.message || 'Payment verification failed.');
-            }
-        } catch (error) {
-            console.error('Error verifying payment:', error);
-            Swal.fire('Something went wrong during payment verification.');
-        }
-    }
-
-    async function notifyPaymentFailure(orderId) {
-        try {
-            await fetch('/notify-payment-failure', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ orderId }),
-            });
-        } catch (error) {
-            console.error('Error notifying payment failure:', error);
+            } catch (error) {
+                console.error('Error notifying payment failure:', error);
             }
         }
     </script>
@@ -692,6 +808,6 @@
     </script>
 
 
-</body>
+    </body>
 
-</html>
+    </html>
