@@ -2,12 +2,10 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 
 const isLoggedIn = async (req, res, next) => {
-    console.log("isLoggedIn middleware triggered");
     try {
         const token = req.cookies.jwt || req.headers.authorization?.split(' ')[1];
 
         if (!token) {
-            console.log("No token found, redirecting to login.");
             return res.redirect('/auth?error=access-denied');
         }
 
@@ -15,23 +13,18 @@ const isLoggedIn = async (req, res, next) => {
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
             if (err) {
                 if (err.name === 'TokenExpiredError') {
-                    console.log("Token expired");
                     return res.redirect('/auth?error=session-expired');
                 }
-                console.log("Invalid token");
                 return res.redirect('/auth?error=invalid-token');
             }
 
-            console.log(`Decoded user ID: ${decoded.id}`);
             if (!decoded.id) {
-                console.log("No user ID found in the decoded token.");
                 return res.redirect('/auth?error=invalid-token');
             }
 
             // Check if the user is blocked
             const blockedUser = await User.findOne({ _id: decoded.id, is_blocked: true });
             if (blockedUser) {
-                console.log(`User with ID ${decoded.id} has been blocked. Logging out.`);
                 res.clearCookie('jwt', {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',
@@ -45,7 +38,6 @@ const isLoggedIn = async (req, res, next) => {
             next();
         });
     } catch (error) {
-        console.error('JWT Authentication Error:', error.message);
         return res.redirect('/auth?error=internal-error');
     }
 };
@@ -55,14 +47,11 @@ const isLoggedIn = async (req, res, next) => {
 
 const isLoggedOut = async (req, res, next) => {
     try {
-        console.log('isLoggedOut middleware triggered');
         if (req.cookies.jwt) {
-            console.log('JWT cookie found. Redirecting to /home.');
             return res.redirect('/home');
         }
         next();
     } catch (error) {
-        console.error('Error in isLoggedOut middleware:', error.message);
         next(error);
     }
 };
