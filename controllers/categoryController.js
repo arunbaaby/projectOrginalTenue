@@ -40,7 +40,6 @@ const createCategory = async (req, res) => {
         });
 
     } catch (error) {
-        console.error(`Error creating category: ${error.message}`);
         res.status(500).send('Internal Server Error');
     }
 };
@@ -49,10 +48,8 @@ const createCategory = async (req, res) => {
 const editCategoryLoad = async (req, res) => {
     try {
         const id = req.query.id;
-        console.log('Category ID:', id); // Debugging line
 
         if (!id) {
-            console.log('id not able to get to editLoadCategory');
             return res.redirect('/admin/category');
         }
 
@@ -64,7 +61,6 @@ const editCategoryLoad = async (req, res) => {
             return res.redirect('/admin/category');
         }
     } catch (error) {
-        console.error(`Error loading category for editing: ${error.message}`);
         res.status(500).send('Internal Server Error');
     }
 };
@@ -102,7 +98,6 @@ const updateCategory = async (req, res) => {
             // Redirect to the category list page after successful update
             res.redirect('/admin/category');
     } catch (error) {
-        console.error(`Error updating category: ${error.message}`);
         res.status(500).send('Internal Server Error');
     }
 };
@@ -114,7 +109,6 @@ const deleteCategory = async(req,res)=>{
         await Category.findByIdAndUpdate(id,{is_active:false});
         res.redirect('/admin/category');
     } catch (error) {
-        console.error(`Error deleting category: ${error.message}`);
         res.status(500).send('Internal Server Error');
     }
 }
@@ -126,7 +120,6 @@ const restoreCategory = async(req,res)=>{
         await Category.findByIdAndUpdate(id,{is_active:true});
         res.redirect('/admin/category');
     } catch (error) {
-        console.error(`Error restoring category: ${error.message}`);
         res.status(500).send('Internal Server Error');
     }
 } 
@@ -135,7 +128,6 @@ const loadAddCategory = async(req,res)=>{
     try {
         res.render('add-category');
     } catch (error) {
-        console.error(`Error loading add category: ${error.message}`);
         res.status(500).send('Internal Server Error');
     }
 }
