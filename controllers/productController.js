@@ -66,7 +66,6 @@ const productLoad = async (req, res) => {
             categoryFilter,
         });
     } catch (error) {
-        console.error(`Error fetching products: ${error.message}`);
         res.status(500).send('Internal Server Error');
     }
 };
@@ -77,7 +76,6 @@ const addProductsLoad = async (req, res) => {
         const categoryDetails = await Category.find({ is_active: true });
         res.render('add-product', { category: categoryDetails });
     } catch (error) {
-        console.error(`Error loading the add-products Page: ${error.message}`);
         res.status(500).send('Internal Server Error');
     }
 }
@@ -122,7 +120,6 @@ const addProduct = async (req, res) => {
         }
 
     } catch (error) {
-        console.error(`Error adding product: ${error.message}`);
         const categoryDetails = await Category.find({ is_active: true });
         res.status(500).render('add-product', { message: 'Internal Server Error', category: categoryDetails });
     }
@@ -136,7 +133,6 @@ const deleteProduct = async (req, res) => {
         await Product.findByIdAndUpdate(id, { is_active: false });
         res.redirect('/admin/product');
     } catch (error) {
-        console.error(`Error deleting product: ${error.message}`);
         res.status(500).send('Internal Server Error');
     }
 }
@@ -159,7 +155,6 @@ const deleteProductImage = async (req, res) => {
 
         res.sendStatus(200);
     } catch (error) {
-        console.error(`Error deleting product img : ${error.message}`);
         res.status(500).send('Internal Server Error');
     }
 }
@@ -171,7 +166,6 @@ const restoreProduct = async (req, res) => {
         await Product.findByIdAndUpdate(id, { is_active: true });
         res.redirect('/admin/product');
     } catch (error) {
-        console.error(`Error restoring product: ${error.message}`);
         res.status(500).send('Internal Server Error');
     }
 }
@@ -179,10 +173,8 @@ const restoreProduct = async (req, res) => {
 const editProductLoad = async (req, res) => {
     try {
         const id = req.query.id;
-        console.log('Product ID:', id); // Debugging line
 
         if (!id) {
-            console.log('id not able to get to editLoadProduct');
             return res.redirect('/admin/product');
         }
 
@@ -195,7 +187,6 @@ const editProductLoad = async (req, res) => {
             return res.redirect('/admin/product');
         }
     } catch (error) {
-        console.error(`Error loading product for editing: ${error.message}`);
         res.status(500).send('Internal Server Error');
     }
 };
@@ -203,8 +194,7 @@ const editProductLoad = async (req, res) => {
 const updateProduct = async (req, res) => {
     try {
         const { name, description, brand, gender, price, discountPrice, stock, category } = req.body;
-        console.log(name, description, brand, gender, price, discountPrice, stock, category);
-
+        
         const id = req.query.id;
 
         if(price<discountPrice){
@@ -214,7 +204,6 @@ const updateProduct = async (req, res) => {
         // if (req.files && req.files.length > 0) {
         //     imagePaths = req.files.map(file => file.filename);
         // }
-        // console.log(imagePaths);
 
         const existingProduct = await Product.findById(id);
         if (!existingProduct) {
@@ -255,7 +244,6 @@ const updateProduct = async (req, res) => {
         res.redirect('/admin/product');
 
     } catch (error) {
-        console.error(`Error while editing product: ${error.message}`);
         res.status(500).send('Internal Server Error');
     }
 };
@@ -394,7 +382,6 @@ const allProductsLoad = async (req, res) => {
         });
 
     } catch (error) {
-        console.error(`Error loading allProducts: ${error.message}`);
         res.status(500).send('Internal Server Error');
     }
 };
@@ -427,7 +414,6 @@ const productDetailsLoad = async (req, res) => {
         }
 
         if (!product) {
-            console.warn(`Product with id ${id} not found.`);
             return res.redirect('/404');
         }
 
@@ -452,7 +438,6 @@ const productDetailsLoad = async (req, res) => {
         }
         res.render('product-details', { product, relatedProducts, products, cart, subtotal, recommendedProducts });
     } catch (error) {
-        console.error(`Error loading productDetails: ${error.message}`);
         res.status(500).send('Internal Server Error');
     }
 }
