@@ -44,7 +44,6 @@ const loadProductOffer = async (req, res) => {
         ]);
         res.render('product-offer', { productOfferData });
     } catch (error) {
-        console.error('Error removing coupon:', error.message);
         return res.status(500).json({ success: false, msg: 'Server error.' });
     }
 }
@@ -52,11 +51,9 @@ const loadProductOffer = async (req, res) => {
 const loadAddProductOffer = async (req, res) => {
     try {
         const productData = await Product.find({}, { name: 1 }).lean();
-        console.log("productData", productData);
 
         res.render('add-product-offer', { productData });
     } catch (error) {
-        console.error('Error removing coupon:', error.message);
         return res.status(500).json({ success: false, msg: 'Server error.' });
     }
 }
@@ -90,7 +87,6 @@ const addProductOffer = async (req, res) => {
 
         res.redirect("/admin/add-product-offer");
     } catch (error) {
-        console.error('Error removing coupon:', error.message);
         return res.status(500).json({ success: false, msg: 'Server error.' });
     }
 }
@@ -104,7 +100,6 @@ const deleteProductOffer = async (req, res) => {
 
         res.redirect('/admin/product-offer');
     } catch (error) {
-        console.error('Error deactivating product offer:', error.message);
         return res.status(500).json({ success: false, msg: 'Server error.' });
     }
 };
@@ -119,7 +114,6 @@ const restoreProductOffer = async (req, res) => {
 
         res.redirect('/admin/product-offer');
     } catch (error) {
-        console.error('Error reactivating product offer:', error.message);
         return res.status(500).json({ success: false, msg: 'Server error.' });
     }
 };
@@ -141,7 +135,6 @@ const loadEditProductOffer = async (req, res) => {
         }
         res.render('edit-product-offer', { productOfferData, productData });
     } catch (error) {
-        console.error('Error loading product offer edit page:', error.message);
         return res.status(500).render('500', { message: 'Server error occurred.' });
     }
 };
@@ -167,12 +160,10 @@ const editProductOffer = async (req, res) => {
         if (updateResult.modifiedCount === 1) {
             res.redirect('/admin/product-offer');
         } else {
-            console.error("Product offer not updated.");
             res.redirect('/admin/product-offer');
             // res.redirect(`/admin/edit-product-offer?id=${offerId}`);
         }
     } catch (error) {
-        console.error('Error updating product offer:', error.message);
         res.status(500).json({ success: false, msg: 'Server error occurred.' });
     }
 };
@@ -205,7 +196,6 @@ const loadCategoryOffer = async (req, res) => {
 
         res.render('category-offer', { categoryOfferData });
     } catch (error) {
-        console.error('Error removing coupon:', error.message);
         return res.status(500).json({ success: false, msg: 'Server error.' });
     }
 }
@@ -216,7 +206,6 @@ const loadAddCategoryOffer = async (req, res) => {
         res.render('add-category-offer', { categoryData });
         // res.send('add category offer');
     } catch (error) {
-        console.error('Error removing coupon:', error.message);
         return res.status(500).json({ success: false, msg: 'Server error.' });
     }
 }
@@ -262,7 +251,6 @@ const addCategoryOffer = async (req, res) => {
         await newCategoryOffer.save();
         res.redirect("/admin/category-offer");
     } catch (error) {
-        console.error('Error adding category offer:', error.message);
         return res.status(500).json({ success: false, msg: 'Server error.' });
     }
 }
@@ -270,12 +258,11 @@ const addCategoryOffer = async (req, res) => {
 const deleteCategoryOffer = async (req, res) => {
     try {
         const { id } = req.query;
-        // console.log("categoryid:",id);
+
         const updateCategoryOffer = await CategoryOffer.findByIdAndUpdate(id, { is_active: false });
-        // console.log("updated :",updateCategoryOffer);
+
         res.redirect('/admin/category-offer');
     } catch (error) {
-        console.error('Error deleting category offer:', error.message);
         return res.status(500).json({ success: false, msg: 'Server error.' });
     }
 }
@@ -284,12 +271,10 @@ const deleteCategoryOffer = async (req, res) => {
 const restoreCategoryOffer = async (req, res) => {
     try {
         const { id } = req.query;
-        // console.log("categoryid:",id);
         const updateCategoryOffer = await CategoryOffer.findByIdAndUpdate(id, { is_active: true });
-        // console.log("updated :",updateCategoryOffer);
+
         res.redirect('/admin/category-offer');
     } catch (error) {
-        console.error('Error deleting category offer:', error.message);
         return res.status(500).json({ success: false, msg: 'Server error.' });
     }
 }
@@ -303,7 +288,6 @@ const loadEditCategoryOffer = async (req, res) => {
 
         res.render('edit-category-offer', { offerDetails, categoryData });
     } catch (error) {
-        console.error('Error loading category offer for editing:', error.message);
         return res.status(500).json({ success: false, msg: 'Server error.' });
     }
 }
@@ -333,11 +317,9 @@ const editCategoryOffer = async (req, res) => {
         if (updateOffer.modifiedCount === 1) {
             res.redirect('/admin/category-offer');
         } else {
-            console.log("Offer was not updated");
             res.redirect("/admin/category-offer");
         }
     } catch (error) {
-        console.error('Error editing category offer:', error.message);
         return res.status(500).json({ success: false, msg: 'Server error.' });
     }
 }
@@ -402,7 +384,6 @@ const applyReferralCode = async (req, res) => {
 
         return res.status(200).json({ success: true, msg: 'Referral code applied successfully.' });
     } catch (error) {
-        console.error('Error applying referral code :', error.message);
         return res.status(500).json({ success: false, msg: 'Server error.' });
     }
 }
