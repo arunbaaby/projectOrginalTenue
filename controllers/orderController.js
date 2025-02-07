@@ -8,7 +8,6 @@ const Coupon = require('../models/couponModel');
 
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
-const { log } = require('console');
 
 const razorpay = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID,
@@ -35,33 +34,12 @@ async function generateUniqueOrderNumber() {
     return orderNumber;
 }
 
-// function normalizeAddress(address) {
-//     return {
-//         ...address,
-//         addressType: address.addressType.toLowerCase(),
-//         firstName: address.firstName.trim(),
-//         lastName: address.lastName.trim(),
-//         houseNo: address.houseNo.trim(),
-//         street: address.street.toLowerCase().trim(),
-//         landmark: address.landmark.toLowerCase().trim(),
-//         city: address.city.toLowerCase().trim(),
-//         district: address.district.toLowerCase().trim(),
-//         state: address.state.toLowerCase().trim(),
-//         pincode: address.pincode
-//     };
-// }
-
-
 const loadCheckout = async (req, res) => {
     try {
         const userId = req.user.id;
         const userAddresses = await Address.findOne({ user: userId }) || null;
         const cart = await Cart.findOne({ user: userId }).populate('items.product');
         const user = await User.findById(userId);
-
-        // console.log(cart);
-        // console.log(address);
-        // console.log(cart.items[0].product._id);
 
         if (!cart || !cart.items.length) {
             res.redirect('/cart');
@@ -104,7 +82,6 @@ const loadCheckout = async (req, res) => {
             couponDiscount 
         });
     } catch (error) {
-        console.error('Error loading the checkout page:', error.message);
         return res.status(400).json({
             success: false,
             msg: error.message
@@ -121,11 +98,6 @@ const placeOrder = async (req, res) => {
         if (!selectedAddress) {
             return res.status(400).json({ success: false, message: 'No Address selected' });
         }
-
-        // console.log(userId);
-
-        console.log(selectedAddress);
-        // console.log('Payment method '+paymentMethod);
 
         const cart = await Cart.findOne({ user: userId }).populate('items.product');
         if (!cart || !cart.items.length) {
@@ -153,13 +125,6 @@ const placeOrder = async (req, res) => {
         if (!selectedAddressObj) {
             return res.status(400).json({ success: false, message: 'Selected address not found' });
         }
-
-        console.log(cart.items[0].product.name);
-
-        console.log('selectedAddressObj: ' + selectedAddressObj);
-
-
-        // console.log(orderNumber);
 
         const orderItems = cart.items.map(item => ({
             product: item.product._id,
@@ -236,16 +201,11 @@ const placeOrder = async (req, res) => {
                 });
                 newOrder.razorpayOrderId = razorpayOrder.id;
             } catch (err) {
-                console.error('Error creating Razorpay order:', err);
                 return res.status(500).json({ success: false, message: 'Error creating Razorpay order. Please check internet connection' });
             }
         }
         
-
         await newOrder.save();
-
-
-        console.log(newOrder);
 
         if (paymentMethod === 'Wallet') {
             const wallet = await Wallet.findOne({ user: userId });
@@ -296,7 +256,6 @@ const placeOrder = async (req, res) => {
 
         // res.redirect(`/order-confirmation?orderId=${newOrder._id}`);
     } catch (error) {
-        console.error('Error placing order:', error.message);
         res.status(500).json({ success: false, msg: error.message });
     }
 };
@@ -313,7 +272,6 @@ const notifyPaymentFailure = async (req, res) => {
 
         res.status(200).json({ success: true, message: 'Payment failure recorded.' });
     } catch (error) {
-        console.error('Error notify payment failure:', error.message);
         res.status(500).json({ success: false, msg: error.message });
     }
 }
@@ -350,7 +308,6 @@ const verifyPayment = async (req, res) => {
 
         return res.status(200).json({ success: true, msg: "Payment verified successfully." });
     } catch (error) {
-        console.error("Error verifying payment:", error.message);
         res.status(500).json({ success: false, msg: "Internal server error." });
     }
 };
@@ -391,7 +348,6 @@ const retryPayment = async (req, res) => {
             description: "Retry Payment",
         });
     } catch (error) {
-        console.error("Error retrying payment:", error);
         res.status(500).json({ success: false, message: "Internal server error." });
     }
 };
@@ -408,7 +364,6 @@ const loadOrderConfirmation = async (req, res) => {
         const shippingAddress = order.shippingAddress;
         res.render('order-confirmation', { shippingAddress });
     } catch (error) {
-        console.error('Error loading the order confirmation page:', error.message);
         res.status(500).json({ success: false, msg: error.message });
     }
 };//corrected
@@ -427,7 +382,6 @@ const loadMyOrders = async (req, res) => {
 
         res.render('my-orders', { orders, cart });
     } catch (error) {
-        console.error('Error loading the order confirmation page:', error.message);
         res.status(500).json({ success: false, msg: error.message });
     }
 };
@@ -451,7 +405,6 @@ const loadViewOrder = async (req, res) => {
 
         res.render('view-order', { orderDetails, shippingAddress, itemId, cart });
     } catch (error) {
-        console.error('Error loading the view-order page:', error.message);
         res.status(500).json({ success: false, msg: 'Failed to load view-order page' });
     }
 };
@@ -518,7 +471,6 @@ const cancelOrderItem = async (req, res) => {
             deliveryCharges: order.deliveryCharges
         });
     } catch (error) {
-        console.error('Error cancelling the item:', error.message);
         res.status(500).json({ success: false, msg: 'Internal server error' });
     }
 };
@@ -528,7 +480,6 @@ const changeOrderStatus = async (req, res) => {
     try {
         const orderId = req.params.id;
         const { status } = req.body;
-        log(orderId + ' ' + status);
 
         const validStatuses = ['Pending', 'Processed', 'Shipped', 'Delivered', 'Cancelled', 'Returned'];
         if (!validStatuses.includes(status)) {
@@ -549,7 +500,6 @@ const changeOrderStatus = async (req, res) => {
 
         res.redirect(`/admin/order`);
     } catch (error) {
-        console.error('Error updating order status:', error.message);
         res.status(500).json({ success: false, msg: 'Internal server error' });
     }
 }
@@ -648,7 +598,6 @@ const acceptReturnRequest = async (req, res) => {
             deliveryCharges: order.deliveryCharges
         });
     } catch (error) {
-        console.error('Error returning the item:', error.message);
         res.status(500).json({ success: false, msg: 'Internal server error' });
     }
 };
@@ -700,7 +649,6 @@ const returnOrderRequest = async (req, res) => {
 
         res.json({ success: true, message: "Order return request submitted successfully" });
     } catch (error) {
-        console.error('Error requesting return order:', error.message);
         res.status(500).json({ success: false, msg: 'Internal server error' });
     }
 };
@@ -741,12 +689,9 @@ const rejectReturnRequest = async (req, res) => {
             requestStatus: request.status
         });
     } catch (error) {
-        console.error('Error rejecting the return request:', error.message);
         res.status(500).json({ success: false, msg: 'Internal server error' });
     }
 };
-
-
 
 module.exports = {
     loadCheckout,
