@@ -55,7 +55,6 @@ const myAccountLoad = async (req, res) => {
             transactions 
         });
     } catch (error) {
-        console.error('My account load error:', error.message);
         return res.status(400).json({
             success: false,
             msg: error.message
@@ -125,7 +124,6 @@ const addAddress = async (req, res) => {
             res.redirect(req.headers.referer || '/my-account');
         }
     } catch (error) {
-        console.error('Error adding the address:', error.message);
         return res.status(400).json({
             success: false,
             msg: error.message
@@ -136,7 +134,6 @@ const addAddress = async (req, res) => {
 const deleteAddress = async (req, res) => {
     try {
         const addressId = req.params.id;
-        console.log('Address ID:', addressId);
 
         // Find the user and remove the address with the given ID
         const result = await Address.updateOne(
@@ -145,15 +142,12 @@ const deleteAddress = async (req, res) => {
         );
 
         if (req.xhr) {  // Check if it's an AJAX request
-            console.log('AJAX request detected');
             return res.status(200).json({ success: true, msg: 'Address deleted successfully.' });
         } else {
             // Regular request, redirect back to the referer or to the account page
-            console.log('Redirecting after delete');
             res.redirect(req.headers.referer || '/my-account');
         }
     } catch (error) {
-        console.error('Error deleting the address:', error.message);
         return res.status(400).json({
             success: false,
             msg: error.message
@@ -192,7 +186,6 @@ const editAddress = async(req,res)=>{
         }
         
     } catch (error) {
-        console.error('Error editing the address:', error.message);
         return res.status(400).json({
             success: false,
             msg: error.message
@@ -228,7 +221,6 @@ const editUserProfile = async (req, res) => {
         res.redirect('/my-account?message=Account details updated successfully');
 
     } catch (error) {
-        console.error('Error editing user profile:', error.message);
         res.status(500).redirect(`/my-account?message=${encodeURIComponent(error.message)}`);
     }
 };
