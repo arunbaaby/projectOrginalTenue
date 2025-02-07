@@ -18,7 +18,6 @@ const loadLogin = async (req, res) => {
     try {
         res.render('adminLogin', { errors: [], msg: '' });
     } catch (error) {
-        console.log(error);
         res.status(500).send('Server error');
     }
 };
@@ -29,7 +28,6 @@ const adminLogin = async (req, res) => {
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
-            console.log('Validation errors:', errors.array());
             return res.status(400).render('adminLogin', {
                 success: false,
                 msg: 'Validation errors',
@@ -38,12 +36,9 @@ const adminLogin = async (req, res) => {
         }
 
         const { email, password } = req.body;
-        console.log('Request Body:', req.body);
-        console.log('Login attempt:', email);
 
         const userData = await User.findOne({ email });
         if (!userData) {
-            console.log('User not found');
             return res.status(401).render('adminLogin', {
                 success: false,
                 msg: 'Invalid email or password',
@@ -52,7 +47,6 @@ const adminLogin = async (req, res) => {
         }
 
         if (userData.is_admin === 0) {
-            console.log('User is not admin');
             return res.status(401).render('adminLogin', {
                 success: false,
                 msg: 'Access denied',
@@ -62,7 +56,6 @@ const adminLogin = async (req, res) => {
 
         const passwordMatch = bcrypt.compare(password, userData.password);
         if (!passwordMatch) {
-            console.log('Password mismatch');
             return res.status(400).render('adminLogin', {
                 success: false,
                 msg: 'Invalid email or password',
@@ -72,7 +65,6 @@ const adminLogin = async (req, res) => {
 
         // Generate JWT token
         const accessToken = generateAccessToken(userData._id);
-        console.log('admin login token :', accessToken);
 
         // Set JWT token in cookie
         res.cookie('adminJwt', accessToken, {
@@ -83,7 +75,6 @@ const adminLogin = async (req, res) => {
 
         return res.redirect('/admin/home');
     } catch (error) {
-        console.log('Login error:', error.message);
         return res.status(400).render('adminLogin', {
             success: false,
             msg: error.message,
@@ -151,8 +142,7 @@ const loadHome = async (req, res) => {
             yearlyData: yearlySales.data
         });
     } catch (error) {
-        console.log(error);
-
+        return res.status(500).json({ success: false, msg: 'Server error.' });
     }
 }
 
@@ -183,8 +173,7 @@ const userList = async (req, res) => {
         const userData = await User.find(filter);
         res.render('userList', { users: userData });
     } catch (error) {
-        console.log(error);
-
+        return res.status(500).json({ success: false, msg: 'Server error.' });
     }
 }
 
@@ -193,11 +182,9 @@ const blockUser = async (req, res) => {
     try {
         const user_id = req.params.user_id; // Ensure correct parameter name
         await User.findByIdAndUpdate(user_id, { is_blocked: 1 }); // Update is_blocked to 1
-        console.log(`User with ID ${user_id} blocked successfully.`);
         res.redirect('/admin/customers');
     } catch (error) {
-        console.log('Error blocking user:', error.message);
-        res.status(500).send('Error blocking user');
+        return res.status(500).json({ success: false, msg: 'Server error.' });
     }
 };
 
@@ -206,11 +193,9 @@ const unblockUser = async (req, res) => {
     try {
         const user_id = req.params.user_id; // Ensure correct parameter name
         await User.findByIdAndUpdate(user_id, { is_blocked: 0 }); // Update is_blocked to 0
-        console.log(`User with ID ${user_id} unblocked successfully.`);
         res.redirect('/admin/customers');
     } catch (error) {
-        console.log('Error unblocking user:', error.message);
-        res.status(500).send('Error unblocking user');
+        return res.status(500).json({ success: false, msg: 'Server error.' });
     }
 };
 
@@ -233,7 +218,6 @@ const loadCategory = async (req, res) => {
             msg: ''
         });
     } catch (error) {
-        console.log('Category loading error:', error.message);
         return res.status(400).json({
             success: false,
             msg: error.message
