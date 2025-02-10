@@ -260,11 +260,12 @@ const allProductsLoad = async (req, res) => {
         const itemsPerPage = 16;
 
         const userId = req.user.id;
-        let cart = null;
-
+        let cart = { items: [] }; // Default cart as an empty object
         if (userId) {
-            // load cart only if user logged in
-            cart = await Cart.findOne({ user: userId }).populate('items.product');
+            const existingCart = await Cart.findOne({ user: userId }).populate('items.product');
+            if (existingCart) {
+                cart = existingCart;
+            }
         }
 
 

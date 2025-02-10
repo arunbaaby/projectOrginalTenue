@@ -308,9 +308,12 @@ const loadUserHome = async (req, res) => {
         const mostDiscountProduct = await getProductsWithMostDiscount();
         const mostSoldProducts = await getMostSoldProducts();
 
-        let cart = null;
+        let cart = { items: [] }; // Default cart as an empty object
         if (userId) {
-            cart = await Cart.findOne({ user: userId }).populate('items.product');
+            const existingCart = await Cart.findOne({ user: userId }).populate('items.product');
+            if (existingCart) {
+                cart = existingCart;
+            }
         }
 
         let subtotal = 0;
