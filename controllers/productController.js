@@ -398,11 +398,13 @@ const productDetailsLoad = async (req, res) => {
         const userId = req.user.id;
         const product = await Product.findById(id).populate('category');
         const recommendedProducts = await getRecommendedProducts(id);
-        let cart = null;
 
+        let cart = { items: [] }; // Default cart as an empty object
         if (userId) {
-            // load cart only if user logged in
-            cart = await Cart.findOne({ user: userId }).populate('items.product');
+            const existingCart = await Cart.findOne({ user: userId }).populate('items.product');
+            if (existingCart) {
+                cart = existingCart;
+            }
         }
 
         let subtotal = 0;
