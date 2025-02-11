@@ -10,38 +10,26 @@ const myAccountLoad = async (req, res) => {
     try {
         const userId = req.user.id;
 
-        let cart = null;
-        let wallet = null;
-        let transactions = [];
-        let subtotal = 0;
-
-        if (userId) {
-            cart = await Cart.findOne({ user: userId }).populate('items.product');
-
-            if (cart) {
-                cart.items = cart.items.filter(item => item.product);
-                subtotal = cart.items.reduce((acc, item) => {
-                    const productPrice = item.product.discountPrice ?? item.product.price ?? 0;
-                    return acc + (productPrice * item.quantity);
-                }, 0);
-            }
-
-            wallet = await Wallet.findOne({ user: userId }).populate('transactions.order');
-            if (!wallet || wallet.amount == null) {
-                wallet = { amount: 0, transactions: [] };
-            }
-
-            transactions = wallet.transactions.map(tx => ({
-                type: tx.type,
-                date: tx.date,
-                description: tx.description || (tx.type === 'Credit' ? 'Wallet Credit' : 'Wallet Debit'),
-                amount: tx.amount
-            }));
-        }
-
         if (!userId) {
-            return res.render('my-account', { user: null, userAddresses: null });
+            return res.render('my-account', { user: null, userAddresses: null, cart: { items: [] }, subtotal: 0, wallet: { amount: 0, transactions: [] }, transactions: [] });
         }
+
+        let cart = await Cart.findOne({ user: userId }).populate('items.product') || { items: [] };
+
+        cart.items = cart.items.filter(item => item.product);
+        let subtotal = cart.items.reduce((acc, item) => {
+            const productPrice = item.product.discountPrice ?? item.product.price ?? 0;
+            return acc + (productPrice * item.quantity);
+        }, 0);
+
+        let wallet = await Wallet.findOne({ user: userId }).populate('transactions.order') || { amount: 0, transactions: [] };
+
+        let transactions = wallet.transactions.map(tx => ({
+            type: tx.type,
+            date: tx.date,
+            description: tx.description || (tx.type === 'Credit' ? 'Wallet Credit' : 'Wallet Debit'),
+            amount: tx.amount
+        }));
 
         const user = await User.findById(userId);
         const userAddresses = await Address.findOne({ user: userId });
@@ -54,6 +42,7 @@ const myAccountLoad = async (req, res) => {
             wallet,
             transactions 
         });
+
     } catch (error) {
         return res.status(400).json({
             success: false,

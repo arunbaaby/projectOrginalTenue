@@ -62,26 +62,26 @@ const addToCart = async (req, res) => {
 const loadCart = async (req, res) => {
     try {
         const userId = req.user.id;
-        let cart = null;
+        let cart = { items: [] };
         let subtotal = 0;
         let total = 0;
         let totalDiscount = 0;
 
         if (userId) {
-            cart = await Cart.findOne({ user: userId }).populate('items.product');
-        }
+            const existingCart = await Cart.findOne({ user: userId }).populate('items.product');
+            if (existingCart) {
+                cart = existingCart;
+                cart.items = cart.items.filter(item => item.product);
+                
+                cart.items.forEach(item => {
+                    const originalPrice = item.product.price || 0;
+                    const discountPrice = item.product.discountPrice || originalPrice;
 
-        if (cart) {
-            cart.items = cart.items.filter(item => item.product);
-
-            cart.items.forEach(item => {
-                const originalPrice = item.product.price || 0;
-                const discountPrice = item.product.discountPrice || originalPrice;
-
-                subtotal += originalPrice * item.quantity;
-                total += discountPrice * item.quantity;
-                totalDiscount += (originalPrice - discountPrice) * item.quantity;
-            });
+                    subtotal += originalPrice * item.quantity;
+                    total += discountPrice * item.quantity;
+                    totalDiscount += (originalPrice - discountPrice) * item.quantity;
+                });
+            }
         }
 
         res.render('cart', {
@@ -91,14 +91,7 @@ const loadCart = async (req, res) => {
             total: total.toFixed(2),
             totalDiscount: totalDiscount.toFixed(2)
         });
-        // if (!cart) {
-        //     return res.render('cart', { items: [] }); // Render empty cart if user has no cart
-        // }
-
-        // // Filter out items with null or undefined products
-        // const validItems = cart.items.filter(item => item.product);
-
-        // res.render('cart', { items: validItems });
+       
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error', error });
