@@ -42,8 +42,7 @@ const loadCheckout = async (req, res) => {
         const user = await User.findById(userId);
 
         if (!cart || !cart.items.length) {
-            res.redirect('/cart');
-            // return res.status(400).json('no items in the cart');
+            return res.redirect('/cart');
         }
 
         cart.items = cart.items.filter(item => item.product);
@@ -373,7 +372,14 @@ const loadMyOrders = async (req, res) => {
     try {
         const userId = req.user.id;
         let orders = await Order.find({ user: userId }).populate('items.product').sort({ _id: -1 });
-        const cart = await Cart.findOne({ user: userId }).populate('items.product');
+
+        let cart = { items: [] }; // Default cart as an empty object
+        if (userId) {
+            const existingCart = await Cart.findOne({ user: userId }).populate('items.product');
+            if (existingCart) {
+                cart = existingCart;
+            }
+        }        
 
         const subtotal = cart.items.reduce((acc, item) => {
             return acc + item.product.price * item.quantity;
