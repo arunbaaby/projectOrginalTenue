@@ -69,10 +69,9 @@ const editCategoryLoad = async (req, res) => {
 const updateCategory = async (req, res) => {
     try {
         const id = req.query.id;
-        const name = req.body.name.toLowerCase();  // Normalize the name to lowercase
+        const name = req.body.name.toLowerCase();
         const description = req.body.description;
 
-        // Check if the category exists by ID
         const existingCategory = await Category.findById(id);
         if (!existingCategory) {
             return res.status(400).render('edit-category', {
@@ -82,7 +81,6 @@ const updateCategory = async (req, res) => {
             });
         }
 
-        // Check if another category with the same name already exists
         const duplicateCategory = await Category.findOne({ name: name, _id: { $ne: id } });
         if (duplicateCategory) {
             return res.status(400).render('edit-category', {
@@ -92,11 +90,9 @@ const updateCategory = async (req, res) => {
             });
         }
 
-        // Update the category with the new name and description
         await Category.findByIdAndUpdate(id, { $set: { name: name, description: description } });
         
-            // Redirect to the category list page after successful update
-            res.redirect('/admin/category');
+        res.redirect('/admin/category');
     } catch (error) {
         res.status(500).send('Internal Server Error');
     }
