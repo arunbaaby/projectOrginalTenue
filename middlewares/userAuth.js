@@ -6,20 +6,20 @@ const isLoggedIn = async (req, res, next) => {
         const token = req.cookies.jwt || req.headers.authorization?.split(' ')[1];
 
         if (!token) {
-            return res.redirect('/auth?error=access-denied');
+            return res.redirect('/?error=access-denied');
         }
 
         // Verify JWT; second argument is the Token 
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
             if (err) {
                 if (err.name === 'TokenExpiredError') {
-                    return res.redirect('/auth?error=session-expired');
+                    return res.redirect('/?error=session-expired');
                 }
-                return res.redirect('/auth?error=invalid-token');
+                return res.redirect('/?error=invalid-token');
             }
 
             if (!decoded.id) {
-                return res.redirect('/auth?error=invalid-token');
+                return res.redirect('/?error=invalid-token');
             }
 
             // Check if the user is blocked
@@ -30,7 +30,7 @@ const isLoggedIn = async (req, res, next) => {
                     secure: process.env.NODE_ENV === 'production',
                     sameSite: 'Strict'
                 });
-                return res.redirect('/auth?error=user-blocked');
+                return res.redirect('/?error=user-blocked');
             }
 
             // Attach the user data to the request object
@@ -38,7 +38,7 @@ const isLoggedIn = async (req, res, next) => {
             next();
         });
     } catch (error) {
-        return res.redirect('/auth?error=internal-error');
+        return res.redirect('/?error=internal-error');
     }
 };
 

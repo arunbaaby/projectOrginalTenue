@@ -385,7 +385,7 @@ const logoutUser = async (req, res) => {
             sameSite: 'Strict'
         });
 
-        res.redirect('/auth');
+        res.redirect('/');
     } catch (error) {
         return res.status(400).json({
             success: false,
@@ -484,7 +484,7 @@ const newPasswordUpdate = async (req, res) => {
         user.resetPasswordExpires = undefined;
         await user.save();
 
-        return res.redirect('/auth');
+        return res.redirect('/');
     } catch (error) {
         return res.render("reset-password", { token, serverError: true });
     }

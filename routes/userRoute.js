@@ -42,7 +42,7 @@ const offerController = require('../controllers/offerController');
 
 const { log } = require('console');
 // Route for rendering combined login/register page
-user_route.get('/auth',isLoggedOut,userController.loadAuth);
+user_route.get('/',isLoggedOut,userController.loadAuth);
 
 // Load the OTP verification page
 user_route.get('/verify-otp',isLoggedOut, (req, res) => {
