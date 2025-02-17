@@ -229,12 +229,20 @@ const resendOtp = async (req, res) => {
 const loginUser = async (req, res) => {
     try {
         const errors = validationResult(req);
+        const cart = {
+            items: []
+        };
+
+        const subtotal = null;
+
         if (!errors.isEmpty()) {
             return res.status(400).render('auth', {
                 loginErrors: errors.array(),    // Login errors
                 registerErrors: [],             // No registration errors
                 success: false,
-                msg: ''
+                msg: '',
+                cart,
+                subtotal
             });
         }
 
@@ -246,7 +254,9 @@ const loginUser = async (req, res) => {
                 loginErrors: [{ msg: 'User not found' }],  // Custom error for login
                 registerErrors: [],                                           // No registration errors
                 success: false,
-                msg: ''
+                msg: '',
+                cart,
+                subtotal
             });
         }
 
@@ -255,7 +265,9 @@ const loginUser = async (req, res) => {
                 loginErrors: [{ msg: 'User is blocked' }],  // Custom error for login
                 registerErrors: [],                                           // No registration errors
                 success: false,
-                msg: ''
+                msg: '',
+                cart,
+                subtotal
             });
         }
 
@@ -264,7 +276,9 @@ const loginUser = async (req, res) => {
                 loginErrors: [{ msg: 'Password is missing in the database. Contact support.' }],
                 registerErrors: [],
                 success: false,
-                msg: ''
+                msg: '',
+                cart,
+                subtotal
             });
         }
 
@@ -276,7 +290,9 @@ const loginUser = async (req, res) => {
                 loginErrors: [{ msg: 'Email and Password are incorrect' }],  // Custom error for login
                 registerErrors: [],                                           // No registration errors
                 success: false,
-                msg: ''
+                msg: '',
+                cart,
+                total
             });
         }
 
