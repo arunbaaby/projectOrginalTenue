@@ -6,27 +6,27 @@ const isLoggedIn = async (req, res, next) => {
         const token = req.cookies.adminJwt || req.headers.authorization?.split(' ')[1];
 
         if (!token) {
-            return res.redirect('/admin/login?error=access-denied');
+            return res.redirect('/admin/?error=access-denied');
         }
 
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
             if (err) {
                 if (err.name === 'TokenExpiredError') {
-                    return res.redirect('/admin/login?error=session-expired');
+                    return res.redirect('/admin/?error=session-expired');
                 }
-                return res.redirect('/admin/login?error=invalid-token');
+                return res.redirect('/admin/?error=invalid-token');
             }
 
             if (!decoded.id) {
 
-                return res.redirect('/admin/login?error=invalid-token');
+                return res.redirect('/admin/?error=invalid-token');
             }
 
             req.user = decoded;
             next();
         });
     } catch (error) {
-        return res.redirect('/admin/login?error=internal-error');
+        return res.redirect('/admin/?error=internal-error');
     }
 };
 
@@ -39,7 +39,7 @@ const isLoggedOut = async (req, res, next) => {
     try {
         if (req.cookies.adminJwt) {
             
-            if (req.path === "/admin/login") {
+            if (req.path === "/admin/") {
                 return res.redirect("/admin/home");
             }
             res.redirect('/admin/home');

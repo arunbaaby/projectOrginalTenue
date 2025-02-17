@@ -92,7 +92,7 @@ const adminLogout = async (req, res) => {
             sameSite: 'Strict'
         });
 
-        res.redirect('/admin/login');
+        res.redirect('/admin/');
     } catch (error) {
         console.error('Logout Error Admin :', error.message);
         return res.status(400).json({

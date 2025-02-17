@@ -30,10 +30,10 @@ const salesReportController = require('../controllers/salesReportController');
 const offerController = require('../controllers/offerController');
 
 // Route to get admin login
-admin_route.get('/login',isLoggedOut, adminController.loadLogin);
+admin_route.get('/',isLoggedOut, adminController.loadLogin);
 
 // Route to handle admin login POST request
-admin_route.post('/login',isLoggedOut, adminController.adminLogin);
+admin_route.post('/',isLoggedOut, adminController.adminLogin);
 
 //admin logout
 admin_route.get('/logout',isLoggedIn,adminController.adminLogout);
