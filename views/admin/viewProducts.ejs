@@ -41,9 +41,9 @@
                 <div class="col-lg-3 col-sm-4 col-8 flex-grow-1 col-name">
                     <strong>Image & Name</strong>
                 </div>
-                <!-- <div class="col-lg-2 col-sm-2 col-4 col-price">
+                <div class="col-lg-2 col-sm-2 col-4 col-price">
                     <strong>Category</strong>
-                </div> -->
+                </div>
                 <div class="col-lg-1 col-sm-2 col-4 col-quantity">
                     <strong>Price</strong>
                 </div>
@@ -56,9 +56,9 @@
                 <div class="col-lg-1 col-sm-2 col-4 col-status">
                     <strong>Status</strong>
                 </div>
-                <div class="col-lg-1 col-sm-2 col-4 col-date">
+                <!-- <div class="col-lg-1 col-sm-2 col-4 col-date">
                     <strong>Date</strong>
-                </div>
+                </div> -->
                 <div class="col-lg-3 col-sm-2 col-4 col-action text-end">
                     <strong>Action</strong>
                 </div>
@@ -81,13 +81,13 @@
                         </a>
                     </div>
                     <!-- Category -->
-                    <!-- <div class="col-lg-2 col-sm-2 col-4 col-price">
+                    <div class="col-lg-2 col-sm-2 col-4 col-price">
                         <% if (item.category) { %>
                         <span><%= item.category.name %></span>
                         <% } else { %>
                         <span>N/A</span>
                         <% } %>
-                    </div> -->
+                    </div>
                     <!-- Price -->
                     <div class="col-lg-1 col-sm-2 col-4 col-quantity">
                         <span>Rs. <%= item.price %></span>
@@ -109,9 +109,9 @@
                         <% } %>
                     </div>
                     <!-- Date -->
-                    <div class="col-lg-1 col-sm-2 col-4 col-date">
+                    <!-- <div class="col-lg-1 col-sm-2 col-4 col-date">
                         <span><%= new Date(item.updatedAt).toLocaleDateString() %></span>
-                    </div>
+                    </div> -->
                     <!-- Action Buttons -->
                     <div class="col-lg-3 col-sm-4 col-8 col-action text-end">
                         <div class="d-flex justify-content-end align-items-center gap-2">
