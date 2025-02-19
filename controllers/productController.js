@@ -193,9 +193,12 @@ const editProductLoad = async (req, res) => {
 
 const updateProduct = async (req, res) => {
     try {
-        const { name, description, brand, gender, price, discountPrice, stock, category } = req.body;
+        const { name, description, brand, gender, stock, category } = req.body;
         
         const id = req.query.id;
+
+        const price = Number(req.body.price);
+        const discountPrice = Number(req.body.discountPrice);
 
         if(price<discountPrice){
             return res.status(400).json('Product price shouldnot be lesser than the discount price');
