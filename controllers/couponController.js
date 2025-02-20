@@ -4,17 +4,17 @@ const Cart = require('../models/cartModel');
 const loadCouponList = async(req,res)=>{
     try {
         const coupons = await Coupon.find();
-        res.render('couponList',{coupons});
+        return res.render('couponList',{coupons});
     } catch (error) {
-        res.status(500).json({ success: false, msg: 'Internal server error' });
+        return res.status(500).json({ success: false, msg: 'Internal server error' });
     }
 }
 
 const loadCreateCoupon = async(req,res)=>{
     try {
-        res.render('create-coupon');
+        return res.render('create-coupon');
     } catch (error) {
-        res.status(500).json({ success: false, msg: 'Internal server error' });
+        return res.status(500).json({ success: false, msg: 'Internal server error' });
     }
 }
 
@@ -31,6 +31,10 @@ const createCoupon = async(req,res)=>{
             maxUsers
         } = req.body;
 
+        if(!name|| !code|| !description|| !discountPercentage || !minPurchaseAmount || ! maxPurchaseAmount || !expirationDate || ! maxUsers){
+            return res.status(400).json({ success: false, message: "Fill out all the informations." });
+        }
+
 
         if(discountPercentage>=5 && discountPercentage<75 && minPurchaseAmount>0 && maxPurchaseAmount>0){
             const newCoupon = new Coupon({
@@ -43,16 +47,14 @@ const createCoupon = async(req,res)=>{
                 expirationDate: new Date(expirationDate),
                 maxUsers
             });
-            const addedcoupon = await newCoupon.save();
+            await newCoupon.save();
             return res.status(200).json({ success: true, message: "Coupon created successfully." });
         }
 
-        res.status(200).json({ success: false, message: "Coupon creation failed" });
-
-        res.send('create coupon');
+        return res.status(400).json({ success: false, message: "Coupon creation failed" });
         
     } catch (error) {
-        res.status(500).json({ success: false, msg: 'Internal server error' });
+        return res.status(500).json({ success: false, msg: 'Internal server error' });
     }
 }
 
@@ -60,11 +62,11 @@ const deactivateCoupon = async(req,res)=>{
     try {
         const couponId = req.params.id;
         await Coupon.findByIdAndUpdate(couponId, { is_active: false });
-        res.redirect('/admin/coupon');
+        return res.redirect('/admin/coupon');
         // res.send('decativate coupon');
         
     } catch (error) {
-        res.status(500).json({ success: false, msg: 'Internal server error' });
+        return res.status(500).json({ success: false, msg: 'Internal server error' });
     }
 }
 
@@ -73,9 +75,9 @@ const activateCoupon = async(req,res)=>{
     try {
         const couponId = req.params.id;
         await Coupon.findByIdAndUpdate(couponId, { is_active: true });
-        res.redirect('/admin/coupon');
+        return res.redirect('/admin/coupon');
     } catch (error) {
-        res.status(500).json({ success: false, msg: 'Internal server error' });
+        return res.status(500).json({ success: false, msg: 'Internal server error' });
     }
 }
 
@@ -186,7 +188,7 @@ const loadEditCoupon = async(req,res)=>{
         const couponId = req.query.id;
         const coupon = await Coupon.findById(couponId);
         
-        res.render('edit-coupon',{coupon});
+        return res.render('edit-coupon',{coupon});
     } catch (error) {
         return res.status(500).json({ success: false, msg: 'Server error.' });
     }
@@ -224,9 +226,9 @@ const editCoupon = async (req, res) => {
 
         await coupon.save();
 
-        res.status(200).json({ success: true, message: 'Coupon updated successfully' });
+        return res.status(200).json({ success: true, message: 'Coupon updated successfully' });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'An error occurred while updating the coupon', error });
+        return res.status(500).json({ success: false, message: 'An error occurred while updating the coupon', error });
     }
 };
 
