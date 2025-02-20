@@ -32,6 +32,7 @@
                             <div class="mb-4">
                                 <label for="gender_name" class="form-label">Gender</label>
                                 <select class="form-control" name="gender" id="gender_name">
+                                    <option value="" disabled selected>Select your gender</option>
                                     <option value="men">Men</option> <!-- Use 'Men' with capital M -->
                                     <option value="women">Women</option> <!-- Use 'Women' with capital W -->
                                     <option value="unisex">Unisex</option>
@@ -70,18 +71,19 @@
 
                             <!-- Category Section -->
                             <div class="mb-4">
-                                <% if(category.length> 0) {
-                                    for(let i=0; i<category.length; i++) { %>
-                                        <label class="mb-2 form-check form-check-inline" style="width: 45%;">
-                                            <input class="form-check-input" value="<%=category[i]._id%>" name="category"
-                                                id="category_<%= i %>" type="radio">
-                                            <span class="form-check-label">
-                                                <%=category[i].name%>
-                                            </span>
-                                        </label>
-                                        <%}}%>
-                                            <div id="categoryError" class="text-danger"></div>
-                                            <!-- Placeholder for category error -->
+                                <% if(category.length> 0) { %>
+                                    <label for="category" class="form-label">Select Category</label>
+                                    <select class="form-select" name="category" id="category">
+                                        <option value="" disabled selected>Select a category</option>
+                                        <% for(let i=0; i < category.length; i++) { %>
+                                            <option value="<%= category[i]._id %>">
+                                                <%= category[i].name %>
+                                            </option>
+                                            <% } %>
+                                    </select>
+                                    <% } %>
+                                        <div id="categoryError" class="text-danger"></div>
+                                        <!-- Placeholder for category error -->
                             </div>
 
                             <!-- Media Section for Images -->
