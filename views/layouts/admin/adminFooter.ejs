@@ -805,7 +805,74 @@
         }
     });
 </script>
+<script>
+    function validateAddProductForm() {
+    let isValid = true;
 
+    // Clearing previous errors
+    document.getElementById("nameError").innerText = "";
+    document.getElementById("descriptionError").innerText = "";
+    document.getElementById("brandError").innerText = "";
+    document.getElementById("genderError").innerText = "";
+    document.getElementById("priceError").innerText = "";
+    document.getElementById("discountPriceError").innerText = "";
+    document.getElementById("stockError").innerText = "";
+    document.getElementById("categoryError").innerText = "";
+    document.getElementById("mainError").innerText = "";
+
+    // Fetching values
+    let name = document.getElementById("product_name").value.trim();
+    let description = document.getElementById("product_description").value.trim();
+    let brand = document.getElementById("brand_name").value.trim();
+    let gender = document.getElementById("gender_name").value;
+    let price = document.getElementById("regular_price").value.trim();
+    let discountPrice = document.getElementById("discount_price").value.trim();
+    let stock = document.getElementById("stock_count").value.trim();
+    let category = document.querySelector('input[name="category"]:checked');
+    let images = document.getElementById("inputImage").files;
+
+    // Validation checks
+    if (name === "") {
+        document.getElementById("nameError").innerText = "Product name is required.";
+        isValid = false;
+    }
+    if (description === "") {
+        document.getElementById("descriptionError").innerText = "Description is required.";
+        isValid = false;
+    }
+    if (brand === "") {
+        document.getElementById("brandError").innerText = "Brand name is required.";
+        isValid = false;
+    }
+    if (!gender) {
+        document.getElementById("genderError").innerText = "Please select a gender.";
+        isValid = false;
+    }
+    if (price === "" || isNaN(price) || Number(price) <= 0) {
+        document.getElementById("priceError").innerText = "Enter a valid price.";
+        isValid = false;
+    }
+    if (discountPrice === "" || isNaN(discountPrice) || Number(discountPrice) < 0 || Number(discountPrice) > Number(price)) {
+        document.getElementById("discountPriceError").innerText = "Enter a valid discount price.";
+        isValid = false;
+    }
+    if (stock === "" || isNaN(stock) || Number(stock) < 1) {
+        document.getElementById("stockError").innerText = "Enter a valid stock count (minimum 1).";
+        isValid = false;
+    }
+    if (!category) {
+        document.getElementById("categoryError").innerText = "Please select a category.";
+        isValid = false;
+    }
+    if (images.length > 3) {
+        document.getElementById("mainError").innerText = "You can only upload a maximum of 3 images.";
+        isValid = false;
+    }
+
+    return isValid;
+}
+
+</script>
 
 </body>
 
