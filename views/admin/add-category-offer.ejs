@@ -27,6 +27,7 @@
                             <div class="mb-4">
                                 <label class="form-label">Category</label>
                                 <select class="form-select" name="category" id="category">
+                                    <option value="" disabled selected>Select a category</option>
                                     <% if(locals.categoryData) { %>
                                         <% for(let i = 0; i < categoryData.length; i++) { %>
                                                 <option value="<%= categoryData[i]._id %>"><%= categoryData[i].name %></option>
