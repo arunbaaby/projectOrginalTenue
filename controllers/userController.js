@@ -534,7 +534,17 @@ const newPasswordUpdate = async (req, res) => {
 
 const load404 = async (req, res) => {
     try {
-        res.render('404');
+        let cart = {
+            items: []
+        };
+
+        let subtotal = null;
+
+        res.render('404',{
+            cart,
+            subtotal
+        });
+        
     } catch (error) {
         return res.render("reset-password", { token, serverError: true });
     }

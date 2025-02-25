@@ -10,13 +10,17 @@ const connectWithRetry = () => {
         serverSelectionTimeoutMS: 60000, 
         socketTimeoutMS: 60000,
     })
-    .then(() => console.log("mongoDB connected"))
+    .then(() => console.log("mongo connected"))
     .catch(err => {
-        console.error("mongoDB connection error:", err);
+        console.error("mongo connection error:", err);
         console.log("retrying connection in 5 seconds");
         setTimeout(connectWithRetry, 5000);
     });
 };
+
+mongoose.connection.on('connected', () => {
+    console.log("mongo connec ready to make query");
+});
 
 connectWithRetry();
 
