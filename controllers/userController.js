@@ -62,12 +62,20 @@ const userRegister = async (req, res) => {
     try {
         const errors = validationResult(req);
 
+        let cart = {
+            items: []
+        };
+
+        let subtotal = null;
+
         if (!errors.isEmpty()) {
             return res.status(400).render('auth', {
-                registerErrors: errors.array(), // Registration errors
-                loginErrors: [],                // No login errors
+                registerErrors: errors.array(), 
+                loginErrors: [],                
                 success: false,
-                msg: ''
+                msg: '',
+                cart,
+                subtotal
             });
         }
 
@@ -76,19 +84,35 @@ const userRegister = async (req, res) => {
         const isExist = await User.findOne({ email });
         if (isExist) {
             return res.status(400).render('auth', {
-                registerErrors: [{ msg: 'Email already exists' }],  // Custom error for login
-                loginErrors: [],                                           // No registration errors
+                registerErrors: [{ msg: 'Email already exists' }],  
+                loginErrors: [],                                           
                 success: false,
-                msg: ''
+                msg: '',
+                cart,
+                subtotal
+            });
+        }
+        
+        const isExistMobile = await User.findOne({ mobile });
+        if (isExistMobile) {
+            return res.status(400).render('auth', {
+                registerErrors: [{ msg: 'Mobile number already exists' }], 
+                loginErrors: [],                                           
+                success: false,
+                msg: '',
+                cart,
+                subtotal
             });
         }
 
         if(confirmPassword!==password){
             return res.status(400).render('auth', {
-                registerErrors: [{ msg: 'Passwords do not match' }],  // Custom error for login
-                loginErrors: [],                                           // No registration errors
+                registerErrors: [{ msg: 'Passwords do not match' }],  
+                loginErrors: [],                                           
                 success: false,
-                msg: ''
+                msg: '',
+                cart,
+                subtotal
             });
         }
 
@@ -104,7 +128,9 @@ const userRegister = async (req, res) => {
         return res.status(400).render('auth', {
             errors: [{ msg: error.message }],
             success: false,
-            msg: ''
+            msg: '',
+            cart,
+            subtotal
         });
     }
 }
