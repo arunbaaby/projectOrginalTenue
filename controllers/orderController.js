@@ -371,7 +371,19 @@ const loadOrderConfirmation = async (req, res) => {
 const loadMyOrders = async (req, res) => {
     try {
         const userId = req.user.id;
-        let orders = await Order.find({ user: userId }).populate('items.product').sort({ _id: -1 });
+        const currentPage = parseInt(req.query.page) || 1;
+        const itemsPerPage = 4;
+
+        const totalOrders = await Order.countDocuments({user:userId});
+        const totalPages = Math.ceil(totalOrders/itemsPerPage);
+
+        let orders = await Order.find({ user: userId })
+            .populate('items.product')
+            .sort({ _id: -1 })
+            .skip((currentPage - 1) * itemsPerPage)
+            .limit(itemsPerPage);
+
+        // let orders = await Order.find({ user: userId }).populate('items.product').sort({ _id: -1 });
 
         let cart = { items: [] }; // Default cart as an empty object
         if (userId) {
@@ -390,7 +402,7 @@ const loadMyOrders = async (req, res) => {
             order.items.every(item => item.product !== null)
         );
 
-        res.render('my-orders', { orders, cart, subtotal });
+        res.render('my-orders', { orders, cart, subtotal, currentPage, totalPages });
     } catch (error) {
         res.status(500).json({ success: false, msg: error.message });
     }

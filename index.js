@@ -7,8 +7,8 @@ const port = process.env.PORT;
 // monogo connect and retry with timeout increase
 const connectWithRetry = () => {
     mongoose.connect(process.env.MONGO_ATLAS_URI, {
-        serverSelectionTimeoutMS: 60000, 
-        socketTimeoutMS: 60000,
+        serverSelectionTimeoutMS: 150000, 
+        socketTimeoutMS: 150000,
     })
     .then(() => console.log("mongo connected"))
     .catch(err => {

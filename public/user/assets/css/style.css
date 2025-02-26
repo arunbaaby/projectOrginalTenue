@@ -33019,7 +33019,7 @@ h3 {
     flex: 1;
     padding: 12px;
     border: none;
-    border-radius: 6px;
+    border-radius: 1px;
     font-weight: 600;
     cursor: pointer;
     text-align: center;
@@ -33027,8 +33027,12 @@ h3 {
 }
 
 .orders-wrapper .primary-button {
-    background-color: #fc4f4f;
+    background-color: #262626;
     color: white;
+}
+
+.orders-wrapper .primary-button:hover{
+  background-color: #fc4f4f;
 }
 
 .orders-wrapper .secondary-button {
