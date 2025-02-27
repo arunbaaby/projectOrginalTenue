@@ -23,14 +23,15 @@ const { token } = require('morgan');
 const loadAuth = async (req, res) => {
     try {
         const message = req.query.message || null;
-        const cart = {
+        let cart = {
             items: []
         };
 
-        const subtotal = null;
+        let subtotal = null;
 
-        res.render('auth', { message, cart, subtotal });
+        return res.render('auth', { message, cart, subtotal });
     } catch (error) {
+        console.log(error)
     }
 }
 
@@ -129,8 +130,8 @@ const userRegister = async (req, res) => {
             errors: [{ msg: error.message }],
             success: false,
             msg: '',
-            cart,
-            subtotal
+            cart: { items: [] },
+            subtotal: null
         });
     }
 }
@@ -379,12 +380,17 @@ const loadUserHome = async (req, res) => {
 
 const googleAuthCallback = (err, user, info, req, res, next) => {
     try {
+        let cart =  { items: [] };
+        let subtotal = null;
+
         if (err) {
             return res.status(500).render('auth', {
                 loginErrors: [{ msg: 'Internal server error. Please try again later.' }],
                 registerErrors: [],
                 success: false,
-                msg: ''
+                msg: '',
+                cart,
+                subtotal
             });
         }
 
@@ -393,7 +399,9 @@ const googleAuthCallback = (err, user, info, req, res, next) => {
                 loginErrors: [{ msg: info ? info.message : 'Login failed' }],
                 registerErrors: [],
                 success: false,
-                msg: ''
+                msg: '',
+                cart,
+                subtotal
             });
         }
 
@@ -412,7 +420,9 @@ const googleAuthCallback = (err, user, info, req, res, next) => {
             loginErrors: [{ msg: 'Authentication error. Please try again later.' }],
             registerErrors: [],
             success: false,
-            msg: ''
+            msg: '',
+            cart: { items: [] },
+            subtotal: null
         });
     }
 };
