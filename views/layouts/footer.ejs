@@ -782,6 +782,56 @@
             }
         });
     </script>
+    <script>
+        // Select all "Add to Cart" buttons
+        document.querySelectorAll(".add-to-cart-button").forEach(button => {
+            button.addEventListener("click", async function (event) {
+                event.preventDefault();
+    
+                const productId = this.getAttribute("data-product-id"); // Get product ID
+                const quantity = 1; // Default quantity (modify if needed)
+    
+                try {
+                    const response = await fetch("/add-to-cart", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ productId, quantity })
+                    });
+    
+                    const data = await response.json();
+    
+                    if (response.ok) {
+                        Swal.fire({
+                            title: "Success!",
+                            text: "Product added to cart.",
+                            icon: "success",
+                            confirmButtonText: "Go to Cart"
+                        }).then(() => {
+                            window.location.href = "/cart";
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Error!",
+                            text: data.message || "Failed to add product.",
+                            icon: "error",
+                            confirmButtonText: "OK"
+                        });
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                    Swal.fire({
+                        title: "Error!",
+                        text: "Something went wrong. Please try again.",
+                        icon: "error",
+                        confirmButtonText: "OK"
+                    });
+                }
+            });
+        });
+    </script>
+    
     
 
 </body>
