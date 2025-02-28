@@ -78,27 +78,19 @@
                             </div>
                             <!-- Category Section -->
                             <div class="mb-4">
-                                <% if(categoryData.length> 0) {
-                                    for(let i = 0; i < categoryData.length; i++) { %>
-                                        <label class="mb-2 form-check form-check-inline" style="width: 45%;">
-                                            <% if (productData.category &&
-                                                productData.category.name===categoryData[i].name) { %>
-                                                <input class="form-check-input" checked
-                                                    value="<%= categoryData[i]._id %>" name="category" type="radio">
-                                                <span class="form-check-label">
-                                                    <%= categoryData[i].name %>
-                                                </span>
-                                                <% } else { %>
-                                                    <input class="form-check-input" value="<%= categoryData[i]._id %>"
-                                                        name="category" id="category_<%= i %>" type="radio">
-                                                    <span class="form-check-label">
-                                                        <%= categoryData[i].name %>
-                                                    </span>
-                                                    <% } %>
-                                        </label>
-                                        <% }} %>
-                                            <div id="categoryError" class="text-danger"></div>
-                                            <!-- Placeholder for category error -->
+                                <% if(categoryData.length> 0) { %>
+                                    <label for="category" class="form-label">Select Category</label>
+                                    <select class="form-select" name="category" id="category">
+                                        <option value="" disabled selected><%= productData.category.name %></option>
+                                        <% for(let i=0; i < categoryData.length; i++) { %>
+                                            <option value="<%= categoryData[i]._id %>">
+                                                <%= categoryData[i].name %>
+                                            </option>
+                                            <% } %>
+                                    </select>
+                                    <% } %>
+                                        <div id="categoryError" class="text-danger"></div>
+                                        <!-- Placeholder for category error -->
                             </div>
                             <!-- Media Section for Images -->
                             <div class="mb-4">
@@ -269,7 +261,9 @@
         }
 
         function validateCategory() {
-            const categoryInputs = document.querySelectorAll('input[name="category"]:checked');
+            const categoryInputs = document.getElementById("category").value;
+            console.log(categoryInputs);
+            // const categoryInputs = document.querySelectorAll('input[name="category"]:checked');
             const categoryError = document.getElementById('categoryError');
 
             if (categoryInputs.length === 0) {
