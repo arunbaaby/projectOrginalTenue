@@ -256,11 +256,12 @@ const resendOtp = async (req, res) => {
 const loginUser = async (req, res) => {
     try {
         const errors = validationResult(req);
-        const cart = {
+        let cart = {
             items: []
         };
 
-        const subtotal = null;
+        let subtotal = null;
+        let total = null;
 
         if (!errors.isEmpty()) {
             return res.status(400).render('auth', {
@@ -269,7 +270,8 @@ const loginUser = async (req, res) => {
                 success: false,
                 msg: '',
                 cart,
-                subtotal
+                subtotal,
+                total
             });
         }
 
@@ -283,7 +285,8 @@ const loginUser = async (req, res) => {
                 success: false,
                 msg: '',
                 cart,
-                subtotal
+                subtotal,
+                total
             });
         }
 
@@ -294,7 +297,8 @@ const loginUser = async (req, res) => {
                 success: false,
                 msg: '',
                 cart,
-                subtotal
+                subtotal,
+                total
             });
         }
 
@@ -305,7 +309,8 @@ const loginUser = async (req, res) => {
                 success: false,
                 msg: '',
                 cart,
-                subtotal
+                subtotal,
+                total
             });
         }
 
@@ -319,7 +324,8 @@ const loginUser = async (req, res) => {
                 success: false,
                 msg: '',
                 cart,
-                total
+                total,
+                subtotal
             });
         }
 
