@@ -162,7 +162,7 @@
             <% let showDownloadButton=orderDetails.items.every(item=> item.status !== 'Returned'&& item.status !==
                 'Cancelled'); %>
 
-                <% if (showDownloadButton) { %>
+                <% if (showDownloadButton && orderDetails.paymentStatus === 'Completed') { %>
                     <button id="download-pdf"
                         style="padding: 10px 20px; background-color: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer;">
                         Download Invoice
