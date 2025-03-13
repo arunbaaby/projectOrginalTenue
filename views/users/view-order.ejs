@@ -734,13 +734,13 @@
 
             const rzp = new Razorpay(options);
 
-            rzp.on('payment.failed', async function (response) {
-                await notifyPaymentFailure(data.orderId);
+            // rzp.on('payment.failed', async function (response) {
+            //     await notifyPaymentFailure(data.orderId);
 
-                alert('Payment failed. You will be redirected to view your order.')
-                window.location.href = `/view-order?orderId=${data.orderId}`;
+            //     alert('Payment failed. You will be redirected to view your order.')
+            //     window.location.href = `/view-order?orderId=${data.orderId}`;
 
-            });
+            // });
 
             rzp.open();
         }
@@ -751,8 +751,8 @@
 
                 Swal.fire({
                     icon: 'info',
-                    title: 'Payment Window Closed',
-                    text: 'You closed the payment window',
+                    title: 'Payment Failed',
+                    text: 'Retry the payment',
                     confirmButtonText: 'OK',
                 }).then(() => {
                     window.location.href = `/view-order?orderId=${orderId}`;
