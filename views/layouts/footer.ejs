@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="footer-column footer-width-25">
                     <div class="footer-widget footer-about mb-30">
-                        <a href="index.html">
+                        <a href="/home">
                             <img src="/assets/images/logo/logo.png" alt="logo">
                         </a>
                         <p>Lorem ipsum dolor sit amet, magna habemus ius ad, qui minimum voluptar</p>
@@ -694,7 +694,7 @@
         }
     });
 </script>
-<script>
+<!-- <script>
     document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".add-to-cart").forEach(button => {
             button.addEventListener("click", function (event) {
@@ -830,9 +830,189 @@
                 }
             });
         });
-    </script>
-    
-    
+    </script> -->
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Function to handle adding a product to the cart
+        async function addToCart(productId, quantity = 1) {
+            try {
+                const response = await fetch("/add-to-cart", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ productId, quantity })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Product added to cart.",
+                        icon: "success",
+                        confirmButtonText: "Go to Cart"
+                    }).then(() => {
+                        window.location.href = "/cart";
+                    });
+                } else {
+                    if (data.message === "Please login to add items to your cart.") {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Login Required',
+                            text: 'Please login to add items to your cart.',
+                            confirmButtonText: 'Login'
+                        }).then(() => {
+                            window.location.href = "/auth";
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Error!",
+                            text: data.message || "Failed to add product.",
+                            icon: "error",
+                            confirmButtonText: "OK"
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                Swal.fire({
+                    title: "Error!",
+                    text: "Something went wrong. Please try again.",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+            }
+        }
+
+        // Function to handle adding a product to the wishlist
+        async function addToWishlist(productId) {
+            try {
+                const response = await fetch("/add-to-wishlist", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ productId })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    Swal.fire({
+                        title: "Success!",
+                        text: data.message || "Product added to wishlist.",
+                        icon: "success",
+                        confirmButtonText: "OK"
+                    });
+
+                    // Add a class for styling (e.g., change the icon)
+                    const wishlistButton = document.querySelector(`.wishlist-button[data-product-id="${productId}"]`);
+                    if (wishlistButton) {
+                        wishlistButton.querySelector('i').classList.add('added');
+                    }
+                } else {
+                    if (data.message === "Please login to add items to your wishlist.") {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Login Required',
+                            text: 'Please login to add items to your wishlist.',
+                            confirmButtonText: 'Login'
+                        }).then(() => {
+                            window.location.href = "/auth";
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Error!",
+                            text: data.error || "Failed to add to wishlist.",
+                            icon: "error",
+                            confirmButtonText: "OK"
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                Swal.fire({
+                    title: "Error!",
+                    text: "Something went wrong. Please try again.",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+            }
+        }
+
+        // Handle buttons with class "add-to-cart"
+        document.querySelectorAll(".add-to-cart").forEach(button => {
+            button.addEventListener("click", function (event) {
+                event.preventDefault();
+                const productId = this.getAttribute("data-product-id");
+                addToCart(productId); // Default quantity = 1
+            });
+        });
+
+        // Handle button with ID "addToCartButton" (form-based)
+        const addToCartButton = document.getElementById("addToCartButton");
+        if (addToCartButton) {
+            addToCartButton.addEventListener("click", function (event) {
+                event.preventDefault();
+                const form = this.closest("form");
+                const productId = form.querySelector("input[name='productId']").value;
+                const quantity = form.querySelector("#quantityInput").value.trim();
+
+                if (isNaN(quantity) || quantity <= 0) {
+                    Swal.fire({
+                        title: "Invalid Quantity",
+                        text: "Please enter a valid quantity.",
+                        icon: "warning",
+                        confirmButtonText: "OK"
+                    });
+                    return;
+                }
+
+                addToCart(productId, parseInt(quantity));
+            });
+        }
+
+        // Handle buttons with class "add-to-cart-button"
+        document.querySelectorAll(".add-to-cart-button").forEach(button => {
+            button.addEventListener("click", function (event) {
+                event.preventDefault();
+                const productId = this.getAttribute("data-product-id");
+                addToCart(productId); // Default quantity = 1
+            });
+        });
+
+        // Handle buttons with class "wishlist-button"
+        document.querySelectorAll(".wishlist-button").forEach(button => {
+            button.addEventListener("click", function (event) {
+                event.preventDefault();
+                const productId = this.getAttribute("data-product-id");
+                addToWishlist(productId);
+            });
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const authLink = document.getElementById('auth-link');
+
+        console.log('All cookies:', document.cookie);
+
+        // Check if the user is logged in by looking for the JWT cookie
+        const token = document.cookie.split('; ').find(row => row.startsWith('jwt='));
+
+        if (token) {
+            // User is logged in
+            authLink.textContent = 'Logout';
+            authLink.href = '/logout';
+        } else {
+            // User is not logged in
+            authLink.textContent = 'Login';
+            authLink.href = '/auth';
+        }
+    });
+</script>
 
 </body>
 

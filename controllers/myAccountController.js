@@ -8,10 +8,16 @@ const Wallet = require('../models/walletModel');
 
 const myAccountLoad = async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.user?.id;
+        let userLogged = false;
 
         if (!userId) {
-            return res.render('my-account', { user: null, userAddresses: null, cart: { items: [] }, subtotal: 0, wallet: { amount: 0, transactions: [] }, transactions: [] });
+            return res.redirect('/auth');
+            // return res.render('my-account', { user: null, userAddresses: null, cart: { items: [] }, subtotal: 0, wallet: { amount: 0, transactions: [] }, transactions: [] });
+        }
+
+        if(userId){
+            userLogged = true;
         }
 
         let cart = await Cart.findOne({ user: userId }).populate('items.product') || { items: [] };
@@ -40,7 +46,8 @@ const myAccountLoad = async (req, res) => {
             cart,
             subtotal,
             wallet,
-            transactions 
+            transactions,
+            userLogged 
         });
 
     } catch (error) {

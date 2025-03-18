@@ -262,9 +262,12 @@ const allProductsLoad = async (req, res) => {
         const currentPage = parseInt(req.query.page) || 1;
         const itemsPerPage = 16;
 
-        const userId = req.user.id;
+        const userId = req.user?.id;
+        let userLogged = false;
+
         let cart = { items: [] }; // Default cart as an empty object
         if (userId) {
+            userLogged = true;
             const existingCart = await Cart.findOne({ user: userId }).populate('items.product');
             if (existingCart) {
                 cart = existingCart;
@@ -382,7 +385,8 @@ const allProductsLoad = async (req, res) => {
             priceMin, 
             priceMax,
             cart,
-            subtotal: subtotal.toFixed(2)
+            subtotal: subtotal.toFixed(2),
+            userLogged
         });
 
     } catch (error) {
@@ -398,12 +402,15 @@ const allProductsLoad = async (req, res) => {
 const productDetailsLoad = async (req, res) => {
     try {
         const id = req.query.id;
-        const userId = req.user.id;
+        const userId = req.user?.id;
         const product = await Product.findById(id).populate('category');
         const recommendedProducts = await getRecommendedProducts(id);
 
+        let userLogged = false;
+
         let cart = { items: [] }; // Default cart as an empty object
         if (userId) {
+            userLogged = true;
             const existingCart = await Cart.findOne({ user: userId }).populate('items.product');
             if (existingCart) {
                 cart = existingCart;
@@ -442,7 +449,7 @@ const productDetailsLoad = async (req, res) => {
                 _id: { $ne: product._id }//avoid the same product(main product);
             }).limit(5);
         }
-        res.render('product-details', { product, relatedProducts, products, cart, subtotal, recommendedProducts });
+        res.render('product-details', { product, relatedProducts, products, cart, subtotal, recommendedProducts, userLogged });
     } catch (error) {
         res.status(500).send('Internal Server Error');
     }

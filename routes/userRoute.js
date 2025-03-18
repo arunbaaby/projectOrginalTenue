@@ -41,8 +41,11 @@ const couponController = require('../controllers/couponController');
 const offerController = require('../controllers/offerController');
 
 const { log } = require('console');
+// Route for rendering home page
+user_route.get('/', userController.loadUserHome);
+
 // Route for rendering combined login/register page
-user_route.get('/',isLoggedOut,userController.loadAuth);
+user_route.get('/auth',isLoggedOut,userController.loadAuth);
 
 // Load the OTP verification page
 user_route.get('/verify-otp',isLoggedOut, (req, res) => {
@@ -130,6 +133,7 @@ user_route.post('/apply-referral-code',isLoggedIn,offerController.applyReferralC
 //404
 user_route.get('/404',isLoggedIn,userController.load404);
 user_route.get('/unlisted-product',isLoggedIn,userController.loadUnlistedProduct);
+user_route.get('/prompt-login',userController.loadPromtLogin);
 
 
 

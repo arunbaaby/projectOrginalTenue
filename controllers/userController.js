@@ -28,8 +28,9 @@ const loadAuth = async (req, res) => {
         };
 
         let subtotal = null;
+        let userLogged = false;
 
-        return res.render('auth', { message, cart, subtotal });
+        return res.render('auth', { message, cart, subtotal, userLogged });
     } catch (error) {
         console.log(error)
     }
@@ -63,6 +64,8 @@ const userRegister = async (req, res) => {
     try {
         const errors = validationResult(req);
 
+        let userLogged = false;
+
         let cart = {
             items: []
         };
@@ -71,12 +74,13 @@ const userRegister = async (req, res) => {
 
         if (!errors.isEmpty()) {
             return res.status(400).render('auth', {
-                registerErrors: errors.array(), 
-                loginErrors: [],                
+                registerErrors: errors.array(),
+                loginErrors: [],
                 success: false,
                 msg: '',
                 cart,
-                subtotal
+                subtotal,
+                userLogged
             });
         }
 
@@ -85,35 +89,38 @@ const userRegister = async (req, res) => {
         const isExist = await User.findOne({ email });
         if (isExist) {
             return res.status(400).render('auth', {
-                registerErrors: [{ msg: 'Email already exists' }],  
-                loginErrors: [],                                           
+                registerErrors: [{ msg: 'Email already exists' }],
+                loginErrors: [],
                 success: false,
                 msg: '',
                 cart,
-                subtotal
-            });
-        }
-        
-        const isExistMobile = await User.findOne({ mobile });
-        if (isExistMobile) {
-            return res.status(400).render('auth', {
-                registerErrors: [{ msg: 'Mobile number already exists' }], 
-                loginErrors: [],                                           
-                success: false,
-                msg: '',
-                cart,
-                subtotal
+                subtotal,
+                userLogged
             });
         }
 
-        if(confirmPassword!==password){
+        const isExistMobile = await User.findOne({ mobile });
+        if (isExistMobile) {
             return res.status(400).render('auth', {
-                registerErrors: [{ msg: 'Passwords do not match' }],  
-                loginErrors: [],                                           
+                registerErrors: [{ msg: 'Mobile number already exists' }],
+                loginErrors: [],
                 success: false,
                 msg: '',
                 cart,
-                subtotal
+                subtotal,
+                userLogged
+            });
+        }
+
+        if (confirmPassword !== password) {
+            return res.status(400).render('auth', {
+                registerErrors: [{ msg: 'Passwords do not match' }],
+                loginErrors: [],
+                success: false,
+                msg: '',
+                cart,
+                subtotal,
+                userLogged
             });
         }
 
@@ -131,7 +138,8 @@ const userRegister = async (req, res) => {
             success: false,
             msg: '',
             cart: { items: [] },
-            subtotal: null
+            subtotal: null,
+            userLogged
         });
     }
 }
@@ -256,6 +264,8 @@ const resendOtp = async (req, res) => {
 const loginUser = async (req, res) => {
     try {
         const errors = validationResult(req);
+        let userLogged = false;
+
         let cart = {
             items: []
         };
@@ -271,7 +281,8 @@ const loginUser = async (req, res) => {
                 msg: '',
                 cart,
                 subtotal,
-                total
+                total,
+                userLogged
             });
         }
 
@@ -286,7 +297,8 @@ const loginUser = async (req, res) => {
                 msg: '',
                 cart,
                 subtotal,
-                total
+                total,
+                userLogged
             });
         }
 
@@ -298,7 +310,8 @@ const loginUser = async (req, res) => {
                 msg: '',
                 cart,
                 subtotal,
-                total
+                total,
+                userLogged
             });
         }
 
@@ -310,7 +323,8 @@ const loginUser = async (req, res) => {
                 msg: '',
                 cart,
                 subtotal,
-                total
+                total,
+                userLogged
             });
         }
 
@@ -325,7 +339,8 @@ const loginUser = async (req, res) => {
                 msg: '',
                 cart,
                 total,
-                subtotal
+                subtotal,
+                userLogged
             });
         }
 
@@ -349,7 +364,7 @@ const loginUser = async (req, res) => {
 
 const loadUserHome = async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.user?.id;
 
         const newArrivals = await getNewArrivals();
         const newCategoryProduct = await getNewCategoriesWithLatestProducts();
@@ -358,7 +373,9 @@ const loadUserHome = async (req, res) => {
         const mostSoldProducts = await getMostSoldProducts();
 
         let cart = { items: [] }; // Default cart as an empty object
+        let userLogged = false;
         if (userId) {
+            userLogged = true;
             const existingCart = await Cart.findOne({ user: userId }).populate('items.product');
             if (existingCart) {
                 cart = existingCart;
@@ -374,7 +391,17 @@ const loadUserHome = async (req, res) => {
             }, 0);
         }
 
-        res.render('userHome', { newArrivals, newCategoryProduct, featuredProducts, mostDiscountProduct, mostDiscountProduct, mostSoldProducts, cart, subtotal});
+        res.render('userHome', {
+            newArrivals,
+            newCategoryProduct,
+            featuredProducts,
+            mostDiscountProduct,
+            mostDiscountProduct,
+            mostSoldProducts,
+            cart,
+            subtotal,
+            userLogged
+        });
     } catch (error) {
         return res.status(400).json({
             success: false,
@@ -386,9 +413,9 @@ const loadUserHome = async (req, res) => {
 
 const googleAuthCallback = (err, user, info, req, res, next) => {
     try {
-        let cart =  { items: [] };
+        let cart = { items: [] };
         let subtotal = null;
-
+        let userLogged = false;
         if (err) {
             return res.status(500).render('auth', {
                 loginErrors: [{ msg: 'Internal server error. Please try again later.' }],
@@ -396,7 +423,8 @@ const googleAuthCallback = (err, user, info, req, res, next) => {
                 success: false,
                 msg: '',
                 cart,
-                subtotal
+                subtotal,
+                userLogged
             });
         }
 
@@ -407,7 +435,8 @@ const googleAuthCallback = (err, user, info, req, res, next) => {
                 success: false,
                 msg: '',
                 cart,
-                subtotal
+                subtotal,
+                userLogged
             });
         }
 
@@ -428,7 +457,8 @@ const googleAuthCallback = (err, user, info, req, res, next) => {
             success: false,
             msg: '',
             cart: { items: [] },
-            subtotal: null
+            subtotal: null,
+            userLogged : false
         });
     }
 };
@@ -443,7 +473,7 @@ const logoutUser = async (req, res) => {
             sameSite: 'Strict'
         });
 
-        res.redirect('/');
+        res.redirect('/auth');
     } catch (error) {
         return res.status(400).json({
             success: false,
@@ -556,17 +586,17 @@ const load404 = async (req, res) => {
 
         let subtotal = null;
 
-        res.render('404',{
+        res.render('404', {
             cart,
             subtotal
         });
-        
+
     } catch (error) {
         return res.render("reset-password", { token, serverError: true });
     }
 }
 
-const loadUnlistedProduct = async(req,res)=>{
+const loadUnlistedProduct = async (req, res) => {
     try {
         res.render('unlisted-product');
     } catch (error) {
@@ -574,6 +604,19 @@ const loadUnlistedProduct = async(req,res)=>{
     }
 }
 
+const loadPromtLogin = async (req, res) => {
+    try {
+        let cart = {
+            items: []
+        };
+
+        let subtotal = null;
+
+        res.render('prompt-login', { cart, subtotal });
+    } catch (error) {
+        res.status(500).send("Server error");
+    }
+}
 
 
 
@@ -594,5 +637,6 @@ module.exports = {
     resetPassword,
     newPasswordUpdate,
     load404,
-    loadUnlistedProduct
+    loadUnlistedProduct,
+    loadPromtLogin
 }

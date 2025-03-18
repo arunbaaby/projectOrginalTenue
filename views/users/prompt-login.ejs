@@ -1,0 +1,357 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+
+<!-- Mirrored from template.hasthemes.com/toro/toro/index-4.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 09 Feb 2024 11:17:24 GMT -->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Tenue Vogue - Clothing Store</title>
+    <meta name="robots" content="noindex, follow" />
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.png">
+
+    <!-- All CSS is here
+	============================================ -->
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css">
+    <!-- Icon Font CSS -->
+    <link rel="stylesheet" href="assets/css/vendor/font-awesome.css">
+    <link rel="stylesheet" href="assets/css/vendor/dlicon.css">
+    <!-- Others CSS -->
+    <link rel="stylesheet" href="assets/css/plugins/owl-carousel.css">
+    <link rel="stylesheet" href="assets/css/plugins/slick.css">
+    <link rel="stylesheet" href="assets/css/plugins/magnific-popup.css">
+    <link rel="stylesheet" href="assets/css/plugins/jarallax.css">
+    <link rel="stylesheet" href="assets/css/plugins/easyzoom.css">
+    <link rel="stylesheet" href="assets/css/plugins/animate.css">
+    <link rel="stylesheet" href="assets/css/plugins/fullpage.css">
+    <link rel="stylesheet" href="assets/css/plugins/jquery-ui.css">
+    <link rel="stylesheet" href="assets/css/plugins/select2.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+</head>
+
+<body>
+
+    <div class="main-wrapper">
+        <header class="header-area transparent-bar section-padding-1">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-xl-2 col-lg-2">
+                        <div class="logo logo-width">
+                            <a href="/home">
+                                <img src="assets/images/logo/logo.png" alt="logo">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-xl-8 col-lg-8 d-flex justify-content-center position-static">
+                        <div class="main-menu menu-lh-1 main-menu-padding-1">
+                            <nav>
+                                <ul>
+                                    <li class="position-static"><a class="active" href="/home">Home</li>
+                                    <li><a href="/allProducts">Shop</i></a>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-lg-2">
+                        <div class="header-right-wrap header-right-flex">
+                            <div class="same-style header-wishlist account-dropdown">
+                                <a href="#" class="account-link">
+                                    <i class="fa fa-user-o"></i>
+                                </a>
+
+                                <!-- Dropdown Menu -->
+                                <div class="dropdown-menu">
+                                    <ul>
+                                        <li><a href="/my-account">My Account</a></li>
+                                        <li>
+                                            <a id="auth-link" href="#">Loading...</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="same-style header-wishlist">
+                                <a href="/wishlist"><i class="fa fa-heart-o"></i></a>
+                            </div>
+                            <div class="same-style cart-wrap">
+                                <a href="#" class="cart-active">
+                                    <i class="dlicon shopping_bag-20"></i>
+                                    <span class="count-style">
+                                        <%= cart.items.length %>
+                                    </span>
+                                </a>
+                            </div>
+                            <div class="same-style header-search">
+                                <a class="search-active" href="#">
+                                    <i class="dlicon ui-1_zoom"></i>
+                                </a>
+                            </div>
+                            <!-- <div class="same-style header-off-canvas">
+                                <a class="header-aside-button" href="#">
+                                    <i class="dlicon ui-3_menu-left"></i>
+                                </a>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="header-small-mobile section-padding-1">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-6">
+                        <div class="mobile-logo logo-width">
+                            <a href="/home">
+                                <img alt="" src="assets/images/logo/logo.png">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="mobile-header-right-wrap">
+                            <div class="header-right-wrap header-right-flex">
+                                <div class="same-style cart-wrap">
+                                    <a href="#" class="cart-active">
+                                        <i class="dlicon shopping_bag-20"></i>
+                                        <span class="count-style">
+                                            <%= cart.items.length %>
+                                        </span>
+                                    </a>
+                                </div>
+                                <div class="same-style header-off-canvas">
+                                    <a class="header-aside-button" href="#">
+                                        <i class="dlicon ui-3_menu-left"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- search start -->
+        <div class="search-content-wrap main-search-active">
+            <a class="search-close"><i class="dlicon ui-1_simple-remove"></i></a>
+            <div class="search-content">
+                <p>Start typing and press Enter to search</p>
+                <form class="search-form" action="/allProducts" method="GET">
+                    <input type="text" name="q" placeholder="Search">
+                    <button class="button-search" type="submit"><i class="dlicon ui-1_zoom"></i></button>
+                </form>
+            </div>
+        </div>
+        <!-- mini cart start -->
+        <div class="sidebar-cart-active">
+            <div class="sidebar-cart-all">
+                <a class="cart-close" href="#"><i class="dlicon ui-1_simple-remove"></i></a>
+                <div class="cart-content">
+                    <h3>Shopping Cart</h3>
+                    <ul>
+                        <% if (cart && cart.items.length> 0) { %>
+                            <% cart.items.forEach(item=> { %>
+                                <li class="single-product-cart">
+                                    <div class="cart-img">
+                                        <a href="#">
+                                            <img src="/admin/productImages/<%= item.product.images && item.product.images[0] %>"
+                                                alt="<%= item.product.name %>" height="90px" width="90px">
+                                        </a>
+                                    </div>
+                                    <div class="cart-title">
+                                        <h4><a href="#">
+                                                <%= item.product.name %>
+                                            </a></h4>
+                                        <span>
+                                            <%= item.quantity %> × $<%= item.product.discountPrice || item.product.price
+                                                    %>
+                                        </span>
+                                    </div>
+                                    <div class="cart-delete">
+                                        <a href="#">×</a>
+                                    </div>
+                                </li>
+                                <% }) %>
+                                    <% } else { %>
+                                        <li>Your cart is empty</li>
+                                        <% } %>
+                    </ul>
+                    <div class="cart-total">
+                        <h4>Subtotal: <span>₹<%= subtotal %></span></h4>
+                    </div>
+
+                    <div class="cart-checkout-btn">
+                        <a class="btn-hover cart-btn-style" href="/cart">view cart</a>
+                        <a class="no-mrg btn-hover cart-btn-style" href="/order">checkout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- aside start -->
+        <div class="header-aside-active">
+            <div class="header-aside-wrap">
+                <a class="aside-close"><i class="dlicon ui-1_simple-remove"></i></a>
+                <div class="header-aside-content">
+                    <div class="mobile-menu-area">
+                        <div class="mobile-search">
+                            <form class="search-form" action="/allProducts" method="get">
+                                <input type="text" name="q" placeholder="Search entire store…">
+                                <button class="button-search"><i class="dlicon ui-1_zoom"></i></button>
+                            </form>
+                        </div>
+                        <div class="mobile-menu-wrap">
+                            <!-- mobile menu start -->
+                            <div class="mobile-navigation">
+                                <!-- mobile menu navigation start -->
+                                <nav>
+                                    <ul class="mobile-menu">
+                                        <li class="menu-item-has-children"><a href="/home">Home</a></li>
+                                        <li class="menu-item-has-children "><a href="/allProducts">shop</a></li>
+                                        <li class="menu-item-has-children"><a href="/wishlist">Wishlist</a></li>
+                                    </ul>
+                                </nav>
+                                <!-- mobile menu navigation end -->
+                            </div>
+                            <!-- mobile menu end -->
+                        </div>
+                        <div class="mobile-curr-lang-wrap">
+                            <div class="single-mobile-curr-lang">
+                                <a class="mobile-account-active" href="#">My Account <i
+                                        class="fa fa-angle-down"></i></a>
+                                <div class="lang-curr-dropdown account-dropdown-active">
+                                    <ul>
+                                        <li><a href="/my-account">My Account</a></li>
+                                        <li><a href="/logout">Logout</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="header-aside-menu">
+                        <nav>
+                            <ul>
+                                <li><a href="#">About Toro</a></li>
+                                <li><a href="#">Help Center</a></li>
+                                <li><a href="#">Collection</a></li>
+                                <li><a href="#">Blog</a></li>
+                                <li><a href="#">New Look</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <img src="assets/images/icon-img/payments.png" alt="payment">
+                    <p>Pellentesque mollis nec orci id tincidunt. Sed mollis risus eu nisi aliquet, sit amet fermentum
+                        justo
+                        dapibus.</p>
+                    <div class="aside-contact-info">
+                        <ul>
+                            <li><i class="dlicon ui-2_time-clock"></i>Monday - Friday: 9:00 - 19:00</li>
+                            <li><i class="dlicon ui-1_email-84"></i>Info@la-studioweb.com</li>
+                            <li><i class="dlicon tech-2_rotate"></i>(+55) 254. 254. 254</li>
+                            <li><i class="dlicon ui-1_home-minimal"></i>Helios Tower 75 Tam Trinh Hoang - Ha Noi - Viet
+                                Nam
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="social-icon-style mb-25">
+                        <a class="facebook" href="#"><i class="fa fa-facebook"></i></a>
+                        <a class="twitter" href="#"><i class="fa fa-twitter"></i></a>
+                        <a class="google-plus" href="#"><i class="fa fa-google-plus"></i></a>
+                        <a class="behance" href="#"><i class="fa fa-behance"></i></a>
+                    </div>
+                    <div class="copyright">
+                        <p>© 2021 <a href="https://hasthemes.com/">Toro.</a> All rights reserved</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="error-area bg-gray-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="error-content text-center">
+                            <img src="assets/images/banner/error.png" alt="banner">
+                            <h3>PLEASE LOG IN</h3>
+                            <p>Login to view items in your Wishlist and Cart.</p>
+                            <div class="btn-style-1 text-center">
+                                <a class="btn-border-black2" href="/auth">
+                                    <div
+                                        class="btn-viewmore-normal btn-ptb-3 btn-viewmore-bg-transparent btn-viewmore-common btn-font-3">
+                                        <span>LOGIN</span>
+                                    </div>
+                                    <div
+                                        class="btn-viewmore-hover btn-ptb-3 btn-viewmore-common btn-hover-transition btn-font-3">
+                                        <span>LOGIN</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- All JS is here
+============================================ -->
+
+    <!-- Modernizer JS -->
+    <script src="assets/js/vendor/modernizr-3.11.7.min.js"></script>
+    <!-- jquery -->
+    <script src="assets/js/vendor/jquery-v3.6.0.min.js"></script>
+    <!-- Popper JS -->
+    <script src="assets/js/vendor/popper.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="assets/js/vendor/bootstrap.min.js"></script>
+    <script src="assets/js/plugins/owl-carousel.js"></script>
+    <script src="assets/js/plugins/slick.js"></script>
+    <script src="assets/js/plugins/jarallax.min.js"></script>
+    <script src="assets/js/plugins/countdown.js"></script>
+    <script src="assets/js/plugins/magnific-popup.js"></script>
+    <script src="assets/js/plugins/instafeed.js"></script>
+    <script src="assets/js/plugins/tilt.js"></script>
+    <script src="assets/js/plugins/images-loaded.js"></script>
+    <script src="assets/js/plugins/isotope.js"></script>
+    <script src="assets/js/plugins/scrolloverflow-fullpage.js"></script>
+    <script src="assets/js/plugins/fullpage.js"></script>
+    <script src="assets/js/plugins/jquery-ui.js"></script>
+    <script src="assets/js/plugins/jquery-ui-touch-punch.js"></script>
+    <script src="assets/js/plugins/easyzoom.js"></script>
+    <script src="assets/js/plugins/resizesensor.js"></script>
+    <script src="assets/js/plugins/sticky-sidebar.js"></script>
+    <script src="assets/js/plugins/scrollup.js"></script>
+    <script src="assets/js/plugins/select2.min.js"></script>
+    <script src="assets/js/plugins/cookie.js"></script>
+    <script src="assets/js/plugins/bpopup.js"></script>
+    <script src="assets/js/plugins/wow.js"></script>
+    <script src="assets/js/plugins/ajax-mail.js"></script>
+    <!-- Main JS -->
+    <script src="assets/js/main.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const authLink = document.getElementById('auth-link');
+
+            // Check if the user is logged in by looking for the JWT cookie
+            const token = document.cookie.split('; ').find(row => row.startsWith('jwt='));
+
+            if (token) {
+                // User is logged in
+                authLink.textContent = 'Logout';
+                authLink.href = '/logout';
+            } else {
+                // User is not logged in
+                authLink.textContent = 'Login';
+                authLink.href = '/auth';
+            }
+        });
+    </script>
+
+</body>
+
+
+<!-- Mirrored from template.hasthemes.com/toro/toro/404.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 09 Feb 2024 11:19:24 GMT -->
+
+</html>

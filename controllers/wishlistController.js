@@ -4,11 +4,18 @@ const Cart = require('../models/cartModel');
 
 const loadWishlist = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id;
     const wishlist = await Wishlist.findOne({ user: userId }).populate('products');
+
+    let userLogged = false;
+
+    if(!userId){
+      return res.redirect('/prompt-login');
+    }
 
     let cart = { items: [] }; // Default cart as an empty object
     if (userId) {
+      userLogged = true;
       const existingCart = await Cart.findOne({ user: userId }).populate('items.product');
       if (existingCart) {
         cart = existingCart;
@@ -22,7 +29,8 @@ const loadWishlist = async (req, res) => {
     res.render('wishlist', {
       wishlist: wishlist ? wishlist.products : [], // Pass the products array
       cart,
-      subtotal
+      subtotal,
+      userLogged
     });
   } catch (error) {
     res.status(500).json({ error: 'Error loading the wishlist' });
@@ -30,9 +38,15 @@ const loadWishlist = async (req, res) => {
 };
 
 const addToWishlist = async (req, res) => {
-  const { productId } = req.body;
-  const userId = req.user.id;
+  
   try {
+    if (!req.user) {
+      return res.status(401).json({ success: false, message: "Please login to add items to your wishlist." });
+    }
+
+    const { productId } = req.body;
+    const userId = req.user.id;
+
     const product = await Product.findById(productId);
     if (!product) {
       return res.status(404).json({ error: 'Product not found' });

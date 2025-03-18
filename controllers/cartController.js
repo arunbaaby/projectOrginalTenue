@@ -3,6 +3,10 @@ const Product = require('../models/productModel');
 
 const addToCart = async (req, res) => {
     try {
+        if (!req.user) {
+            return res.status(401).json({ success: false, message: "Please login to add items to your cart." });
+        }
+
         let { productId, quantity } = req.body;
         const userId = req.user.id;
 
@@ -61,13 +65,19 @@ const addToCart = async (req, res) => {
 
 const loadCart = async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.user?.id;
+        if(!userId){
+            return res.redirect('/prompt-login');
+        }
+        
         let cart = { items: [] };
         let subtotal = 0;
         let total = 0;
         let totalDiscount = 0;
+        let userLogged = false;
 
         if (userId) {
+            userLogged = true;
             const existingCart = await Cart.findOne({ user: userId }).populate('items.product');
             if (existingCart) {
                 cart = existingCart;
@@ -89,7 +99,8 @@ const loadCart = async (req, res) => {
             cart,
             subtotal: subtotal.toFixed(2),
             total: total.toFixed(2),
-            totalDiscount: totalDiscount.toFixed(2)
+            totalDiscount: totalDiscount.toFixed(2),
+            userLogged
         });
        
     } catch (error) {

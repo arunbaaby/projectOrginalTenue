@@ -36,13 +36,18 @@ async function generateUniqueOrderNumber() {
 
 const loadCheckout = async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.user?.id;
         const userAddresses = await Address.findOne({ user: userId }) || null;
         const cart = await Cart.findOne({ user: userId }).populate('items.product');
         const user = await User.findById(userId);
+        let userLogged = false;
 
         if (!cart || !cart.items.length) {
             return res.redirect('/cart');
+        }
+
+        if(userId){
+            userLogged = true;
         }
 
         cart.items = cart.items.filter(item => item.product);
@@ -78,7 +83,8 @@ const loadCheckout = async (req, res) => {
             total,
             totalDiscount, 
             deliveryCharges, 
-            couponDiscount 
+            couponDiscount,
+            userLogged 
         });
     } catch (error) {
         return res.status(400).json({
@@ -374,6 +380,11 @@ const loadMyOrders = async (req, res) => {
         const currentPage = parseInt(req.query.page) || 1;
         const itemsPerPage = 4;
 
+        let userLogged = false;
+        if(userId){
+            userLogged = true;
+        }
+
         const totalOrders = await Order.countDocuments({user:userId});
         const totalPages = Math.ceil(totalOrders/itemsPerPage);
 
@@ -402,7 +413,7 @@ const loadMyOrders = async (req, res) => {
             order.items.every(item => item.product !== null)
         );
 
-        res.render('my-orders', { orders, cart, subtotal, currentPage, totalPages });
+        res.render('my-orders', { orders, cart, subtotal, currentPage, totalPages, userLogged });
     } catch (error) {
         res.status(500).json({ success: false, msg: error.message });
     }
@@ -417,6 +428,11 @@ const loadViewOrder = async (req, res) => {
         const orderDetails = await Order.findById(orderId).populate('items.product');
         const cart = await Cart.findOne({ user: userId }).populate('items.product');
 
+        let userLogged = false;
+        if(userId){
+            userLogged = true;
+        }
+
         if (!orderDetails) {
             res.redirect('/404');
             // return res.status(404).json({ success: false, msg: 'Order not found' });
@@ -429,7 +445,7 @@ const loadViewOrder = async (req, res) => {
         const shippingAddress = orderDetails.shippingAddress;
         const itemId = orderDetails.items[0] ? orderDetails.items[0]._id : null;  // first item id
 
-        res.render('view-order', { orderDetails, shippingAddress, itemId, cart, subtotal });
+        res.render('view-order', { orderDetails, shippingAddress, itemId, cart, subtotal, userLogged });
     } catch (error) {
         res.status(500).json({ success: false, msg: 'Failed to load view-order page' });
     }
