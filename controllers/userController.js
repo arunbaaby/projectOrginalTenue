@@ -580,6 +580,8 @@ const newPasswordUpdate = async (req, res) => {
 
 const load404 = async (req, res) => {
     try {
+        let userLogged = false;
+
         let cart = {
             items: []
         };
@@ -588,7 +590,8 @@ const load404 = async (req, res) => {
 
         res.render('404', {
             cart,
-            subtotal
+            subtotal,
+            userLogged
         });
 
     } catch (error) {
@@ -598,7 +601,15 @@ const load404 = async (req, res) => {
 
 const loadUnlistedProduct = async (req, res) => {
     try {
-        res.render('unlisted-product');
+        let userLogged = false;
+
+        let cart = {
+            items: []
+        };
+
+        let subtotal = null;
+
+        res.render('unlisted-product', {userLogged, cart, subtotal});
     } catch (error) {
         return res.render("reset-password", { token, serverError: true });
     }
