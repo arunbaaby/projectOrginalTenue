@@ -70,8 +70,11 @@
                                 <div class="dropdown-menu">
                                     <ul>
                                         <li><a href="/my-account">My Account</a></li>
-                                        <li>
-                                            <a id="auth-link" href="#">Loading...</a>
+                                        <li><% if (userLogged) { %>
+                                            <a href="/logout">Logout</a>
+                                          <% } else { %>
+                                            <a href="/auth">Login</a>
+                                          <% } %>
                                         </li>
                                     </ul>
                                 </div>
@@ -224,7 +227,12 @@
                                 <div class="lang-curr-dropdown account-dropdown-active">
                                     <ul>
                                         <li><a href="/my-account">My Account</a></li>
-                                        <li><a href="/logout">Logout</a></li>
+                                        <li><% if (userLogged) { %>
+                                            <a href="/logout">Logout</a>
+                                          <% } else { %>
+                                            <a href="/auth">Login</a>
+                                          <% } %>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>

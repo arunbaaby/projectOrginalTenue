@@ -612,7 +612,9 @@ const loadPromtLogin = async (req, res) => {
 
         let subtotal = null;
 
-        res.render('prompt-login', { cart, subtotal });
+        let userLogged = false;
+
+        res.render('prompt-login', { cart, subtotal, userLogged });
     } catch (error) {
         res.status(500).send("Server error");
     }
