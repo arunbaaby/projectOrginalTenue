@@ -221,7 +221,7 @@
                                                     </td>
                                                     <td class="wishlist-cart">
                                                       <% if (product.stock > 0) { %>
-                                                        <a href="#" class="add-to-cart" data-product-id="<%= product._id %>">Add to cart</a>
+                                                        <a href="#" class="add-to-cart-button" data-product-id="<%= product._id %>" data-product-image="<%= product.images && product.images.length > 0 ? '/admin/productImages/' + product.images[0] : '/path/to/default-image.jpg' %>">Add to cart</a>
                                                       <% } else { %>
                                                         <span>Unavailable</span>
                                                       <% } %>

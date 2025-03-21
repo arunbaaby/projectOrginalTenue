@@ -54,7 +54,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="copyright-2 text-center">
-                        <p>© 2021 Tenue. All rights reserved.</p>
+                        <p>© 2025 TenueVogue. All rights reserved.</p>
                     </div>
                 </div>
             </div>
@@ -98,6 +98,8 @@
 <script src="/assets/js/main.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <!--razorpay-->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
@@ -215,7 +217,7 @@
     });
 </script>
 
-<script>
+<!-- <script>
     // Select all wishlist buttons
     document.querySelectorAll('.wishlist-button').forEach(button => {
         button.addEventListener('click', async (event) => {
@@ -234,21 +236,67 @@
                 });
 
                 const data = await response.json(); // Parse the JSON response
+
                 if (response.ok) {
-                    // Success feedback (e.g., change the icon or show a toast)
-                    Swal.fire(data.message || 'Product added to wishlist');
-                    button.querySelector('i').classList.add('added'); // Add a class for styling
+                    // Success toast notification
+                    Toastify({
+                        text: "✅ " + (data.message || "Product added to wishlist!"),
+                        duration: 3000,
+                        gravity: "top",
+                        position: "right",
+                        backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)", // Green success
+                        stopOnFocus: true,
+                        close: true
+                    }).showToast();
+
+                    // Add a class for styling (change the icon)
+                    button.querySelector('i').classList.add('added');
+
                 } else {
-                    // Handle errors
-                    Swal.fire(data.error || 'Failed to add to wishlist');
+                    if (data.message === "Please login to add items to your wishlist.") {
+                        // Show a toast that redirects to login when clicked
+                        Toastify({
+                            text: "⚠️ Login Required: Click to login",
+                            duration: 5000,
+                            gravity: "top",
+                            position: "right",
+                            backgroundColor: "linear-gradient(to right, #ffcc00, #ff9900)", // Yellow warning
+                            stopOnFocus: true,
+                            close: true,
+                            onClick: function() {
+                                window.location.href = "/auth"; // Redirect to login
+                            }
+                        }).showToast();
+                    } else {
+                        // Show an error toast
+                        Toastify({
+                            text: "❌ " + (data.error || "Failed to add to wishlist."),
+                            duration: 4000,
+                            gravity: "top",
+                            position: "right",
+                            backgroundColor: "linear-gradient(to right, #ff416c, #ff4b2b)", // Red error
+                            stopOnFocus: true,
+                            close: true
+                        }).showToast();
+                    }
                 }
             } catch (err) {
                 console.error(err);
-                Swal.fire('An error occurred. Please try again.');
+                // Generic error toast
+                Toastify({
+                    text: "❌ An error occurred. Please try again.",
+                    duration: 4000,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "linear-gradient(to right, #ff416c, #ff4b2b)", // Red error
+                    stopOnFocus: true,
+                    close: true
+                }).showToast();
             }
         });
     });
-</script>
+</script> -->
+
 
 <script>
     document.querySelectorAll('.remove-from-wishlist').forEach((button) => {
@@ -453,7 +501,7 @@
                 }).then(() => {
                     window.location.href = `/order-confirmation?orderId=${data.orderId}`;
                 });
-            }else {
+            } else {
                 window.location.href = data.redirectUrl;
             }
         } catch (error) {
@@ -835,6 +883,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         // Function to handle adding a product to the cart
+        // Function to handle adding a product to the cart
         async function addToCart(productId, quantity = 1) {
             try {
                 const response = await fetch("/add-to-cart", {
@@ -848,45 +897,78 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    Swal.fire({
-                        title: "Success!",
-                        text: "Product added to cart.",
-                        icon: "success",
-                        confirmButtonText: "Go to Cart"
-                    }).then(() => {
-                        window.location.href = "/cart";
-                    });
+                    // Fetch the product image dynamically
+                    const cartButton = document.querySelector(`.add-to-cart-button[data-product-id="${productId}"]`);
+                    const productImageSrc = cartButton ? cartButton.getAttribute("data-product-image") : "/path/to/default-image.jpg";
+
+                    // Toast with image
+                    const toastContent = `
+                <img src="${productImageSrc}" style="width: 40px; height: 40px; border-radius: 4px; margin-right: 10px; vertical-align: middle;">
+                <span style="vertical-align: middle;">Added to cart!</span>
+            `;
+
+                    Toastify({
+                        text: toastContent,
+                        duration: 3000,
+                        gravity: "top",
+                        position: "center",
+                        backgroundColor: "#2F2F2F",
+                        color: "#FFFFFF",
+                        borderLeft: "4px solid #6dde6d", // Green accent
+                        stopOnFocus: true,
+                        close: true,
+                        escapeMarkup: false, // Allow HTML inside the toast
+                        onClick: function () {
+                            window.location.href = "/cart"; // Redirect to cart
+                        }
+                    }).showToast();
                 } else {
                     if (data.message === "Please login to add items to your cart.") {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Login Required',
-                            text: 'Please login to add items to your cart.',
-                            confirmButtonText: 'Login'
-                        }).then(() => {
-                            window.location.href = "/auth";
-                        });
+                        Toastify({
+                            text: "⚠️ Login Required: Click to login",
+                            duration: 5000,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#2F2F2F",
+                            color: "#FFFFFF",
+                            borderLeft: "4px solid #fc4f4f", // Red accent
+                            stopOnFocus: true,
+                            close: true,
+                            onClick: function () {
+                                window.location.href = "/auth"; // Redirect to login
+                            }
+                        }).showToast();
                     } else {
-                        Swal.fire({
-                            title: "Error!",
-                            text: data.message || "Failed to add product.",
-                            icon: "error",
-                            confirmButtonText: "OK"
-                        });
+                        Toastify({
+                            text: "❌ Error: " + (data.message || "Failed to add to cart."),
+                            duration: 4000,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#2F2F2F",
+                            color: "#FFFFFF",
+                            borderLeft: "4px solid #fc4f4f", // Red accent
+                            stopOnFocus: true,
+                            close: true,
+                        }).showToast();
                     }
                 }
             } catch (error) {
                 console.error("Error:", error);
-                Swal.fire({
-                    title: "Error!",
-                    text: "Something went wrong. Please try again.",
-                    icon: "error",
-                    confirmButtonText: "OK"
-                });
+                Toastify({
+                    text: "❌ Something went wrong. Please try again.",
+                    duration: 4000,
+                    gravity: "top",
+                    position: "center",
+                    backgroundColor: "#2F2F2F",
+                    color: "#FFFFFF",
+                    borderLeft: "4px solid #fc4f4f", // Red accent
+                    stopOnFocus: true,
+                    close: true,
+                }).showToast();
             }
         }
 
-        // Function to handle adding a product to the wishlist
+
         async function addToWishlist(productId) {
             try {
                 const response = await fetch("/add-to-wishlist", {
@@ -900,47 +982,79 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    Swal.fire({
-                        title: "Success!",
-                        text: data.message || "Product added to wishlist.",
-                        icon: "success",
-                        confirmButtonText: "OK"
-                    });
-
-                    // Add a class for styling (e.g., change the icon)
+                    // Get the product image URL from the button
                     const wishlistButton = document.querySelector(`.wishlist-button[data-product-id="${productId}"]`);
+                    const productImageSrc = wishlistButton ? wishlistButton.dataset.productImage : '';
+
+                    const toastContent = `
+                <img src="${productImageSrc}" style="width: 40px; height: 40px; border-radius: 4px; margin-right: 10px;">
+                Added to wishlist!
+            `;
+
+                    Toastify({
+                        text: toastContent,
+                        duration: 3000,
+                        gravity: "top",
+                        position: "center",
+                        backgroundColor: "#2F2F2F",
+                        color: "#FFFFFF",
+                        borderLeft: "4px solid #6dde6d",
+                        stopOnFocus: true,
+                        close: true,
+                        escapeMarkup: false // Allows HTML content inside the toast
+                    }).showToast();
+
+                    // Update wishlist button UI
                     if (wishlistButton) {
                         wishlistButton.querySelector('i').classList.add('added');
                     }
                 } else {
                     if (data.message === "Please login to add items to your wishlist.") {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Login Required',
-                            text: 'Please login to add items to your wishlist.',
-                            confirmButtonText: 'Login'
-                        }).then(() => {
-                            window.location.href = "/auth";
-                        });
+                        Toastify({
+                            text: "⚠️ Login Required: Click to login",
+                            duration: 5000,
+                            gravity: "top",
+                            position: "center",
+                            fontWeight: "500",
+                            backgroundColor: "#2F2F2F",
+                            color: "#FFFFFF",
+                            borderLeft: "4px solid #fc4f4f",
+                            stopOnFocus: true,
+                            close: true,
+                            onClick: function () {
+                                window.location.href = "/auth";
+                            }
+                        }).showToast();
                     } else {
-                        Swal.fire({
-                            title: "Error!",
-                            text: data.error || "Failed to add to wishlist.",
-                            icon: "error",
-                            confirmButtonText: "OK"
-                        });
+                        Toastify({
+                            text: "❌ Error: " + (data.error || "Failed to add to wishlist."),
+                            duration: 4000,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#2F2F2F",
+                            color: "#FFFFFF",
+                            borderLeft: "4px solid #fc4f4f",
+                            stopOnFocus: true,
+                            close: true,
+                        }).showToast();
                     }
                 }
             } catch (error) {
                 console.error("Error:", error);
-                Swal.fire({
-                    title: "Error!",
-                    text: "Something went wrong. Please try again.",
-                    icon: "error",
-                    confirmButtonText: "OK"
-                });
+                Toastify({
+                    text: "❌ Something went wrong. Please try again.",
+                    duration: 4000,
+                    gravity: "top",
+                    position: "center",
+                    backgroundColor: "#2F2F2F",
+                    color: "#FFFFFF",
+                    borderLeft: "4px solid #fc4f4f",
+                    stopOnFocus: true,
+                    close: true,
+                }).showToast();
             }
         }
+
 
         // Handle buttons with class "add-to-cart"
         document.querySelectorAll(".add-to-cart").forEach(button => {

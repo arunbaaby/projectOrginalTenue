@@ -32335,8 +32335,7 @@ h3.cart-page-title {
 }
 
 /* Button styles for cart, wishlist, and compare */
-.product-details-cart a,
-.product-details-wishlist a,
+/* .product-details-cart a,
 .product-details-compare a {
   padding: 10px 20px;
   border: 1px solid #ccc;
@@ -32347,14 +32346,12 @@ h3.cart-page-title {
 }
 
 .product-details-cart a:hover,
-.product-details-wishlist a:hover,
 .product-details-compare a:hover {
   background-color: #f0f0f0;
   border-color: #000;
-}
+} */
 
 /* Icon spacing in buttons */
-.product-details-wishlist a i,
 .product-details-compare a i {
   margin-right: 5px;
 }
@@ -33322,6 +33319,10 @@ h3 {
     flex-direction: row;
     justify-content: center;
   }
+}
+.toastify {
+    font-size: 16px !important;
+    font-weight: normal !important;
 }
 
 

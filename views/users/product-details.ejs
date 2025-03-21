@@ -172,18 +172,16 @@
             <div class="breadcrumb-content breadcrumb-font-inc">
                 <ul>
                     <li>
-                        <a href="index.html">Home 01 </a>
+                        <a href="/home">Home 01 </a>
                     </li>
                     <li><span> > </span></li>
                     <li>
-                        <a href="index.html">Shop</a>
+                        <a href="/allProducts">Shop</a>
                     </li>
                     <li><span> > </span></li>
-                    <li>
-                        <a href="index.html">Fashion sale off</a>
+                    <li class="active">
+                        <%= product.name %>
                     </li>
-                    <li><span> > </span></li>
-                    <li class="active"> Sleeve Button Cowl Neck </li>
                 </ul>
             </div>
         </div>
@@ -199,7 +197,6 @@
                                 <% product.images.forEach((image, index)=> { %>
                                     <div class="easyzoom-style">
                                         <div class="easyzoom easyzoom--overlay">
-                                            <!-- Updated image paths to use correct server path -->
                                             <a href="/admin/productImages/<%= image %>">
                                                 <img src="/admin/productImages/<%= image %>"
                                                     alt="Product Image <%= index + 1 %>" class="zoom-image">
@@ -239,6 +236,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="col-lg-6">
                     <div class="row">
                         <div class="product-details-col-72">
@@ -247,22 +245,14 @@
                                     <a class="prev" href="#"><i class="dlicon arrows-1_tail-left"></i></a>
                                     <a class="next" href="#"><i class="dlicon arrows-1_tail-right"></i></a>
                                 </div>
+
                                 <h1 class="uppercase">
                                     <%= product.brand %>
                                 </h1>
                                 <h4 class="uppercase">
                                     <%= product.name %>
                                 </h4>
-                                <!-- <div class="product-details-ratting-wrap">
-                                    <div class="product-details-ratting">
-                                        <i class="yellow fa fa-star"></i>
-                                        <i class="yellow fa fa-star"></i>
-                                        <i class="yellow fa fa-star"></i>
-                                        <i class="yellow fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                    </div>
-                                    <a href="#"> (1 customer review)</a>
-                                </div> -->
+
                                 <div class="price-container">
                                     <% if (product.discountPrice) { %>
                                         <h4 class="discounted-price">
@@ -279,64 +269,51 @@
                                             <% } %>
                                 </div>
 
-
                                 <div class="product-details-action-wrap">
-                                    <!-- <div class="product-filter">
-                                        <h5>Size</h5>
-                                        <div class="product-size">
-                                            <ul class="size-options">
-                                                <% if (product.sizes && product.sizes.length> 0) { %>
-                                                    <% product.sizes.forEach(size=> { %>
-                                                        <li>
-                                                            <a href="#" class="size-option" data-size="<%= size %>">
-                                                                <%= size %>
-                                                            </a>
-                                                        </li>
-                                                        <% }) %>
-                                                            <% } else { %>
-                                                                <li>No sizes available</li>
-                                                                <% } %>
-                                            </ul>
+                                    <div class="butt-wrap">
+                                        <div class="product-details-cart">
+                                            <a title="Add to Cart" href="#" class="add-to-cart-button"
+                                                data-product-id="<%= product._id %>"
+                                                data-product-image="<%= product.images && product.images.length > 0 ? '/admin/productImages/' + product.images[0] : '/path/to/default-image.jpg' %>">
+                                                Add to cart
+                                            </a>
                                         </div>
-                                    </div> -->
 
-                                    <div class="product-buttons-wrap">
-                                        <form action="/add-to-cart" method="POST"
-                                            style="display:flex; align-items: center; gap: 5px;">
-                                            <input type="hidden" name="productId" value="<%= product._id %>"> <!-- Product ID -->
-                                            <!-- <input type="hidden" id="selectedSize" name="size" value=""> -->
-                                            <!-- Selected size -->
-
-                                            <!-- Quantity Selection Component -->
-                                            <div class="product-details-quality">
-                                                <div class="cart-plus-minus">
-                                                    <input class="cart-plus-minus-box" type="text" name="quantity" id="quantityInput" value="1">
-                                                </div>
-                                            </div>
-
-                                            <div class="product-details-cart">
-                                                <a id="addToCartButton" title="Add to cart" href="#" onclick="event.preventDefault();">Add to cart</a>
-                                            </div>
-                                            <div class="product-details-wishlist">
-                                                <a href="#" class="wishlist-button" data-product-id="<%= product._id %>"
-                                                    title="Add to wishlist">
-                                                    <i class="fa fa-heart"></i>
-                                                </a>
-                                            </div>
-                                        </form>
+                                        <div class="product-details-wishlist">
+                                            <a title="Add to wishlist" href="#" class="wishlist-button"
+                                                data-product-id="<%= product._id %>"
+                                                data-product-image="/admin/productImages/<%= product.images[0] %>">
+                                                <i class="fa fa-heart"></i>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
+
+                                <style>
+                                    .butt-wrap {
+                                        display: flex;
+                                        gap: 10px;
+                                        /* Adds spacing between buttons */
+                                    }
+
+                                    .product-details-cart,
+                                    .product-details-wishlist {
+                                        display: inline-block;
+                                    }
+                                </style>
+
                                 <div class="product-details-info">
                                     <a href="#"><i class="dlicon location_pin"></i>Store availability</a>
                                     <a href="#"><i class="dlicon envir_car"></i>Delivery and return</a>
                                     <a href="#"><i class="dlicon design_measure-17"></i>Size Guide</a>
                                 </div>
+
                                 <div class="product-details-meta">
                                     <span>SKU: REF. LA-140</span>
                                     <span>Categories: <a href="#">Fashions</a>, <a href="#">Main 01</a>, <a
                                             href="#">Main 02</a></span>
-                                    <span>Tags: <a href="#">Blazer</a>, <a href="#">chair</a>, <a href="#">Coat</a>, <a
-                                            href="#">dress</a>, <a href="#">light</a>, <a href="#">Living</a>, <a
+                                    <span>Tags: <a href="#">Blazer</a>, <a href="#">Chair</a>, <a href="#">Coat</a>, <a
+                                            href="#">Dress</a>, <a href="#">Light</a>, <a href="#">Living</a>, <a
                                             href="#">Main 01</a></span>
                                 </div>
                             </div>
@@ -373,11 +350,17 @@
                                 <div class="product-action product-action-position-1">
                                     <!-- <a data-bs-toggle="modal" data-bs-target="#exampleModal" href="#"><i
                                             class="fa fa-eye"></i><span>Quick Shop</span></a> -->
-                                    <a title="Add to Wishlist" href="#" class="wishlist-button" data-product-id="<%= product._id %>"><i class="fa fa-heart"></i><span>Add to
+                                    <a title="Add to Wishlist" href="#" class="wishlist-button"
+                                        data-product-id="<%= product._id %>"
+                                        data-product-image="<%= product.images && product.images.length > 0 ? '/admin/productImages/' + product.images[0] : '/path/to/default-image.jpg' %>"><i
+                                            class="fa fa-heart"></i><span>Add to
                                             Wishlist</span></a>
                                     <!-- <a class="icon-blod" title="Add to Compare" href="#"><i
                                             class="dlicon arrows-4_compare"></i><span>Add to Compare</span></a> -->
-                                    <a title="Add to Cart" href="#" class="add-to-cart-button" data-product-id="<%= product._id %>"><i class="fa fa-shopping-cart"></i><span>Add to
+                                    <a title="Add to Cart" href="#" class="add-to-cart-button"
+                                        data-product-id="<%= product._id %>"
+                                        data-product-image="<%= product.images && product.images.length > 0 ? '/admin/productImages/' + product.images[0] : '/path/to/default-image.jpg' %>"><i
+                                            class="fa fa-shopping-cart"></i><span>Add to
                                             Cart</span></a>
                                 </div>
                             </div>
@@ -433,11 +416,17 @@
                                 <div class="product-action product-action-position-1">
                                     <!-- <a data-bs-toggle="modal" data-bs-target="#exampleModal" href="#"><i
                                             class="fa fa-eye"></i><span>Quick Shop</span></a> -->
-                                    <a title="Add to Wishlist" href="#" class="wishlist-button" data-product-id="<%= product._id %>"><i class="fa fa-heart"></i><span>Add to
+                                    <a title="Add to Wishlist" href="#" class="wishlist-button"
+                                        data-product-id="<%= product._id %>"
+                                        data-product-image="<%= product.images && product.images.length > 0 ? '/admin/productImages/' + product.images[0] : '/path/to/default-image.jpg' %>"><i
+                                            class="fa fa-heart"></i><span>Add to
                                             Wishlist</span></a>
                                     <!-- <a class="icon-blod" title="Add to Compare" href="#"><i
                                             class="dlicon arrows-4_compare"></i><span>Add to Compare</span></a> -->
-                                    <a title="Add to Cart" href="#" class="add-to-cart-button" data-product-id="<%= product._id %>"><i class="fa fa-shopping-cart"></i><span>Add to
+                                    <a title="Add to Cart" href="#" class="add-to-cart-button"
+                                        data-product-id="<%= product._id %>"
+                                        data-product-image="<%= product.images && product.images.length > 0 ? '/admin/productImages/' + product.images[0] : '/path/to/default-image.jpg' %>"><i
+                                            class="fa fa-shopping-cart"></i><span>Add to
                                             Cart</span></a>
                                 </div>
                             </div>

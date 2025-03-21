@@ -26,7 +26,7 @@ const addToCart = async (req, res) => {
         }
 
         if (quantity > product.stock) {
-            return res.status(400).json({ success: false, message: `Only ${product.stock} units available.` });
+            return res.status(400).json({ success: false, message: `No stock` });
         }
 
         let cart = await Cart.findOne({ user: userId });
