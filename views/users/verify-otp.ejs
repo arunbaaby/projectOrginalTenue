@@ -19,13 +19,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #f9f3f3;
+            background-color: #fbfbfb;
         }
 
         .container {
             background: white;
             padding: 2rem;
-            border-radius: 1rem;
+            border-radius: 4px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             width: 90%;
             max-width: 400px;
@@ -42,6 +42,15 @@
             justify-content: center;
             margin: 0 auto 1.5rem;
         }
+
+        .icon img {
+            width: 50px;
+            /* Adjust size */
+            height: 50px;
+            object-fit: contain;
+            /* Ensures proper scaling */
+        }
+
 
         .icon svg {
             width: 40px;
@@ -125,11 +134,15 @@
 
         #resend-otp {
             padding: 10px 20px;
-            background-color: #fc4f4f;
+            background-color: #262626;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 1px;
             cursor: pointer;
+        }
+
+        #resend-otp:hover {
+            background-color: #fc4f4f;
         }
 
         #resend-otp.disabled {
@@ -147,19 +160,19 @@
         }
 
         #verify-btn {
-            background-color: #ff4d4f;
+            background-color: #262626;
             color: white;
             border: none;
             padding: 10px 20px;
             margin-bottom: 20px;
             font-size: 16px;
-            border-radius: 5px;
+            border-radius: 2px;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
 
         #verify-btn:hover {
-            background-color: #ed3538;
+            background-color: #fc4f4f;
         }
 
         #verify-btn:active {
@@ -172,11 +185,7 @@
 <body>
     <div class="container">
         <div class="icon">
-            <svg viewBox="0 0 24 24">
-                <path
-                    d="M17,19H7V5H17M17,1H7C5.89,1 5,1.89 5,3V21A2,2 0 0,0 7,23H17A2,2 0 0,0 19,21V3C19,1.89 18.1,1 17,1M9,7H15V9H9M9,11H13V13H9">
-                </path>
-            </svg>
+            <img src="/assets/images/icon-img/security.png" alt="">
         </div>
         <h1>Verify with OTP</h1>
         <form id="otp-form" action="/verify-otp" method="post">
@@ -295,7 +304,7 @@
                         }, 1500);
                     } else {
                         Toastify({
-                            text: "❌ " + (data.error || "Wrong OTP entered. Please try again."),
+                            text: "❌ " + (data.error || "Wrong OTP"),
                             duration: 4000,
                             gravity: "top",
                             position: "center",
@@ -340,7 +349,7 @@
                         startTimer();
                     } else {
                         Toastify({
-                            text: "❌ " + (data.error || "Unable to resend OTP. Please try again later."),
+                            text: "❌ " + (data.error || "Unable to resend OTP"),
                             duration: 4000,
                             gravity: "top",
                             position: "center",

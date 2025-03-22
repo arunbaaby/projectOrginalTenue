@@ -148,12 +148,12 @@ const verifyOtp = async (req, res) => {
 
         const otpData = await Otp.findOne({ user_id, otp });
         if (!otpData) {
-            return res.status(400).json({ success: false, error: 'You have entered the wrong OTP' });
+            return res.status(400).json({ success: false, error: 'Wrong OTP' });
         }
 
         const isOtpExpired = await oneMinuteExpiry(otpData.timestamp);
         if (isOtpExpired) {
-            return res.status(400).json({ success: false, error: 'Your OTP has expired. Resend OTP' });
+            return res.status(400).json({ success: false, error: 'OTP expired. Resend OTP' });
         }
 
         const { name, mobile, password } = pendingUsers[user_id];
