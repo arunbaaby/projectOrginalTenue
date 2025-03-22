@@ -63,86 +63,37 @@ const pendingUsers = {};
 const userRegister = async (req, res) => {
     try {
         const errors = validationResult(req);
-
-        let userLogged = false;
-
-        let cart = {
-            items: []
-        };
-
-        let subtotal = null;
-
         if (!errors.isEmpty()) {
-            return res.status(400).render('auth', {
-                registerErrors: errors.array(),
-                loginErrors: [],
-                success: false,
-                msg: '',
-                cart,
-                subtotal,
-                userLogged
-            });
+            return res.status(400).json({ registerErrors: errors.array() });
         }
 
         const { name, email, mobile, password, confirmPassword } = req.body;
 
         const isExist = await User.findOne({ email });
         if (isExist) {
-            return res.status(400).render('auth', {
-                registerErrors: [{ msg: 'Email already exists' }],
-                loginErrors: [],
-                success: false,
-                msg: '',
-                cart,
-                subtotal,
-                userLogged
-            });
+            return res.status(400).json({ registerErrors: [{ message: 'Email already exists' }] });
         }
 
         const isExistMobile = await User.findOne({ mobile });
         if (isExistMobile) {
-            return res.status(400).render('auth', {
-                registerErrors: [{ msg: 'Mobile number already exists' }],
-                loginErrors: [],
-                success: false,
-                msg: '',
-                cart,
-                subtotal,
-                userLogged
-            });
+            return res.status(400).json({ registerErrors: [{ message: 'Mobile number already exists' }] });
         }
 
         if (confirmPassword !== password) {
-            return res.status(400).render('auth', {
-                registerErrors: [{ msg: 'Passwords do not match' }],
-                loginErrors: [],
-                success: false,
-                msg: '',
-                cart,
-                subtotal,
-                userLogged
-            });
+            return res.status(400).json({ registerErrors: [{ message: 'Passwords do not match' }] });
         }
 
-        // user data temporarily
-        pendingUsers[email] = { name, email, mobile, password }
+        // Store user temporarily
+        pendingUsers[email] = { name, email, mobile, password };
 
-        const userData = { name, email };
+        await generateAndSendOTP({ name, email });
 
-        await generateAndSendOTP(userData);
-
-        return res.redirect(`/verify-otp?email=${encodeURIComponent(email)}`);
+        return res.status(200).json({ message: "OTP sent to your email!" });
     } catch (error) {
-        return res.status(400).render('auth', {
-            errors: [{ msg: error.message }],
-            success: false,
-            msg: '',
-            cart: { items: [] },
-            subtotal: null,
-            userLogged
-        });
+        return res.status(400).json({ registerErrors: [{ message: error.message }] });
     }
-}
+};
+
 
 const sendOtp = async (req, res) => {
     try {

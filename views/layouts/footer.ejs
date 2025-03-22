@@ -1128,6 +1128,89 @@
     });
 </script>
 
+<script>
+    document.getElementById("registerForm").addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const formData = new FormData(this);
+    const formObject = Object.fromEntries(formData.entries());
+
+    try {
+        const response = await fetch("/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formObject)
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            // Success toast with ✅ and green left border
+            Toastify({
+                text: `✅ ${data.message || "Registration successful! Redirecting..."}`,
+                duration: 3000,
+                gravity: "top",
+                position: "center",
+                backgroundColor: "#2F2F2F",
+                color: "#FFFFFF",
+                borderLeft: "4px solid #6dde6d",
+                stopOnFocus: true,
+                close: true,
+            }).showToast();
+
+            setTimeout(() => {
+                window.location.href = `/verify-otp?email=${encodeURIComponent(formObject.email)}`;
+            }, 1500);
+        } else {
+            // Show error messages with ❌ and red left border
+            if (data.errors && Array.isArray(data.errors)) {
+                data.errors.forEach(error => {
+                    Toastify({
+                        text: `❌ ${error.message}`,
+                        duration: 4000,
+                        gravity: "top",
+                        position: "center",
+                        backgroundColor: "#2F2F2F",
+                        color: "#FFFFFF",
+                        borderLeft: "4px solid #fc4f4f",
+                        stopOnFocus: true,
+                        close: true,
+                    }).showToast();
+                });
+            } else {
+                Toastify({
+                    text: "❌ Registration failed. Please try again.",
+                    duration: 4000,
+                    gravity: "top",
+                    position: "center",
+                    backgroundColor: "#2F2F2F",
+                    color: "#FFFFFF",
+                    borderLeft: "4px solid #fc4f4f",
+                    stopOnFocus: true,
+                    close: true,
+                }).showToast();
+            }
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        Toastify({
+            text: "❌ Something went wrong. Please try again.",
+            duration: 4000,
+            gravity: "top",
+            position: "center",
+            backgroundColor: "#2F2F2F",
+            color: "#FFFFFF",
+            borderLeft: "4px solid #fc4f4f",
+            stopOnFocus: true,
+            close: true,
+        }).showToast();
+    }
+});
+
+</script>
+
 </body>
 
 
