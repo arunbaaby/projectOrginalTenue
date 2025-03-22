@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verify with OTP</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <style>
         * {
             margin: 0;
@@ -210,6 +211,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script>
         let timer = 60;
         let countdown; // Declare countdown globally for control
@@ -276,19 +278,38 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        swal.fire('User registration successful').then(() => {
+                        Toastify({
+                            text: "✅ User registration successful!",
+                            duration: 3000,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#2F2F2F",
+                            color: "#FFFFFF",
+                            borderLeft: "4px solid #6dde6d",
+                            stopOnFocus: true,
+                            close: true,
+                        }).showToast();
+
+                        setTimeout(() => {
                             window.location.href = '/home';
-                        });
+                        }, 1500);
                     } else {
-                        swal.fire({
-                            title: 'Error',
-                            text: data.error || 'Wrong OTP entered. Please try again.',
-                            icon: 'error',
-                        });
+                        Toastify({
+                            text: "❌ " + (data.error || "Wrong OTP entered. Please try again."),
+                            duration: 4000,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#2F2F2F",
+                            color: "#FFFFFF",
+                            borderLeft: "4px solid #fc4f4f",
+                            stopOnFocus: true,
+                            close: true,
+                        }).showToast();
                     }
                 })
                 .catch(error => console.error('Error:', error));
         });
+
 
         // Handle Resend OTP
         resendOtpButton.addEventListener('click', () => {
@@ -304,15 +325,36 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        swal.fire('A new OTP has been sent to your email.').then(() => {
-                            startTimer();
-                        });
+                        Toastify({
+                            text: "✅ OTP sent to your email",
+                            duration: 3000,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#2F2F2F",
+                            color: "#FFFFFF",
+                            borderLeft: "4px solid #6dde6d",
+                            stopOnFocus: true,
+                            close: true,
+                        }).showToast();
+
+                        startTimer();
                     } else {
-                        swal.fire(data.error || 'Unable to resend OTP. Please try again later.');
+                        Toastify({
+                            text: "❌ " + (data.error || "Unable to resend OTP. Please try again later."),
+                            duration: 4000,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#2F2F2F",
+                            color: "#FFFFFF",
+                            borderLeft: "4px solid #fc4f4f",
+                            stopOnFocus: true,
+                            close: true,
+                        }).showToast();
                     }
                 })
                 .catch(error => console.error('Error:', error));
         });
+
     </script>
 
     <script>
