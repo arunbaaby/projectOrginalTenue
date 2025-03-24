@@ -1130,45 +1130,58 @@
 
 <script>
     document.getElementById("registerForm").addEventListener("submit", async function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    const formData = new FormData(this);
-    const formObject = Object.fromEntries(formData.entries());
+        const formData = new FormData(this);
+        const formObject = Object.fromEntries(formData.entries());
 
-    try {
-        const response = await fetch("/register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(formObject)
-        });
+        try {
+            const response = await fetch("/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formObject)
+            });
 
-        const data = await response.json();
+            const data = await response.json();
 
-        if (response.ok) {
-            // Success toast with ✅ and green left border
-            Toastify({
-                text: `✅ ${data.message || "Registration successful! Redirecting..."}`,
-                duration: 3000,
-                gravity: "top",
-                position: "center",
-                backgroundColor: "#2F2F2F",
-                color: "#FFFFFF",
-                borderLeft: "4px solid #6dde6d",
-                stopOnFocus: true,
-                close: true,
-            }).showToast();
+            if (response.ok) {
+                // Success toast with ✅ and green left border
+                Toastify({
+                    text: `✅ ${data.message || "Registration successful! Redirecting..."}`,
+                    duration: 3000,
+                    gravity: "top",
+                    position: "center",
+                    backgroundColor: "#2F2F2F",
+                    color: "#FFFFFF",
+                    borderLeft: "4px solid #6dde6d",
+                    stopOnFocus: true,
+                    close: true,
+                }).showToast();
 
-            setTimeout(() => {
-                window.location.href = `/verify-otp?email=${encodeURIComponent(formObject.email)}`;
-            }, 1500);
-        } else {
-            // Show error messages with ❌ and red left border
-            if (data.errors && Array.isArray(data.errors)) {
-                data.errors.forEach(error => {
+                setTimeout(() => {
+                    window.location.href = `/verify-otp?email=${encodeURIComponent(formObject.email)}`;
+                }, 1500);
+            } else {
+                // Show error messages with ❌ and red left border
+                if (data.errors && Array.isArray(data.errors)) {
+                    data.errors.forEach(error => {
+                        Toastify({
+                            text: `❌ ${error.message}`,
+                            duration: 4000,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#2F2F2F",
+                            color: "#FFFFFF",
+                            borderLeft: "4px solid #fc4f4f",
+                            stopOnFocus: true,
+                            close: true,
+                        }).showToast();
+                    });
+                } else {
                     Toastify({
-                        text: `❌ ${error.message}`,
+                        text: "❌ Registration failed. Please try again.",
                         duration: 4000,
                         gravity: "top",
                         position: "center",
@@ -1178,39 +1191,163 @@
                         stopOnFocus: true,
                         close: true,
                     }).showToast();
-                });
-            } else {
-                Toastify({
-                    text: "❌ Registration failed. Please try again.",
-                    duration: 4000,
-                    gravity: "top",
-                    position: "center",
-                    backgroundColor: "#2F2F2F",
-                    color: "#FFFFFF",
-                    borderLeft: "4px solid #fc4f4f",
-                    stopOnFocus: true,
-                    close: true,
-                }).showToast();
+                }
             }
+        } catch (error) {
+            console.error("Error:", error);
+            Toastify({
+                text: "❌ Something went wrong. Please try again.",
+                duration: 4000,
+                gravity: "top",
+                position: "center",
+                backgroundColor: "#2F2F2F",
+                color: "#FFFFFF",
+                borderLeft: "4px solid #fc4f4f",
+                stopOnFocus: true,
+                close: true,
+            }).showToast();
         }
-    } catch (error) {
-        console.error("Error:", error);
-        Toastify({
-            text: "❌ Something went wrong. Please try again.",
-            duration: 4000,
-            gravity: "top",
-            position: "center",
-            backgroundColor: "#2F2F2F",
-            color: "#FFFFFF",
-            borderLeft: "4px solid #fc4f4f",
-            stopOnFocus: true,
-            close: true,
-        }).showToast();
-    }
-});
+    });
 
 </script>
 
+<script>
+    document.getElementById("addAddressForm").addEventListener("submit", function (event) {
+        let isValid = true;
+
+        // Function to show error messages below input fields
+        function showError(input, message) {
+            let errorSpan = document.createElement("span");
+            errorSpan.className = "error-message";
+            errorSpan.style.color = "red";
+            errorSpan.style.fontSize = "12px";
+            errorSpan.innerText = message;
+
+            // Remove existing error message
+            let existingError = input.parentElement.querySelector(".error-message");
+            if (existingError) {
+                existingError.remove();
+            }
+
+            // Append the error message AFTER the input field
+            input.insertAdjacentElement("afterend", errorSpan);
+            isValid = false;
+        }
+
+        // Function to clear error messages
+        function clearError(input) {
+            let existingError = input.parentElement.querySelector(".error-message");
+            if (existingError) {
+                existingError.remove();
+            }
+        }
+
+        // Input fields
+        let firstName = document.getElementById("firstName");
+        let lastName = document.getElementById("lastName");
+        let addressType = document.getElementById("addressType");
+        let houseNo = document.getElementById("houseNo");
+        let street = document.getElementById("street");
+        let landmark = document.getElementById("landmark");
+        let city = document.getElementById("city");
+        let district = document.getElementById("district");
+        let state = document.getElementById("state");
+        let pincode = document.getElementById("pincode");
+
+        // Validation rules
+        let nameRegex = /^[A-Za-z\s]+$/;
+        let pincodeRegex = /^\d{6}$/;
+        let landmarkRegex = /^[A-Za-z0-9\s,.-]+$/; // Allows letters, numbers, spaces, comma, dot, hyphen
+
+        // Validate First Name
+        if (!firstName.value.trim()) {
+            showError(firstName, "First Name is required");
+        } else if (!nameRegex.test(firstName.value.trim())) {
+            showError(firstName, "Only alphabets are allowed");
+        } else {
+            clearError(firstName);
+        }
+
+        // Validate Last Name
+        if (!lastName.value.trim()) {
+            showError(lastName, "Last Name is required");
+        } else if (!nameRegex.test(lastName.value.trim())) {
+            showError(lastName, "Only alphabets are allowed");
+        } else {
+            clearError(lastName);
+        }
+
+        // Validate Address Type
+        if (!addressType.value) {
+            showError(addressType, "Please select an Address Type");
+        } else {
+            clearError(addressType);
+        }
+
+        // Validate House Number
+        if (!houseNo.value.trim()) {
+            showError(houseNo, "House Number is required");
+        } else {
+            clearError(houseNo);
+        }
+
+        // Validate Street
+        if (!street.value.trim()) {
+            showError(street, "Street is required");
+        } else {
+            clearError(street);
+        }
+
+        // Validate Landmark (optional but must be in valid format)
+        if (landmark.value.trim() && !landmarkRegex.test(landmark.value.trim())) {
+            showError(landmark, "Landmark contains invalid characters");
+        } else {
+            clearError(landmark);
+        }
+
+        // Validate City
+        if (!city.value.trim()) {
+            showError(city, "City is required");
+        } else if (!nameRegex.test(city.value.trim())) {
+            showError(city, "Only alphabets are allowed");
+        } else {
+            clearError(city);
+        }
+
+        // Validate District
+        if (!district.value.trim()) {
+            showError(district, "District is required");
+        } else if (!nameRegex.test(district.value.trim())) {
+            showError(district, "Only alphabets are allowed");
+        } else {
+            clearError(district);
+        }
+
+        // Validate State
+        if (!state.value.trim()) {
+            showError(state, "State is required");
+        } else if (!nameRegex.test(state.value.trim())) {
+            showError(state, "Only alphabets are allowed");
+        } else {
+            clearError(state);
+        }
+
+        // Validate Pincode
+        if (!pincode.value.trim()) {
+            showError(pincode, "Pincode is required");
+        } else if (!pincodeRegex.test(pincode.value.trim())) {
+            showError(pincode, "Enter a valid 6-digit Pincode");
+        } else {
+            clearError(pincode);
+        }
+
+        // Prevent form submission if invalid
+        if (!isValid) {
+            event.preventDefault();
+        }
+    });
+
+</script>
 </body>
 
 
