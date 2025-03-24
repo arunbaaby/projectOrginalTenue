@@ -125,11 +125,17 @@
                 <div class="header-aside-menu">
                     <nav>
                         <ul>
-                            <li><a href="#">About Toro</a></li>
-                            <li><a href="#">Help Center</a></li>
-                            <li><a href="#">Collection</a></li>
-                            <li><a href="#">Blog</a></li>
-                            <li><a href="#">New Look</a></li>
+                            <li>
+                                <% if (userLogged) { %>
+                                    <a href="/logout" class="btn-auth logout">LOGOUT</a>
+                                    <% } else { %>
+                                        <a href="/auth" class="btn-auth login">LOGIN / REGISTER</a>
+                                        <% } %>
+                            </li>
+                            <li><a href="/my-account">My Account</a></li>
+                            <li><a href="/my-orders">Orders</a></li>
+                            <li><a href="/wishlist">Wishlist</a></li>
+                            <li><a href="/cart">Cart</a></li>
                         </ul>
                     </nav>
                 </div>
