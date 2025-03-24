@@ -62,26 +62,6 @@
                     </div>
                     <div class="col-xl-2 col-lg-2">
                         <div class="header-right-wrap header-right-flex">
-                            <div class="same-style header-wishlist account-dropdown">
-                                <a href="#" class="account-link">
-                                    <i class="fa fa-user-o"></i>
-                                </a>
-                                
-                                <!-- Dropdown Menu -->
-                                <div class="dropdown-menu">
-                                    <ul>
-                                        <li><a href="/my-account">My Account</a></li>
-                                        <li id="auth-btn">
-                                            <% if (userLogged) { %>
-                                              <a href="/logout">Logout</a>
-                                            <% } else { %>
-                                              <a href="/auth">Login</a>
-                                            <% } %>
-                                          </li>                                          
-                                    </ul>
-                                </div>
-                            </div>
-                            
                             <div class="same-style header-wishlist">
                                 <a href="/wishlist"><i class="fa fa-heart-o"></i></a>
                             </div>
@@ -96,11 +76,11 @@
                                     <i class="dlicon ui-1_zoom"></i>
                                 </a>
                             </div>
-                            <!-- <div class="same-style header-off-canvas">
+                            <div class="same-style header-off-canvas">
                                 <a class="header-aside-button" href="#">
-                                    <i class="dlicon ui-3_menu-left"></i>
+                                    <i class="fa fa-user-o"></i>
                                 </a>
-                            </div> -->
+                            </div>
                         </div>
                     </div>
                 </div>

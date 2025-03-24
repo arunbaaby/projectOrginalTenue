@@ -376,9 +376,13 @@ const loadOrderConfirmation = async (req, res) => {
 
 const loadMyOrders = async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.user?.id;
         const currentPage = parseInt(req.query.page) || 1;
         const itemsPerPage = 4;
+
+        if(!userId){
+            return res.redirect('/auth');
+        }
 
         let userLogged = false;
         if(userId){
