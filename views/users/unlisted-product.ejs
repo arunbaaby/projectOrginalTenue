@@ -1,4 +1,107 @@
-<%- include ('../layouts/header') %>
+<!doctype html>
+<html class="no-js" lang="en">
+
+
+<!-- Mirrored from template.hasthemes.com/toro/toro/index-4.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 09 Feb 2024 11:17:24 GMT -->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Tenue Vogue - Clothing Store</title>
+    <meta name="robots" content="noindex, follow" />
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.svg">
+
+    <!-- All CSS is here
+	============================================ -->
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css">
+    <!-- Icon Font CSS -->
+    <link rel="stylesheet" href="assets/css/vendor/font-awesome.css">
+    <link rel="stylesheet" href="assets/css/vendor/dlicon.css">
+    <!-- Others CSS -->
+    <link rel="stylesheet" href="assets/css/plugins/owl-carousel.css">
+    <link rel="stylesheet" href="assets/css/plugins/slick.css">
+    <link rel="stylesheet" href="assets/css/plugins/magnific-popup.css">
+    <link rel="stylesheet" href="assets/css/plugins/jarallax.css">
+    <link rel="stylesheet" href="assets/css/plugins/easyzoom.css">
+    <link rel="stylesheet" href="assets/css/plugins/animate.css">
+    <link rel="stylesheet" href="assets/css/plugins/fullpage.css">
+    <link rel="stylesheet" href="assets/css/plugins/jquery-ui.css">
+    <link rel="stylesheet" href="assets/css/plugins/select2.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+</head>
+
+<body>
+
+    <div class="main-wrapper">
+        <header class="header-area transparent-bar section-padding-1">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-xl-2 col-lg-2">
+                        <div class="logo logo-width">
+                            <a href="/home">
+                                <img src="assets/images/logo/logo.png" alt="logo">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-xl-8 col-lg-8 d-flex justify-content-center position-static">
+                        <div class="main-menu menu-lh-1 main-menu-padding-1">
+                            <nav>
+                                <ul>
+                                    <li class="position-static"><a class="active" href="/home">Home</li>
+                                    <li><a href="/allProducts">Shop</i></a>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-lg-2">
+                        <div class="header-right-wrap header-right-flex">
+                            <div class="same-style header-wishlist account-dropdown">
+                                <a href="#" class="account-link">
+                                    <i class="fa fa-user-o"></i>
+                                </a>
+
+                                <!-- Dropdown Menu -->
+                                <div class="dropdown-menu">
+                                    <ul>
+                                        <li><a href="/my-account">My Account</a></li>
+                                        <li>
+                                            <a id="auth-link" href="#">Loading...</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="same-style header-wishlist">
+                                <a href="/wishlist"><i class="fa fa-heart-o"></i></a>
+                            </div>
+                            <div class="same-style cart-wrap">
+                                <a href="#" class="cart-active">
+                                    <i class="dlicon shopping_bag-20"></i>
+                                    <span class="count-style">
+                                        <%= cart.items.length %>
+                                    </span>
+                                </a>
+                            </div>
+                            <div class="same-style header-search">
+                                <a class="search-active" href="#">
+                                    <i class="dlicon ui-1_zoom"></i>
+                                </a>
+                            </div>
+                            <!-- <div class="same-style header-off-canvas">
+                                <a class="header-aside-button" href="#">
+                                    <i class="dlicon ui-3_menu-left"></i>
+                                </a>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
         <div class="header-small-mobile section-padding-1">
             <div class="container-fluid">
                 <div class="row align-items-center">
@@ -15,7 +118,9 @@
                                 <div class="same-style cart-wrap">
                                     <a href="#" class="cart-active">
                                         <i class="dlicon shopping_bag-20"></i>
-                                        <span class="count-style"><%= cart.items.length %></span>
+                                        <span class="count-style">
+                                            <%= cart.items.length %>
+                                        </span>
                                     </a>
                                 </div>
                                 <div class="same-style header-off-canvas">
@@ -61,7 +166,8 @@
                                                 <%= item.product.name %>
                                             </a></h4>
                                         <span>
-                                            <%= item.quantity %> × $<%= item.product.discountPrice || item.product.price %>
+                                            <%= item.quantity %> × $<%= item.product.discountPrice || item.product.price
+                                                    %>
                                         </span>
                                     </div>
                                     <div class="cart-delete">
@@ -112,15 +218,17 @@
                         </div>
                         <div class="mobile-curr-lang-wrap">
                             <div class="single-mobile-curr-lang">
-                                <a class="mobile-account-active" href="#">My Account <i class="fa fa-angle-down"></i></a>
+                                <a class="mobile-account-active" href="#">My Account <i
+                                        class="fa fa-angle-down"></i></a>
                                 <div class="lang-curr-dropdown account-dropdown-active">
                                     <ul>
                                         <li><a href="/my-account">My Account</a></li>
-                                        <li><% if (userLogged) { %>
-                                            <a href="/logout">Logout</a>
-                                          <% } else { %>
-                                            <a href="/auth">Login</a>
-                                          <% } %>
+                                        <li>
+                                            <% if (userLogged) { %>
+                                                <a href="/logout">Logout</a>
+                                                <% } else { %>
+                                                    <a href="/auth">Login</a>
+                                                    <% } %>
                                         </li>
                                     </ul>
                                 </div>
@@ -132,11 +240,11 @@
                             <ul>
                                 <li>
                                     <% if (userLogged) { %>
-                                      <a href="/logout" class="btn-auth logout">LOGOUT</a>
-                                    <% } else { %>
-                                      <a href="/auth" class="btn-auth login">LOGIN / REGISTER</a>
-                                    <% } %>
-                                </li>                              
+                                        <a href="/logout" class="btn-auth logout">LOGOUT</a>
+                                        <% } else { %>
+                                            <a href="/auth" class="btn-auth login">LOGIN / REGISTER</a>
+                                            <% } %>
+                                </li>
                                 <li><a href="/my-account">My Account</a></li>
                                 <li><a href="/my-orders">Orders</a></li>
                                 <li><a href="/wishlist">Wishlist</a></li>
@@ -145,13 +253,15 @@
                         </nav>
                     </div>
                     <img src="assets/images/icon-img/payments.png" alt="payment">
-                    <p>Pellentesque mollis nec orci id tincidunt. Sed mollis risus eu nisi aliquet, sit amet fermentum justo dapibus.</p>
+                    <p>Pellentesque mollis nec orci id tincidunt. Sed mollis risus eu nisi aliquet, sit amet fermentum
+                        justo dapibus.</p>
                     <div class="aside-contact-info">
                         <ul>
                             <li><i class="dlicon ui-2_time-clock"></i>Monday - Friday: 9:00 - 19:00</li>
                             <li><i class="dlicon ui-1_email-84"></i>Info@la-studioweb.com</li>
                             <li><i class="dlicon tech-2_rotate"></i>(+55) 254. 254. 254</li>
-                            <li><i class="dlicon ui-1_home-minimal"></i>Helios Tower 75 Tam Trinh Hoang - Ha Noi - Viet Nam</li>
+                            <li><i class="dlicon ui-1_home-minimal"></i>Helios Tower 75 Tam Trinh Hoang - Ha Noi - Viet
+                                Nam</li>
                         </ul>
                     </div>
                     <div class="social-icon-style mb-25">
@@ -176,10 +286,12 @@
                             <p>The product is unavailable right now.</p>
                             <div class="btn-style-1 text-center">
                                 <a class="btn-border-black2" href="/allProducts">
-                                    <div class="btn-viewmore-normal btn-ptb-3 btn-viewmore-bg-transparent btn-viewmore-common btn-font-3">
+                                    <div
+                                        class="btn-viewmore-normal btn-ptb-3 btn-viewmore-bg-transparent btn-viewmore-common btn-font-3">
                                         <span>Shop now</span>
                                     </div>
-                                    <div class="btn-viewmore-hover btn-ptb-3 btn-viewmore-common btn-hover-transition btn-font-3">
+                                    <div
+                                        class="btn-viewmore-hover btn-ptb-3 btn-viewmore-common btn-hover-transition btn-font-3">
                                         <span>Shop now</span>
                                     </div>
                                 </a>
@@ -527,4 +639,5 @@
 
 
 <!-- Mirrored from template.hasthemes.com/toro/toro/404.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 09 Feb 2024 11:19:24 GMT -->
+
 </html>
